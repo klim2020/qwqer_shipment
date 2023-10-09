@@ -83,8 +83,13 @@
                   document.querySelector('#validationBtn').addEventListener('click',(e)=>{
                     e.preventDefault();
                     const address = document.querySelector("input[name=shipping_qwqer_address]").value;
+                    const api     = document.querySelector("input[name=shipping_qwqer_api]").value;
+                    const pt      = document.querySelector("input[name=shipping_qwqer_trade_pt]").value;
                     let data =  new FormData();
-                    data.append("address",address)
+                    data.append("address",address);
+                    data.append("api_token",api);
+                    data.append("trade_point",pt);
+                    console.log(data)
                     fetch('index.php?route=extension/shipping/qwqer/geocode&user_token={{ user_token }}',
                             {
                               method: "POST",
@@ -103,7 +108,9 @@
                                 document.querySelector(".shipping_qwqer_address_object").style.color = 'red'
                               }
 
-                            });
+                            }).catch(data=>{
+                              alert(data.join(','));
+                    });
                     return true;
                   })
                 })
@@ -136,19 +143,33 @@
                 trigger: (query) => {
                   if (query.length >=  autoCompleteJS.threshold-1){
                     let input = document.querySelector("#autoComplete").value
+                    const api     = document.querySelector("input[name=shipping_qwqer_api]").value;
+                    const pt      = document.querySelector("input[name=shipping_qwqer_trade_pt]").value;
                     let data = new FormData()
+                    data.append("api_token",api);
+                    data.append("trade_point",pt);
                     data.append("input", input);
                     fetch('index.php?route=extension/shipping/qwqer/autocomplete&user_token={{ user_token }}',
                             {
                               method: "POST",
                               body: data,
                             })
-                            .then(res => res.json())
+                            .then((response) => {
+                              // 1. check response.ok
+                              if (response.ok) {
+                                return response.json();
+                              }
+                              return Promise.reject(response); // 2. reject instead of throw
+                            })
                             .then((data)=>{
 
                               autoCompleteJS.data.src = data.data;
                               //autoCompleteJS.data.keys = ["title"];
-                            });
+                            }).catch(response =>{
+                      response.json().then((json) => {
+                        console.log(json.message);
+                      })
+                    });
                     return true;
                   }
 
@@ -169,13 +190,15 @@
                 },
                 resultsList: {
                   element: (list, data) => {
-                    data.results.forEach((el,index)=>{
+                    data.results = data.results.filter((el,index)=>{
                       if (el.value.includes('Riga') == false){
                         var element = document.getElementById("autoComplete_result_"+index);
                         list.removeChild(element);
-                      };
+                        return false;
+                      }
+                      return true;
+                    })
 
-                    });
 
                     if (!data.results.length) {
                       // Create "No Results" message list element

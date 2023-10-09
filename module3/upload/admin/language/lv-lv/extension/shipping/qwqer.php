@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']             = 'Qwqer pakalpojums <a href = "https://qwqer.lv/" target="_blank"><img src="../catalog/view/images/qwqer.svg" alt="Qwqer service home page"></a>';
+$_['heading_title']             = 'Qwqer pakalpojums ';
 // Text
 $_['text_title']                = 'Qwqer pakalpojums';
 $_['text_extension']            = 'Pagarinājumi';

@@ -38,8 +38,9 @@ class ModelExtensionShippingQwqer extends Model {
      * @param $q
      * @return bool|string
      */
-    public function placeAutocomplete($q)
+    public function placeAutocomplete($q,$token,$trade_point)
     {
+        $this->token = $token;
         $curl = $this->getCurlHandle();
 
         curl_setopt_array($curl, array(

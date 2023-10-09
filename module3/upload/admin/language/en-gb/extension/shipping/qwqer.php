@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']             = 'qwqer service <a href = "https://qwqer.lv/" target="_blank"><img src="../catalog/view/images/qwqer.svg" alt="qwqer service home page"></a>' ;
+$_['heading_title']             = 'qwqer service' ;
 // Text
 $_['text_title']                = 'qwqer service';
 $_['text_extension']            = 'Extensions';

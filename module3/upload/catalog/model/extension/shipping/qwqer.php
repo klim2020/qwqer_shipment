@@ -60,7 +60,9 @@ class ModelExtensionShippingQwqer extends Model {
 
                 $data_order = $this->generateOrderObject($address);
                 $price = $this->calculatePrice($data_order);
-
+                if (!isset($price['data']['client_price'])){
+                    return [];
+                }
                 $data       = array();
                 $template   = $this->load->view('extension/shipping/qwqer', $data);
                 $calculate  = $this->currency->convert($price['data']['client_price']/100, 'EUR', $this->session->data['currency']);
@@ -77,7 +79,7 @@ class ModelExtensionShippingQwqer extends Model {
 
                 $method_data = array(
                     'code'       => 'qwqer.standart',
-                    'title'      => '<span style="color: rgb(133 117 209);">'.$this->language->get('text_title').'</span><a href = "https://qwqer.lv/" target="_blank"><img src="catalog/view/images/qwqer.svg" alt="Qwqer service home page"></a>',
+                    'title'      => $this->language->get('text_title').'<a href = "https://qwqer.lv/" target="_blank"><img src="catalog/view/images/qwqer.svg" alt="Qwqer service home page"></a>',
                     'quote'      => $quote_data,
                     'sort_order' => $this->config->get('shipping_qwqer_sort_order'),
                     'error'      => $error,
@@ -147,12 +149,15 @@ class ModelExtensionShippingQwqer extends Model {
 
         $api_key  = $this->config->get('shipping_qwqer_api');
         $trade_pt = $this->config->get('shipping_qwqer_trade_pt');
-        $info_store  = json_decode( html_entity_decode( stripslashes ($this->config->get('shipping_qwqer_address_object' ) ) ), true );
-        $phone = $this->config->get('config_telephone');
-        $name = $this->config->get('config_name');
-        $category = $this->options[$this->config->get('shipping_qwqer_trade_cat')];
-        $phone = '+371'.preg_replace(array('/\s/m','/^\+/m','/^\+371/m','/^371/m'),array('','','',''),$phone);
+
+        $store_info  = json_decode( html_entity_decode( stripslashes ($this->config->get('shipping_qwqer_address_object' ) ) ), true );
+        $store_phone = $this->config->get('config_telephone');
+        $store_phone = '+371'.preg_replace(array('/\s/m','/^\+/m','/^\+371/m','/^371/m'),array('','','',''),$store_phone);
+        $store_name = $this->config->get('config_name');
+
+        $shipping_category = $this->options[$this->config->get('shipping_qwqer_trade_cat')];
         $shipping_phone = $this->customer->getTelephone();
+
         if (isset($this->session->data["guest"]["telephone"])){
             $shipping_phone = $this->session->data["guest"]["telephone"];
         }
@@ -163,9 +168,14 @@ class ModelExtensionShippingQwqer extends Model {
             "Authorization: Bearer " . $api_key,
         );
 
+        if (!isset($store_info['data']))
+
         $storeOwnerAddress = array();
-        $storeOwnerAddress["address"] = $info_store['data']['address'];
-        $storeOwnerAddress["coordinates"] = $info_store['data']['coordinates'];
+        if (!isset($store_info['data']['address'])){
+            return array();
+        }
+        $storeOwnerAddress["address"] = $store_info['data']['address'];
+        $storeOwnerAddress["coordinates"] = $store_info['data']['coordinates'];
 
         /*
          * Get client coordinates and address
@@ -186,14 +196,14 @@ class ModelExtensionShippingQwqer extends Model {
         /*
          * Create order
          */
-        $storeOwnerAddress["name"] = $name;
-        $storeOwnerAddress["phone"] = $phone;
+        $storeOwnerAddress["name"] = $store_name;
+        $storeOwnerAddress["phone"] = $store_phone;
 
         $clientOwnerAddress["name"] = $address["firstname"]. ' '. $address["lastname"];
         $clientOwnerAddress["phone"] = $shipping_phone;
         $data_order = array(
             'type' => 'Regular',
-            'category' => $category,
+            'category' => $shipping_category,
             'real_type' => 'ScheduledDelivery',
             'origin' => $storeOwnerAddress,
             'destinations' => [$clientOwnerAddress],

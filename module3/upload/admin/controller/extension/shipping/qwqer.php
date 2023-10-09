@@ -189,18 +189,37 @@ class ControllerExtensionShippingQwqer extends Controller {//
 	}
 
     public function  autocomplete(){
-        if (isset($this->request->post['input'])){
-            $q = $this->request->post['input'];
+        $error = [];
 
-            $this->load->model('extension/shipping/qwqer');
-            $response = $this->model_extension_shipping_qwqer->placeAutocomplete($q);
-
-            $this->response->addHeader('Content-Type: application/json');
-            $this->response->setOutput($response);
-        }else{
-            $this->response->addHeader('Content-Type: application/json');
-            $this->response->setOutput(array('error'=>'input is not defined'));
+        if (!isset($this->request->post['input'])){
+            array_push($error,"input is not defined");
         }
+        if (!isset($this->request->post['api_token'])){
+            array_push($error,"api_token is not defined");
+        }
+        if (!isset($this->request->post['trade_point'])){
+            array_push($error,"trade_point is not defined");
+        }
+        if (count($error)!=0){
+            $this->response->addHeader($this->request->server['SERVER_PROTOCOL'] . ' 400 Bad Request');
+            $this->response->addHeader('Content-Type: application/json');
+            $this->response->setOutput(json_encode(array('message'=>$error)));
+            return;
+        }
+        $q = $this->request->post['input'];
+        $token = $this->request->post['api_token'];
+        $trade_point = $this->request->post['trade_point'];
+        $this->load->model('extension/shipping/qwqer');
+        $response = $this->model_extension_shipping_qwqer->placeAutocomplete($q,$token,$trade_point);
+        $r = json_decode($response,true);
+        if (isset($r['message'])){
+            $this->response->addHeader($this->request->server['SERVER_PROTOCOL'] . ' 400 Bad Request');
+        }
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput($response);
+
+
+
 
 
 
