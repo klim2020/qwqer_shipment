@@ -2,7 +2,7 @@
 
 [![img](https://res.cloudinary.com/qwqer-app/image/upload/v1652954787/logos/logo-dark_re5qle.svg)](https://qwqer.lv/lv)
 
-***Opencart shipping service module for Qwqer Delivery service in Riga, Latvia ***
+***Opencart shipping service module for Qwqer Delivery service in Riga, Latvia***
 
    -*Compatible with Simplecheckout*
 
@@ -39,7 +39,7 @@
 
    ![img4](https://i.imgur.com/wQzuRg9.png)
 
-   After succesful instalation plus icon will change to pensil button, that means now you can edit module settings, So press edit button:
+   After succesful instalation, plus icon will change to pensil button, that means now you can edit module settings, So press "edit(pensil)" button:
 
    ![img5](https://i.imgur.com/cEcIkx0.png) 
 
@@ -51,17 +51,22 @@
 
    5.***Adress Validation*** 
    Dont forget to enter and  validate your pick up Address, otherwise the **module will not work**.
-   To do that enter again into Module settings again, amd fill *"Full Adress"* field. Start entering address in the *Full Adress* field, after entering few letters, a popup window will show up, there you can choose apropriate address in Riga.
+   To do that enter again into Module settings again, amd fill *"Full Adress"* field. Start entering address in the *Full Adress* field, after entering few letters, a popup window will show up, there you can choose apropriate address in Riga, Latvia.
 
    ![img5](https://i.imgur.com/hl430Ae.png)
 
-   Choose necessary adress and then press Validate button and the "address validated" message will show up.
+   Choose necessary adress and then press Validate button near to the input field, After that the "address validated" message will show up.
   
   ![img6](https://i.imgur.com/63le9lE.png)
 
-  After adress succesfully validated please press *Save* button again.
+  After succesfull address validation please press *Save* button again.
 
   ![img7](https://i.imgur.com/vowOtye.png) 
+
+And Admin setup is finished 😊
+
+
+## How module works
 
 
    
