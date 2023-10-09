@@ -72,7 +72,7 @@ Navigate to your web store and by some products. After products have been added 
 
 ![img7](https://i.imgur.com/GIlxHl2.png)
 
-The shipping service wont show up unless you enter correct  addres  in Riga, Latvia.
+The shipping service wont show up unless you enter correct  addres  in Riga, Latvia. 
 
 
 
