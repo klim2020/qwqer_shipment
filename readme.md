@@ -68,6 +68,13 @@ And Admin setup is finished 😊
 
 ## How module works
 
+Navigate to your web store and by some products. After products have been added press checkout button and start a checkout process.
+
+![img7](https://i.imgur.com/GIlxHl2.png)
+
+The shipping service wont show up unless you enter correct  addres  in Riga, Latvia.
+
+
 
    
 
