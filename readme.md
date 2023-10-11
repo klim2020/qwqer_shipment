@@ -68,11 +68,21 @@ And Admin setup is finished 😊
 
 ## How module works
 
-Navigate to your web store and by some products. After products have been added press checkout button and start a checkout process.
+Navigate to your web store and buy some products. After products have been added to your cart, press checkout button and start a checkout process.
 
 ![img7](https://i.imgur.com/GIlxHl2.png)
 
-The shipping service wont show up unless you enter correct  addres  in Riga, Latvia. 
+!!!The shipping service wont show up unless you enter correct  addres  in Riga, Latvia.
+
+Next Step: Order goes to a process status, it means that it is not ready yet, it can be processed by maintance or not paid. In any event to make module create an order and send it to delivery service, you need to set ***Completed order status*** for your order. 
+
+You can do it trough admin dashboard using this [manual](https://www.opencart.com/blog?page=3&blog_id=229), or, for example, if user uses payment gateway to pay for an order, opencart can set it automaticly.
+
+To see what statuses, are treated as *"completed"* you need to go to webstore settings:
+![img11](https://i.imgur.com/OyqQ2PY.png)
+Navigate ***Option*** tab and set ***Complete order statuses***
+![img12](https://i.imgur.com/2yX6Eer.png)
+
 
 
 
