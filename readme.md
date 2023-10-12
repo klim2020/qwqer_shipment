@@ -53,7 +53,7 @@
    Dont forget to enter and  validate your pick up Address, otherwise the **module will not work**.
    To do that enter again into Module settings again, amd fill *"Full Adress"* field. Start entering address in the *Full Adress* field, after entering few letters, a popup window will show up, there you can choose apropriate address in Riga, Latvia.
 
-   ![img5](https://i.imgur.com/hl430Ae.png)
+   ![img5](https://i.imgur.com/JbxPYey.png)
 
    Choose necessary adress and then press Validate button near to the input field, After that the "address validated" message will show up.
   
