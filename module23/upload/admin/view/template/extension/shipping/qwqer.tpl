@@ -2,10 +2,10 @@
 <div id="content">
   <div class="page-header">
     <div class="container-fluid">
-      <div class="pull-right">
-        <button type="submit" form="form-pickup" data-toggle="tooltip" title="<?php echo $button_save; ?>" class="btn btn-primary"><i class="fa fa-save"></i></button>
-        <a href="<?php echo $cancel; ?>" data-toggle="tooltip" title="<?php echo $button_cancel; ?>" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
-      <h1><?php echo $heading_title; ?></h1>
+        <div class="pull-right">
+            <button type="submit" form="form-shipping" data-toggle="tooltip" title="<?php echo $button_save; ?>" class="btn btn-primary"><i class="fa fa-save"></i></button>
+            <a href="<?php echo $cancel; ?>" data-toggle="tooltip" title="<?php echo $button_cancel; ?>" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+        <h1><?php echo $heading_title; ?></h1>
       <ul class="breadcrumb">
         <?php foreach ($breadcrumbs as $breadcrumb) { ?>
         <li><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a></li>
@@ -28,8 +28,8 @@
           <div class="form-group required">
               <label class="col-sm-2 control-label" for="input-trade_pt"><?php echo  $entry_api; ?></label>
               <div class="col-sm-10">
-                <input type="text" name="shipping_qwqer_api" value="<?php echo $shipping_qwqer_api; ?>" placeholder="<?php echo $entry_api; ?>" id="input-api"class="form-control" maxlength="40" />
-                <?php if(isset($error_api)){ ?>
+                <input type="text" name="qwqer_api" value="<?php echo $qwqer_api; ?>" placeholder="<?php echo $entry_api; ?>" id="input-api"class="form-control" maxlength="40" />
+                <?php if($error_api){ ?>
                 <div class="text-danger"><?php echo  $error_api ; ?></div>
                 <?php } ?>
               </div>
@@ -38,8 +38,8 @@
           <div class="form-group required">
               <label class="col-sm-2 control-label" for="input-trade_pt"><?php echo  $entry_trade_pt ; ?></label>
               <div class="col-sm-10">
-                <input type="text" name="shipping_qwqer_trade_pt" value="<?php echo $shipping_qwqer_trade_pt; ?>" placeholder="<?php echo $entry_trade_pt; ?>" id="input-trade_pt" class="form-control" maxlength="4" />
-                <?php if(isset($error_trade_pt)){ ?>
+                <input type="text" name="qwqer_trade_pt" value="<?php echo $qwqer_trade_pt; ?>" placeholder="<?php echo $entry_trade_pt; ?>" id="input-trade_pt" class="form-control" maxlength="4" />
+                <?php if($error_trade_pt){ ?>
                 <div class="text-danger"><?php echo  $error_trade_pt ; ?></div>
                 <?php } ?>
               </div>
@@ -50,17 +50,17 @@
 
                 <div class="col-sm-10">
 
-                    <select name="shipping_qwqer_trade_cat" id="input-trade_cat" class="form-control">
-                        <?php foreach ($shipping_qwqer_trade_cat_options as $index => $cat_option) { ?>
+                    <select name="qwqer_trade_cat" id="input-trade_cat" class="form-control">
+                        <?php foreach ($qwqer_trade_cat_options as $index => $cat_option) { ?>
 
-                            <?php if ($index == $shipping_qwqer_trade_cat){ ?>
-                            <option value="<?php echo $index-1 ?>" selected="selected"><?php echo  $cat_option; ?></option>
+                            <?php if ($index == $qwqer_trade_cat){ ?>
+                            <option value="<?php echo $index ?>" selected="selected"><?php echo  $cat_option; ?></option>
                             <?php }else{ ?>
-                            <option value="<?php echo $index-1  ?>"><?php echo $cat_option; ?></option>
+                            <option value="<?php echo $index  ?>"><?php echo $cat_option; ?></option>
                             <?php } ?>
                         <?php } ?>
                     </select>
-                    <?php if(isset($error_trade_cat)){ ?>
+                    <?php if($error_trade_cat){ ?>
                     <div class="text-danger"><?php echo $error_trade_cat; ?></div>
                     <?php } ?>
                 </div>
@@ -69,22 +69,22 @@
           <div class="form-group required">
                 <label class="col-sm-2 control-label" for="input-address-city"><span data-toggle="tooltip" title="{{ help_address_city }}">Address City</span></label>
                 <div class="col-sm-10">
-                    <input name="shipping_qwqer_address_city" placeholder="Address city" rows="5" id="input-address-city" class="form-control"  value = "Riga" disabled></input>
+                    <input name="qwqer_address_city" placeholder="Address city" rows="5" id="input-address-city" class="form-control"  value = "Riga" disabled></input>
                 </div>
             </div>
 
           <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-category"><span data-toggle="tooltip" title="" data-original-title="<?php echo $help_address_tooltip;?>"><?php echo $entry_address;?></span></label>
                 <div class="col-sm-10">
-                    <input type="text" name="shipping_qwqer_address" value="<?php echo $shipping_qwqer_address;?>" placeholder="<?php echo $help_address;?>" id="autoComplete" class="form-control" autocomplete="off">
+                    <input type="text" name="qwqer_address" value="<?php echo $qwqer_address;?>" placeholder="<?php echo $help_address;?>" id="autoComplete" class="form-control" autocomplete="off" style="color: gray;  border: 1px solid grey;">
                     <button id = "validationBtn" class="btn btn-primary"><?php echo $text_button_validate;?></button>
                     <script>
                         document.addEventListener('DOMContentLoaded',()=>{
                             document.querySelector('#validationBtn').addEventListener('click',(e)=>{
                                 e.preventDefault();
-                                const address = document.querySelector("input[name=shipping_qwqer_address]").value;
-                                const api     = document.querySelector("input[name=shipping_qwqer_api]").value;
-                                const pt      = document.querySelector("input[name=shipping_qwqer_trade_pt]").value;
+                                const address = document.querySelector("input[name=qwqer_address]").value;
+                                const api     = document.querySelector("input[name=qwqer_api]").value;
+                                const pt      = document.querySelector("input[name=qwqer_trade_pt]").value;
                                 let data =  new FormData();
                                 data.append("address",address);
                                 data.append("api_token",api);
@@ -98,28 +98,28 @@
                                     .then(res => res.json())
                                     .then((data)=>{
                                         if (data.data && data.data.address && data.data.coordinates){
-                                            document.querySelector("input[name=shipping_qwqer_address_object]").value = JSON.stringify(data);
-                                            document.querySelector(".shipping_qwqer_address_object").textContent = 'V address validated';
-                                            document.querySelector(".shipping_qwqer_address_object").style.color = 'green'
+                                            document.querySelector("input[name=qwqer_address_object]").value = JSON.stringify(data);
+                                            document.querySelector(".qwqer_address_object").textContent = 'V address validated';
+                                            document.querySelector(".qwqer_address_object").style.color = 'green'
 
                                         }else{
-                                            document.querySelector("input[name=shipping_qwqer_address_object]").value = '';
-                                            document.querySelector(".shipping_qwqer_address_object").textContent = 'X address not validated';
-                                            document.querySelector(".shipping_qwqer_address_object").style.color = 'red'
+                                            document.querySelector("input[name=qwqer_address_object]").value = '';
+                                            document.querySelector(".qwqer_address_object").textContent = 'X address not validated';
+                                            document.querySelector(".qwqer_address_object").style.color = 'red'
                                         }
 
                                     }).catch(data=>{
-                                    alert(data.join(','));
+                                    //alert(data.join(','));
                                 });
                                 return true;
                             })
                         })
                     </script>
-                    <input type="hidden" name = "shipping_qwqer_address_object" value="<?php echo  $shipping_qwqer_address_object; ?>">
-                    <?php  if ($shipping_qwqer_address_object){ ?>
-                    <span class = "shipping_qwqer_address_object" style="color:green">V address validated</span>
+                    <input type="hidden" name = "qwqer_address_object" value="<?php echo  $qwqer_address_object; ?>">
+                    <?php  if ($qwqer_address_object){ ?>
+                    <span class = "qwqer_address_object" style="color:green">V address validated</span>
                     <?php  }else{ ?>
-                    <span  class = "shipping_qwqer_address_object" style="color:red">X address not validated</span>
+                    <span  class = "qwqer_address_object" style="color:red">X address not validated</span>
                     <?php  } ?>
 
                     <script>
@@ -130,7 +130,7 @@
 
                     var token = '<?php echo $token;?>';
                     const autoCompleteJS = new autoComplete({
-                        placeHolder: "products",
+                        placeHolder: "<?php echo $help_address; ?>",
                         data: {
                             src: [],
                             cache: false,
@@ -143,8 +143,8 @@
                         trigger: (query) => {
                             if (query.length >=  autoCompleteJS.threshold-1){
                                 let input = document.querySelector("#autoComplete").value
-                                const api     = document.querySelector("input[name=shipping_qwqer_api]").value;
-                                const pt      = document.querySelector("input[name=shipping_qwqer_trade_pt]").value;
+                                const api     = document.querySelector("input[name=qwqer_api]").value;
+                                const pt      = document.querySelector("input[name=qwqer_trade_pt]").value;
                                 let data = new FormData()
                                 data.append("api_token",api);
                                 data.append("trade_point",pt);
@@ -223,9 +223,9 @@
           <div class="form-group">
               <label class="col-sm-2 control-label" for="input-weight-class"><span data-toggle="tooltip" title="<?php echo $help_weight_class; ?>"><?php echo $entry_weight_class; ?></span></label>
               <div class="col-sm-10">
-                <select name="shipping_qwqer_weight_class_id" id="input-weight-class" class="form-control">
+                <select name="qwqer_weight_class_id" id="input-weight-class" class="form-control">
                   <?php foreach($weight_classes as $weight_class){  ?>
-                  <?php if (  $weight_class['weight_class_id'] == $shipping_qwqer_weight_class_id ){ ?>
+                  <?php if (  $weight_class['weight_class_id'] == $qwqer_weight_class_id ){ ?>
                   <option value="<?php echo $weight_class['weight_class_id']; ?>" selected="selected"><?php echo $weight_class['title']; ?></option>
                   <?php }else{ ?>
                   <option value="<?php echo $weight_class['weight_class_id']; ?>"><?php echo $weight_class['title']; ?></option>
@@ -238,10 +238,10 @@
           <div class="form-group">
               <label class="col-sm-2 control-label" for="input-tax-class"><?php echo  $entry_tax_class ; ?></label>
               <div class="col-sm-10">
-                <select name="shipping_qwqer_tax_class_id" id="input-tax-class" class="form-control">
+                <select name="qwqer_tax_class_id" id="input-tax-class" class="form-control">
                   <option value="0"><?php echo  $text_none ; ?></option>
                   <?php foreach( $tax_classes as $tax_class ) {  ?>
-                  <?php if (  tax_class.tax_class_id == shipping_qwqer_tax_class_id ) {  ?>
+                  <?php if (  tax_class.tax_class_id == qwqer_tax_class_id ) {  ?>
                   <option value="<?php echo $tax_class['tax_class_id']; ?>" selected="selected"><?php echo $tax_class['title']; ?></option>
                   <?php }else{ ?>
                   <option value="<?php echo $tax_class['tax_class_id']; ?>"><?php echo $tax_class['title']; ?></option>
@@ -254,10 +254,10 @@
           <div class="form-group">
               <label class="col-sm-2 control-label" for="input-geo-zone"><?php echo  $entry_geo_zone ; ?></label>
               <div class="col-sm-10">
-                <select name="shipping_qwqer_geo_zone_id" id="input-geo-zone" class="form-control">
+                <select name="qwqer_geo_zone_id" id="input-geo-zone" class="form-control">
                   <option value="0"><?php echo  $text_all_zones ; ?></option>
                   <?php foreach( $geo_zones as $geo_zone ){ ?>
-                  <?php if (  geo_zone.geo_zone_id == shipping_qwqer_geo_zone_id ) {  ?>
+                  <?php if (  geo_zone.geo_zone_id == qwqer_geo_zone_id ) {  ?>
                   <option value="<?php echo $geo_zone['geo_zone_id']; ?>" selected="selected"><?php echo $geo_zone['name']; ?></option>
                   <?php }else{ ?>
                   <option value="<?php echo $geo_zone['geo_zone_id']; ?>"><?php echo $geo_zone['name']; ?></option>
@@ -270,8 +270,8 @@
           <div class="form-group">
               <label class="col-sm-2 control-label" for="input-status"><?php echo  $entry_status ; ?></label>
               <div class="col-sm-10">
-                <select name="shipping_qwqer_status" id="input-status" class="form-control">
-                  <?php if(isset($shipping_qwqer_status)) { ?>
+                <select name="qwqer_status" id="input-status" class="form-control">
+                  <?php if(isset($qwqer_status)) { ?>
                   <option value="1" selected="selected"><?php echo  $text_enabled ; ?></option>
                   <option value="0"><?php echo  $text_disabled ; ?></option>
                   <?php }else{ ?>
@@ -285,7 +285,7 @@
           <div class="form-group">
               <label class="col-sm-2 control-label" for="input-sort-order"><?php echo  $entry_sort_order ; ?></label>
               <div class="col-sm-10">
-                <input type="text" name="shipping_qwqer_sort_order" value="<?php echo $shipping_qwqer_sort_order; ?>" placeholder="<?php echo $entry_sort_order; ?>" id="input-sort-order" class="form-control" />
+                <input type="text" name="qwqer_sort_order" value="<?php echo $qwqer_sort_order; ?>" placeholder="<?php echo $entry_sort_order; ?>" id="input-sort-order" class="form-control" />
               </div>
             </div>
         </form>

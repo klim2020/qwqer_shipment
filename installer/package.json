@@ -1,0 +1,23 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:desktop": "jest --testPathPattern=suites/desktop",
+    "test:test": "jest --testPathPattern = /work/tests/ ",
+    "test:prod": "npm run maintance && jest --testPathPattern = suites/ --detectOpenHandles -i --runInBand ",
+    "test:ocfilter": "jest --testPathPattern = suites/ocfilter --runInBand ",
+    "maintance": "jest --testPathPattern = maintance --runInBand "
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "isomorphic-fetch": "^3.0.0",
+    "jest": "^29.1.1",
+    "jest-puppeteer": "^6.1.1",
+    "node-fetch": "^3.3.0",
+    "puppeteer": "^18.0.5"
+  }
+}

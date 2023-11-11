@@ -28,7 +28,7 @@
           <div class="form-group required">
             <label class="col-sm-2 control-label" for="input-trade_pt">{{ entry_api }}</label>
             <div class="col-sm-10">
-              <input type="text" name="shipping_qwqer_api" value="{{ shipping_qwqer_api }}" placeholder="{{ entry_api }}" id="input-api"class="form-control" maxlength="40" />
+              <input type="text" name="qwqer_api" value="{{ qwqer_api }}" placeholder="{{ entry_api }}" id="input-api"class="form-control" maxlength="40" />
               {% if error_api %}
               <div class="text-danger">{{ error_api }}</div>
               {% endif %}
@@ -38,7 +38,7 @@
           <div class="form-group required">
             <label class="col-sm-2 control-label" for="input-trade_pt">{{ entry_trade_pt }}</label>
             <div class="col-sm-10">
-              <input type="text" name="shipping_qwqer_trade_pt" value="{{ shipping_qwqer_trade_pt }}" placeholder="{{ entry_trade_pt }}" id="input-trade_pt" class="form-control" maxlength="4" />
+              <input type="text" name="qwqer_trade_pt" value="{{ qwqer_trade_pt }}" placeholder="{{ entry_trade_pt }}" id="input-trade_pt" class="form-control" maxlength="4" />
               {% if error_trade_pt %}
               <div class="text-danger">{{ error_trade_pt }}</div>
               {% endif %}
@@ -49,11 +49,11 @@
             <label class="col-sm-2 control-label" for="input-trade_cat">{{ entry_trade_cat }}</label>
 
               <div class="col-sm-10">
-                <!-- {{ shipping_qwqer_trade_cat }} -->
-                <select name="shipping_qwqer_trade_cat" id="input-trade_cat" class="form-control">
-                  {% for cat_option in shipping_qwqer_trade_cat_options %}
+                <!-- {{ qwqer_trade_cat }} -->
+                <select name="qwqer_trade_cat" id="input-trade_cat" class="form-control">
+                  {% for cat_option in qwqer_trade_cat_options %}
                     <!-- {{ loop.index }} -->
-                    {% if loop.index-1 == shipping_qwqer_trade_cat %}
+                    {% if loop.index-1 == qwqer_trade_cat %}
                       <option value="{{ loop.index-1 }}" selected="selected">{{ cat_option }}</option>
                     {% else %}
                       <option value="{{ loop.index-1 }}">{{ cat_option }}</option>
@@ -69,22 +69,33 @@
           <div class="form-group required">
             <label class="col-sm-2 control-label" for="input-address-city"><span data-toggle="tooltip" title="{{ help_address_city }}">Address City</span></label>
             <div class="col-sm-10">
-              <input name="shipping_qwqer_address_city" placeholder="Address city" rows="5" id="input-address-city" class="form-control"  value = "Riga" disabled></input>
+              <input name="qwqer_address_city" placeholder="Address city" rows="5" id="input-address-city" class="form-control"  value = "Riga" disabled></input>
+
+            </div>
+          </div>
+
+          <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-address-city"><span data-toggle="tooltip" title="{{ help_telephone }}">{{ text_telephone }}</span></label>
+            <div class="col-sm-10">
+              <input name="qwqer_telephone" placeholder="{{ entry_telephone }}" rows="5" id="input-address-city" class="form-control"  value="{{ qwqer_telephone }}"></input>
+              {% if error_telephone1 %}
+                <div class="text-danger">{{ error_telephone1 }}</div>
+              {% endif %}
             </div>
           </div>
 
           <div class="form-group">
             <label class="col-sm-2 control-label" for="input-category"><span data-toggle="tooltip" title="" data-original-title="{{ help_address_tooltip }}">{{ entry_address }}</span></label>
             <div class="col-sm-10">
-              <input type="text" name="shipping_qwqer_address" value="{{ shipping_qwqer_address }}" placeholder="{{ help_address }}" id="autoComplete" class="form-control" autocomplete="off">
+              <input type="text" name="qwqer_address" value="{{ qwqer_address }}" placeholder="{{ help_address }}" id="autoComplete" class="form-control" autocomplete="off">
               <button id = "validationBtn" class="btn btn-primary">{{ text_button_validate }}</button>
               <script>
                 document.addEventListener('DOMContentLoaded',()=>{
                   document.querySelector('#validationBtn').addEventListener('click',(e)=>{
                     e.preventDefault();
-                    const address = document.querySelector("input[name=shipping_qwqer_address]").value;
-                    const api     = document.querySelector("input[name=shipping_qwqer_api]").value;
-                    const pt      = document.querySelector("input[name=shipping_qwqer_trade_pt]").value;
+                    const address = document.querySelector("input[name=qwqer_address]").value;
+                    const api     = document.querySelector("input[name=qwqer_api]").value;
+                    const pt      = document.querySelector("input[name=qwqer_trade_pt]").value;
                     let data =  new FormData();
                     data.append("address",address);
                     data.append("api_token",api);
@@ -98,28 +109,28 @@
                             .then(res => res.json())
                             .then((data)=>{
                               if (data.data && data.data.address && data.data.coordinates){
-                                document.querySelector("input[name=shipping_qwqer_address_object]").value = JSON.stringify(data);
-                                document.querySelector(".shipping_qwqer_address_object").textContent = 'V address validated';
-                                document.querySelector(".shipping_qwqer_address_object").style.color = 'green'
+                                document.querySelector("input[name=qwqer_address_object]").value = JSON.stringify(data);
+                                document.querySelector(".qwqer_address_object").textContent = 'V address validated';
+                                document.querySelector(".qwqer_address_object").style.color = 'green'
 
                               }else{
-                                document.querySelector("input[name=shipping_qwqer_address_object]").value = '';
-                                document.querySelector(".shipping_qwqer_address_object").textContent = 'X address not validated';
-                                document.querySelector(".shipping_qwqer_address_object").style.color = 'red'
+                                document.querySelector("input[name=qwqer_address_object]").value = '';
+                                document.querySelector(".qwqer_address_object").textContent = 'X address not validated';
+                                document.querySelector(".qwqer_address_object").style.color = 'red'
                               }
 
                             }).catch(data=>{
-                              alert(data.join(','));
+                              //alert(data.join(','));
                     });
                     return true;
                   })
                 })
               </script>
-              <input type="hidden" name = "shipping_qwqer_address_object" value="{{ shipping_qwqer_address_object }}">
-              {%  if shipping_qwqer_address_object %}
-                <span class = "shipping_qwqer_address_object" style="color:green">V address validated</span>
+              <input type="hidden" name = "qwqer_address_object" value="{{ qwqer_address_object }}">
+              {%  if qwqer_address_object %}
+                <span class = "qwqer_address_object" style="color:green">V address validated</span>
               {%  else %}
-                <span  class = "shipping_qwqer_address_object" style="color:red">X address not validated</span>
+                <span  class = "qwqer_address_object" style="color:red">X address not validated</span>
               {%  endif %}
 
               <script>
@@ -142,9 +153,9 @@
 
                 trigger: (query) => {
                   if (query.length >=  autoCompleteJS.threshold-1){
-                    let input = document.querySelector("#autoComplete").value
-                    const api     = document.querySelector("input[name=shipping_qwqer_api]").value;
-                    const pt      = document.querySelector("input[name=shipping_qwqer_trade_pt]").value;
+                    let input     = document.querySelector("#autoComplete").value
+                    const api     = document.querySelector("input[name=qwqer_api]").value;
+                    const pt      = document.querySelector("input[name=qwqer_trade_pt]").value;
                     let data = new FormData()
                     data.append("api_token",api);
                     data.append("trade_point",pt);
@@ -223,9 +234,9 @@
           <div class="form-group">
             <label class="col-sm-2 control-label" for="input-weight-class"><span data-toggle="tooltip" title="{{ help_weight_class }}">{{ entry_weight_class }}</span></label>
             <div class="col-sm-10">
-              <select name="shipping_qwqer_weight_class_id" id="input-weight-class" class="form-control">
+              <select name="qwqer_weight_class_id" id="input-weight-class" class="form-control">
                 {% for weight_class in weight_classes %}
-                {% if weight_class.weight_class_id == shipping_qwqer_weight_class_id %}
+                {% if weight_class.weight_class_id == qwqer_weight_class_id %}
                 <option value="{{ weight_class.weight_class_id }}" selected="selected">{{ weight_class.title }}</option>
                 {% else %}
                 <option value="{{ weight_class.weight_class_id }}">{{ weight_class.title }}</option>
@@ -238,10 +249,10 @@
          <div class="form-group">
             <label class="col-sm-2 control-label" for="input-tax-class">{{ entry_tax_class }}</label>
             <div class="col-sm-10">
-              <select name="shipping_qwqer_tax_class_id" id="input-tax-class" class="form-control">
+              <select name="qwqer_tax_class_id" id="input-tax-class" class="form-control">
                 <option value="0">{{ text_none }}</option>
                 {% for tax_class in tax_classes %}
-                {% if tax_class.tax_class_id == shipping_qwqer_tax_class_id %}
+                {% if tax_class.tax_class_id == qwqer_tax_class_id %}
                 <option value="{{ tax_class.tax_class_id }}" selected="selected">{{ tax_class.title }}</option>
                 {% else %}
                 <option value="{{ tax_class.tax_class_id }}">{{ tax_class.title }}</option>
@@ -254,10 +265,10 @@
           <div class="form-group">
             <label class="col-sm-2 control-label" for="input-geo-zone">{{ entry_geo_zone }}</label>
             <div class="col-sm-10">
-              <select name="shipping_qwqer_geo_zone_id" id="input-geo-zone" class="form-control">
+              <select name="qwqer_geo_zone_id" id="input-geo-zone" class="form-control">
                 <option value="0">{{ text_all_zones }}</option>
                 {% for geo_zone in geo_zones %}
-                {% if geo_zone.geo_zone_id == shipping_qwqer_geo_zone_id %}
+                {% if geo_zone.geo_zone_id == qwqer_geo_zone_id %}
                 <option value="{{ geo_zone.geo_zone_id }}" selected="selected">{{ geo_zone.name }}</option>
                 {% else %}
                 <option value="{{ geo_zone.geo_zone_id }}">{{ geo_zone.name }}</option>
@@ -270,8 +281,8 @@
           <div class="form-group">
             <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
             <div class="col-sm-10">
-              <select name="shipping_qwqer_status" id="input-status" class="form-control">
-                {% if shipping_qwqer_status %}
+              <select name="qwqer_status" id="input-status" class="form-control">
+                {% if qwqer_status %}
                 <option value="1" selected="selected">{{ text_enabled }}</option>
                 <option value="0">{{ text_disabled }}</option>
                 {% else %}
@@ -285,7 +296,7 @@
           <div class="form-group">
             <label class="col-sm-2 control-label" for="input-sort-order">{{ entry_sort_order }}</label>
             <div class="col-sm-10">
-              <input type="text" name="shipping_qwqer_sort_order" value="{{ shipping_qwqer_sort_order }}" placeholder="{{ entry_sort_order }}" id="input-sort-order" class="form-control" />
+              <input type="text" name="qwqer_sort_order" value="{{ qwqer_sort_order }}" placeholder="{{ entry_sort_order }}" id="input-sort-order" class="form-control" />
             </div>
           </div>
 
