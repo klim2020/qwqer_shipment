@@ -63,7 +63,7 @@ class ModelExtensionShippingQwqer extends Model {
                 }
                 //if there are no services available
                 if (!count($prices)){
-                    return [];
+                    return array();
                 }
 
                 $data       = array();
@@ -101,6 +101,7 @@ class ModelExtensionShippingQwqer extends Model {
 
 
                             $template   = $this->load->view('extension/shipping/qwqer', array(
+                                                                                        'text_select_box'=>$this->language->get('text_select_box'),
                                                                                         'text_title_order_type'   =>  $var,
                                                                                         'terminals'               => $terminals['data']["omniva"],
                                                                                         'order_id'                => $order_id,

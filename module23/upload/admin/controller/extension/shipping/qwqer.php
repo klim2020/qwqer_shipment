@@ -37,11 +37,11 @@ class ControllerExtensionShippingQwqer extends Controller {//
 
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
-			$this->model_setting_setting->editSetting('shipping_qwqer', $this->request->post);
+			$this->model_setting_setting->editSetting('qwqer', $this->request->post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
-			$this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=shipping', true));
+            $this->response->redirect($this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=shipping', true));
 		}
 
 		if (isset($this->error['warning'])) {
@@ -78,22 +78,51 @@ class ControllerExtensionShippingQwqer extends Controller {//
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('text_home'),
-			'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true)
+			'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], true)
 		);
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('text_extension'),
-			'href' => $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=shipping', true)
+			'href' => $this->url->link('marketplace/extension', 'token=' . $this->session->data['token'] . '&type=shipping', true)
 		);
 
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('heading_title'),
-			'href' => $this->url->link('extension/shipping/qwqer', 'user_token=' . $this->session->data['user_token'], true)
+			'href' => $this->url->link('extension/shipping/qwqer', 'token=' . $this->session->data['token'], true)
 		);
 
-		$data['action'] = $this->url->link('extension/shipping/qwqer', 'user_token=' . $this->session->data['user_token'], true);
+        // v23 language
+        $langs_values = array('heading_title',
+                        'entry_api',
+                        'text_edit',
+                        'entry_trade_pt',
+                        'entry_trade_cat',
+                        'entry_address',
+                        'entry_weight_class',
+                        'entry_tax_class',
+                        'entry_geo_zone',
+                        'entry_status',
+                        'entry_sort_order',
+                        'text_button_validate',
+                        'help_address_tooltip',
+                        'help_address_city',
+                        'button_save',
+                        'button_cancel',
+                        'help_weight_class',
+                        'text_none',
+                        'text_all_zones',
+                        'text_enabled',
+                        'text_disabled',
+                        'entry_telephone',
+                        'help_telephone',
+                        'text_telephone');
+        foreach ($langs_values as $lang){
+            $data[$lang] = $this->language->get($lang);
+        }
 
-		$data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=shipping', true);
+		$data['action'] = $this->url->link('extension/shipping/qwqer', 'token=' . $this->session->data['token'], true);
+
+		$data['cancel'] = $this->url->link('marketplace/extension', 'token=' . $this->session->data['token'] . '&type=shipping', true);
 
 		if (isset($this->request->post['qwqer_trade_pt'])) {
 			$data['qwqer_trade_pt'] = $this->request->post['qwqer_trade_pt'];
@@ -159,7 +188,7 @@ class ControllerExtensionShippingQwqer extends Controller {//
 
 		$data['tax_classes'] = $this->model_localisation_tax_class->getTaxClasses();
 
-        $data['user_token'] = $this->session->data['user_token'];
+        $data['token'] = $this->session->data['token'];
 
 		if (isset($this->request->post['qwqer_geo_zone_id'])) {
 			$data['qwqer_geo_zone_id'] = $this->request->post['qwqer_geo_zone_id'];

@@ -67,11 +67,21 @@
             </div>
 
           <div class="form-group required">
-                <label class="col-sm-2 control-label" for="input-address-city"><span data-toggle="tooltip" title="{{ help_address_city }}">Address City</span></label>
+                <label class="col-sm-2 control-label" for="input-address-city"><span data-toggle="tooltip" title="<?php  echo $help_address_city; ?>">Address City</span></label>
                 <div class="col-sm-10">
                     <input name="qwqer_address_city" placeholder="Address city" rows="5" id="input-address-city" class="form-control"  value = "Riga" disabled></input>
                 </div>
             </div>
+
+          <div class="form-group required">
+              <label class="col-sm-2 control-label" for="input-address-city"><span data-toggle="tooltip" title="<?php echo  $help_telephone; ?>"><?php echo  $text_telephone; ?></span></label>
+              <div class="col-sm-10">
+                  <input name="qwqer_telephone" placeholder="<?php echo $entry_telephone; ?>" rows="5" id="input-address-city" class="form-control"  value="<?php echo  $qwqer_telephone; ?>"></input>
+                  <?php  if ($error_telephone1) {?>
+                    <div class="text-danger"><?php echo  $error_telephone1; ?></div>
+                  <?php } ?>
+              </div>
+          </div>
 
           <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-category"><span data-toggle="tooltip" title="" data-original-title="<?php echo $help_address_tooltip;?>"><?php echo $entry_address;?></span></label>
@@ -241,7 +251,7 @@
                 <select name="qwqer_tax_class_id" id="input-tax-class" class="form-control">
                   <option value="0"><?php echo  $text_none ; ?></option>
                   <?php foreach( $tax_classes as $tax_class ) {  ?>
-                  <?php if (  tax_class.tax_class_id == qwqer_tax_class_id ) {  ?>
+                  <?php if (  $tax_class['tax_class_id'] == $qwqer_tax_class_id ) {  ?>
                   <option value="<?php echo $tax_class['tax_class_id']; ?>" selected="selected"><?php echo $tax_class['title']; ?></option>
                   <?php }else{ ?>
                   <option value="<?php echo $tax_class['tax_class_id']; ?>"><?php echo $tax_class['title']; ?></option>
@@ -257,7 +267,7 @@
                 <select name="qwqer_geo_zone_id" id="input-geo-zone" class="form-control">
                   <option value="0"><?php echo  $text_all_zones ; ?></option>
                   <?php foreach( $geo_zones as $geo_zone ){ ?>
-                  <?php if (  geo_zone.geo_zone_id == qwqer_geo_zone_id ) {  ?>
+                  <?php if (  $geo_zone['geo_zone_id'] == $qwqer_geo_zone_id ) {  ?>
                   <option value="<?php echo $geo_zone['geo_zone_id']; ?>" selected="selected"><?php echo $geo_zone['name']; ?></option>
                   <?php }else{ ?>
                   <option value="<?php echo $geo_zone['geo_zone_id']; ?>"><?php echo $geo_zone['name']; ?></option>
