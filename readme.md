@@ -103,7 +103,7 @@ Navigate ***Option*** tab and set ***Complete order statuses***
 
 ![img12](https://i.imgur.com/2yX6Eer.png)
 
-
+Please feel free to ask questions onto [github issues](https://github.com/klim2020/qwqer_shipment/issues) sections
 
 
    

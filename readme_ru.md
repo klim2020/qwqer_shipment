@@ -111,7 +111,7 @@
 
 ![img12](https://i.imgur.com/2yX6Eer.png)
 
-
+Пожалуйста задавайте вопросы [тут](https://github.com/klim2020/qwqer_shipment/issues)  или на [маркетплейсе](https://www.opencart.com/index.php?route=marketplace/extension/info&member_token=c49bd63f358f8de3e70897b531b7c108&extension_id=45603)
 
 
    
