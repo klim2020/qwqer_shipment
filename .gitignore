@@ -1,6 +1,8 @@
 sync_v3_from_test.sh
 sync_v3_to_test.sh
 include_filter.txt
+v3_copy_v2_rename.sh
+v23_sync_from_test_copy.sh
 pack.sh
 v23_rename_twig_to_tpl.sh
 v23_sync_from_test copy.sh
