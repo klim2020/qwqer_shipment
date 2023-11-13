@@ -1,6 +1,0 @@
-+ *qwqer*
-+ */
-+ **/qwqer/**
-- *
-- **/storage/**
-- **/storage/upload/**
