@@ -19,7 +19,7 @@
 
    ``` Важное замечание, для работы модуля необходимо указать полный мобильный телефон и адрес магазина, иначе курьеры не смогут забирать посылки```
 
-   1.**Скачайте** модуль с помощью [Opencart marketplace](https://www.opencart.com/index.php?route=marketplace/extension&filter_category_id=4) или  через [секцию релизов](https://github.com/klim2020/qwqer_shipment/releases) на гитхабе
+   1.**Скачайте** модуль с помощью [Opencart marketplace](https://www.opencart.com/index.php?route=marketplace/extension/info&member_token=c49bd63f358f8de3e70897b531b7c108&extension_id=45603) или  через [секцию релизов](https://github.com/klim2020/qwqer_shipment/releases) на гитхабе
 
    2.**Установите** модуль, используя стандартный процесс установки, перейдите в панель администратора *Расширение-> Установщик*, затем нажмите кнопку ***Установить*** и установите расширение.
 
