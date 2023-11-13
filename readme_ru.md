@@ -72,7 +72,7 @@
 
    ![img5](https://i.imgur.com/DKORB3d.png)
 
-   Choose necessary adress and then press Validate button near to the input field, After that the "address validated" message will show up.
+   Выберите необходимый адрес и нажмите кнопку «Подтвердить» рядом с полем ввода. После этого, рядом с кнопкой подтвердить появится зеленое сообщение «Адрес подтвержден».
 
 
     ```Если вы видите зеленое сообщение рядом с кнопкой validate, значит, процесс проверки адреса завершен успешно.```
