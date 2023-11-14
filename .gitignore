@@ -8,4 +8,10 @@ v23_rename_twig_to_tpl.sh
 v23_sync_from_test copy.sh
 v23_sync_to_test.sh
 /other
-.history/module23/install_20231111181539.xml
+/.history/
+v21_sync_from_test.sh
+release/qwqer-oc2.1.ocmod.zip
+release/qwqer-oc2.3.ocmod.zip
+release/qwqer-oc3.ocmod.zip
+release/qwqer-oc4.ocmod.zip
+release/qwqer-oc15.ocmod.zip
