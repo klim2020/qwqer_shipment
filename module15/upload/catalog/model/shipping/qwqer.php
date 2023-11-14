@@ -6,7 +6,7 @@ use library\qweqr\QwqerApi;
  *
  * @property QwqerApi $shipping_qwqer
  */
-class ModelExtensionShippingQwqer extends Model {
+class ModelShippingQwqer extends Model {
 
 
     public function __construct($registry)
@@ -21,7 +21,7 @@ class ModelExtensionShippingQwqer extends Model {
     }
 
 	public function getQuote($address) {
-		$this->load->language('extension/shipping/qwqer');
+		$this->load->language('shipping/qwqer');
 
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('qwqer_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
 
@@ -99,23 +99,32 @@ class ModelExtensionShippingQwqer extends Model {
                                 $autocompletehidden = '';
                             }
 
+                            $template = 'default/template/extension/shipping/qwqer.tpl';
+                            $data = array(
+                                'text_select_box'=>$this->language->get('text_select_box'),
+                                'text_title_order_type'   =>  $var,
+                                'terminals'               => $terminals['data']["omniva"],
+                                'order_id'                => $order_id,
+                                'session_id'              => $s_id,
+                                'autocomplete'            => $autocomplete,
+                                'autocompletehidden'      => $autocompletehidden);
 
-                            $template   = $this->load->view('extension/shipping/qwqer', array(
-                                                                                        'text_select_box'=>$this->language->get('text_select_box'),
-                                                                                        'text_title_order_type'   =>  $var,
-                                                                                        'terminals'               => $terminals['data']["omniva"],
-                                                                                        'order_id'                => $order_id,
-                                                                                        'session_id'              => $s_id,
-                                                                                        'autocomplete'            => $autocomplete,
-                                                                                        'autocompletehidden'      => $autocompletehidden));
+
                         }else{
-                            $template   = $this->load->view('extension/shipping/qwqer', array('text_title_order_type'=> $var));
+                            $template   = 'default/template/extension/shipping/qwqer.tpl';
+                            $data = array('text_title_order_type'=> $var);
                         }
                     }else{
-                        $template   = $this->load->view('extension/shipping/qwqer', array('text_title_order_type'=> $var));
+                        $template   = 'default/template/extension/shipping/qwqer.tpl';
+                        $data = array('text_title_order_type'=> $var);
                     }
 
+                    extract($data);
 
+                    ob_start();
+                    require(\VQMod::modCheck(DIR_TEMPLATE . $template));
+                    $template = ob_get_contents();
+                    ob_end_clean();
                     $calculate  = $this->currency->convert($price['data']['client_price']/100, 'EUR', $this->session->data['currency']);
                     $text       =  $this->currency->format($calculate,
                         $this->session->data['currency'],
@@ -161,7 +170,7 @@ class ModelExtensionShippingQwqer extends Model {
     public function generateOrderObject($order_info){
         $address = array();
         foreach ($order_info as $key=>$value){
-            if (strpos($key,'shipping_',) !== false){
+            if (strpos($key,'shipping_') !== false){
                 $v = str_replace('shipping_','',$key);
                 $address[$v] = $value;
             }
@@ -209,6 +218,7 @@ class ModelExtensionShippingQwqer extends Model {
         if ($order_id){
             $str = "UPDATE " . DB_PREFIX . "order SET `shipping_method` = '" . $this->db->escape($text) . "' WHERE `order_id` = " . $order_id;
             $this->db->query($str);
+            $this->db->query("UPDATE " . DB_PREFIX . "order_total SET `title` = '" . $this->db->escape($text) . "' WHERE `order_id` = " . $order_id ." AND `code`='shipping'");
         }
 
     }

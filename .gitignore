@@ -15,3 +15,5 @@ release/qwqer-oc2.3.ocmod.zip
 release/qwqer-oc3.ocmod.zip
 release/qwqer-oc4.ocmod.zip
 release/qwqer-oc15.ocmod.zip
+v15_sync_from_test.sh
+v15_sync_to_test.sh
