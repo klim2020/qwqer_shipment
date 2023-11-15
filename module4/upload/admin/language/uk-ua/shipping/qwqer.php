@@ -8,8 +8,10 @@ $_['text_success']       = 'Success: You have modified Qwqer service!';
 $_['text_edit']          = 'Edit Qwqer service';
 
 // Entry
-$_['entry_api']          = 'API Key';
+$_['entry_api']          = 'API Token';
 $_['entry_trade_pt']     = 'Trade Point';
+$_['entry_trade_cat']    = 'Shipping category';
+$_['entry_trade_address']= 'Trade Point';
 $_['entry_weight_class'] = 'Weight Class';
 $_['entry_tax_class']    = 'Tax Class';
 $_['entry_geo_zone']     = 'Geo Zone';

@@ -1,0 +1,309 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button type="submit" form="form-shipping" data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa fa-save"></i></button>
+        <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+        <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-shipping" class="form-horizontal">
+          <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-trade_pt">{{ entry_api }}</label>
+            <div class="col-sm-10">
+              <input type="text" name="shipping_qwqer_api" value="{{ shipping_qwqer_api }}" placeholder="{{ entry_api }}" id="input-api"class="form-control" maxlength="40" />
+              {% if error_api %}
+              <div class="text-danger">{{ error_api }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-trade_pt">{{ entry_trade_pt }}</label>
+            <div class="col-sm-10">
+              <input type="text" name="shipping_qwqer_trade_pt" value="{{ shipping_qwqer_trade_pt }}" placeholder="{{ entry_trade_pt }}" id="input-trade_pt" class="form-control" maxlength="4" />
+              {% if error_trade_pt %}
+              <div class="text-danger">{{ error_trade_pt }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-trade_cat">{{ entry_trade_cat }}</label>
+
+              <div class="col-sm-10">
+                <!-- {{ shipping_qwqer_trade_cat }} -->
+                <select name="shipping_qwqer_trade_cat" id="input-trade_cat" class="form-control">
+                  {% for cat_option in shipping_qwqer_trade_cat_options %}
+                    <!-- {{ loop.index }} -->
+                    {% if loop.index-1 == shipping_qwqer_trade_cat %}
+                      <option value="{{ loop.index-1 }}" selected="selected">{{ cat_option }}</option>
+                    {% else %}
+                      <option value="{{ loop.index-1 }}">{{ cat_option }}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              {% if error_trade_cat %}
+                <div class="text-danger">{{ error_trade_cat }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-address-city"><span data-toggle="tooltip" title="{{ help_address_city }}">Address City</span></label>
+            <div class="col-sm-10">
+              <input name="shipping_qwqer_address_city" placeholder="Address city" rows="5" id="input-address-city" class="form-control"  value = "Riga" disabled></input>
+
+            </div>
+          </div>
+
+          <div class="form-group required">
+            <label class="col-sm-2 control-label" for="input-address-city"><span data-toggle="tooltip" title="{{ help_telephone }}">{{ text_telephone }}</span></label>
+            <div class="col-sm-10">
+              <input name="shipping_qwqer_telephone" placeholder="{{ entry_telephone }}" rows="5" id="input-address-city" class="form-control"  value="{{ shipping_qwqer_telephone }}"></input>
+              {% if error_telephone1 %}
+                <div class="text-danger">{{ error_telephone1 }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-category"><span data-toggle="tooltip" title="" data-original-title="{{ help_address_tooltip }}">{{ entry_address }}</span></label>
+            <div class="col-sm-10">
+              <input type="text" name="shipping_qwqer_address" value="{{ shipping_qwqer_address }}" placeholder="{{ help_address }}" id="autoComplete" class="form-control" autocomplete="off">
+              <button id = "validationBtn" class="btn btn-primary">{{ text_button_validate }}</button>
+              <script>
+                document.addEventListener('DOMContentLoaded',()=>{
+                  document.querySelector('#validationBtn').addEventListener('click',(e)=>{
+                    e.preventDefault();
+                    const address = document.querySelector("input[name=shipping_qwqer_address]").value;
+                    const api     = document.querySelector("input[name=shipping_qwqer_api]").value;
+                    const pt      = document.querySelector("input[name=shipping_qwqer_trade_pt]").value;
+                    let data =  new FormData();
+                    data.append("address",address);
+                    data.append("api_token",api);
+                    data.append("trade_point",pt);
+                    console.log(data)
+                    fetch('index.php?route=extension/shipping/qwqer/geocode&user_token={{ user_token }}',
+                            {
+                              method: "POST",
+                              body: data
+                            })
+                            .then(res => res.json())
+                            .then((data)=>{
+                              if (data.data && data.data.address && data.data.coordinates){
+                                document.querySelector("input[name=shipping_qwqer_address_object]").value = JSON.stringify(data);
+                                document.querySelector(".shipping_qwqer_address_object").textContent = 'V address validated';
+                                document.querySelector(".shipping_qwqer_address_object").style.color = 'green'
+
+                              }else{
+                                document.querySelector("input[name=shipping_qwqer_address_object]").value = '';
+                                document.querySelector(".shipping_qwqer_address_object").textContent = 'X address not validated';
+                                document.querySelector(".shipping_qwqer_address_object").style.color = 'red'
+                              }
+
+                            }).catch(data=>{
+                              //alert(data.join(','));
+                    });
+                    return true;
+                  })
+                })
+              </script>
+              <input type="hidden" name = "shipping_qwqer_address_object" value="{{ shipping_qwqer_address_object }}">
+              {%  if shipping_qwqer_address_object %}
+                <span class = "shipping_qwqer_address_object" style="color:green">V address validated</span>
+              {%  else %}
+                <span  class = "shipping_qwqer_address_object" style="color:red">X address not validated</span>
+              {%  endif %}
+
+              <script>
+
+              </script>
+            </div>
+           <script>
+
+                var token = '{{ user_token }}';
+                const autoCompleteJS = new autoComplete({
+                placeHolder: "products",
+                data: {
+                  src: [],
+                  cache: false,
+                },
+
+                resultItem: {
+                  highlight: true
+                },
+
+                trigger: (query) => {
+                  if (query.length >=  autoCompleteJS.threshold-1){
+                    let input     = document.querySelector("#autoComplete").value
+                    const api     = document.querySelector("input[name=shipping_qwqer_api]").value;
+                    const pt      = document.querySelector("input[name=shipping_qwqer_trade_pt]").value;
+                    let data = new FormData()
+                    data.append("api_token",api);
+                    data.append("trade_point",pt);
+                    data.append("input", input);
+                    fetch('index.php?route=extension/shipping/qwqer/autocomplete&user_token={{ user_token }}',
+                            {
+                              method: "POST",
+                              body: data,
+                            })
+                            .then((response) => {
+                              // 1. check response.ok
+                              if (response.ok) {
+                                return response.json();
+                              }
+                              return Promise.reject(response); // 2. reject instead of throw
+                            })
+                            .then((data)=>{
+
+                              autoCompleteJS.data.src = data.data;
+                              //autoCompleteJS.data.keys = ["title"];
+                            }).catch(response =>{
+                      response.json().then((json) => {
+                        console.log(json.message);
+                      })
+                    });
+                    return true;
+                  }
+
+                  return false;
+                   //return query.replace(/ /g, "").length; // Returns "Boolean"
+                },
+                query: function(input){//
+                    return input;
+                },
+                events: {
+                  input: {
+                    selection: function(event){
+                      const selection = event.detail.selection.value;
+                      //console.log(selection)
+                      this.value = selection;
+                    }
+                  }
+                },
+                resultsList: {
+                  element: (list, data) => {
+                    data.results = data.results.filter((el,index)=>{
+                      if (el.value.includes('Riga') == false){
+                        var element = document.getElementById("autoComplete_result_"+index);
+                        list.removeChild(element);
+                        return false;
+                      }
+                      return true;
+                    })
+
+
+                    if (!data.results.length) {
+                      // Create "No Results" message list element
+                      const message = document.createElement("div");
+                      message.setAttribute("class", "no_result");
+                      // Add message text content
+                      message.innerHTML = `<span>Found No Results for "${data.query}"</span>`;
+                      // Add message list element to the list
+                      list.appendChild(message);
+                    }
+                  },
+                  noResults: true,
+                  maxResults: 20,
+                },
+
+                threshold: 3,
+                debounce: 200,
+              });
+            </script>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-weight-class"><span data-toggle="tooltip" title="{{ help_weight_class }}">{{ entry_weight_class }}</span></label>
+            <div class="col-sm-10">
+              <select name="shipping_qwqer_weight_class_id" id="input-weight-class" class="form-control">
+                {% for weight_class in weight_classes %}
+                {% if weight_class.weight_class_id == shipping_qwqer_weight_class_id %}
+                <option value="{{ weight_class.weight_class_id }}" selected="selected">{{ weight_class.title }}</option>
+                {% else %}
+                <option value="{{ weight_class.weight_class_id }}">{{ weight_class.title }}</option>
+                {% endif %}
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+         <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-tax-class">{{ entry_tax_class }}</label>
+            <div class="col-sm-10">
+              <select name="shipping_qwqer_tax_class_id" id="input-tax-class" class="form-control">
+                <option value="0">{{ text_none }}</option>
+                {% for tax_class in tax_classes %}
+                {% if tax_class.tax_class_id == shipping_qwqer_tax_class_id %}
+                <option value="{{ tax_class.tax_class_id }}" selected="selected">{{ tax_class.title }}</option>
+                {% else %}
+                <option value="{{ tax_class.tax_class_id }}">{{ tax_class.title }}</option>
+                {% endif %}
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-geo-zone">{{ entry_geo_zone }}</label>
+            <div class="col-sm-10">
+              <select name="shipping_qwqer_geo_zone_id" id="input-geo-zone" class="form-control">
+                <option value="0">{{ text_all_zones }}</option>
+                {% for geo_zone in geo_zones %}
+                {% if geo_zone.geo_zone_id == shipping_qwqer_geo_zone_id %}
+                <option value="{{ geo_zone.geo_zone_id }}" selected="selected">{{ geo_zone.name }}</option>
+                {% else %}
+                <option value="{{ geo_zone.geo_zone_id }}">{{ geo_zone.name }}</option>
+                {% endif %}
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            <div class="col-sm-10">
+              <select name="shipping_qwqer_status" id="input-status" class="form-control">
+                {% if shipping_qwqer_status %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+                {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                {% endif %}
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-sort-order">{{ entry_sort_order }}</label>
+            <div class="col-sm-10">
+              <input type="text" name="shipping_qwqer_sort_order" value="{{ shipping_qwqer_sort_order }}" placeholder="{{ entry_sort_order }}" id="input-sort-order" class="form-control" />
+            </div>
+          </div>
+
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}
