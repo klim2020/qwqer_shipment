@@ -185,7 +185,8 @@ class QwqerApi {
         }
         //Store data
         $store_phone = $this->telephone;
-        $store_phone = '+371'.preg_replace(array('/\s/m','/^\+/m','/^\+371/m','/^371/m'),array('','','',''),$store_phone);
+        $store_phone = $this->formatAndValidatePhone($store_phone);
+
         $store_name = $this->registry->get('config')->get('config_name');
         //Order Shipping data
         $shipping_category = $this->order_categories[$this->registry->get('config')->get('shipping_qwqer_trade_cat')];
@@ -198,9 +199,13 @@ class QwqerApi {
             $shipping_phone = $this->registry->get('customer')->getTelephone();
         }
 
-        $shipping_phone = '+371'.preg_replace(array('/\s/m','/^\+/m','/^\+371/m','/^371/m'),array('','','',''),$shipping_phone);
 
-         /* Get client coordinates and address */
+        $shipping_phone = $this->formatAndValidatePhone($shipping_phone);
+        if ($shipping_phone == false){
+            return array();
+        }
+
+        /* Get client coordinates and address */
         $data_info_client =  $address['address_1'] . ' ' . $address['address_2'];
 
         $address_city = mb_strtolower($address['city']);
@@ -394,6 +399,37 @@ class QwqerApi {
         };
 
         return $ret;
+    }
+
+    /*
+    * Checkers and validators
+    */
+
+
+    /**
+     * @param mixed $shipping_phone
+     */
+    public function formatAndValidatePhone($shipping_phone)
+    {
+        $shipping_phone = '+371' . preg_replace(array('/\s/m', '/^\+/m', '/^\+371/m', '/^371/m', '/-/m'), array('', '', '', '', ''), $shipping_phone);
+        if (preg_match('/^(\+371)?[\d]{7,8}$/', $shipping_phone) == false) {
+            return false;
+        }
+        return $shipping_phone;
+    }
+
+    /** Checks if city is Riga
+     * @param mixed $shipping_phone
+     */
+    public function checkCity($city)
+    {
+        $cities   = array('riga','рига','rīga');
+        $raw_city = preg_replace("/[^A-Za-z0-9 ]/", '', $city);
+        $raw_city = strtolower($raw_city);
+        if (in_array($raw_city,$cities)){
+            return true;
+        }
+        return false;
     }
 
 
