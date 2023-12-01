@@ -44,7 +44,7 @@ class ModelExtensionShippingQwqer extends Model {
 			$width  = 0;
 			$height = 0;
 
-			if ($address['iso_code_2'] == 'LV') {
+			if ($address['iso_code_2'] == 'LV' && $this->shipping_qwqer->checkCity($address['city'])) {
 
                 $data_orders = $this->shipping_qwqer->generateOrderObjects($address,$this->shipping_qwqer->getDeliveryTypes());
                 if (!count($data_orders)){
