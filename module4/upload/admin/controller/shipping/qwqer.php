@@ -1,13 +1,14 @@
 <?php
-
+namespace Opencart\Admin\Controller\Extension\Qwqer\Shipping;
 
 use library\qweqr\QwqerApi;
+
 
 /**
  *
  * @property QwqerApi $shipping_qwqer
  */
-class ControllerExtensionShippingQwqer extends Controller {//
+class Qwqer extends \Opencart\System\Engine\Controller  {//
 
     private $error = array();
 
@@ -17,26 +18,39 @@ class ControllerExtensionShippingQwqer extends Controller {//
     {
         parent::__construct($registry);
 
-        require_once DIR_SYSTEM."library/qwqer/QwqerApi.php";
+        require_once DIR_EXTENSION."qwqer/system/library/qwqer/QwqerApi.php";
         new QwqerApi($registry);
-
-
 
     }
 
 	public function index() {
-		$this->load->language('extension/shipping/qwqer');
+		$this->load->language('extension/qwqer/shipping/qwqer');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
 		$this->load->model('setting/setting');
 
-        $this->document->addStyle('view/stylesheet/qwqer/autocomplete.min.css');
+        if (defined("HTTPS_CATALOG")){
 
-        $this->document->addScript('view/javascript/qwqer/autocomplete.min.js');
+            $this->document->addStyle(HTTPS_CATALOG.'extension/qwqer/admin/view/stylesheet/qwqer/autocomplete.min.css');
+
+            $this->document->addScript(HTTPS_CATALOG.'extension/qwqer/admin/view/javascript/qwqer/autocomplete.min.js');
+
+        } elseif (defined("HTTP_CATALOG")){
+
+            $this->document->addStyle(HTTP_CATALOG.'extension/qwqer/admin/view/stylesheet/qwqer/autocomplete.min.css');
+
+            $this->document->addScript(HTTP_CATALOG.'extension/qwqer/admin/view/javascript/qwqer/autocomplete.min.js');
+
+        }
+
+
 
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+
+            $this->load->model('setting/setting');
+
 			$this->model_setting_setting->editSetting('shipping_qwqer', $this->request->post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
@@ -91,7 +105,7 @@ class ControllerExtensionShippingQwqer extends Controller {//
 			'href' => $this->url->link('extension/shipping/qwqer', 'user_token=' . $this->session->data['user_token'], true)
 		);
 
-		$data['action'] = $this->url->link('extension/shipping/qwqer', 'user_token=' . $this->session->data['user_token'], true);
+		$data['action'] = $this->url->link('extension/qwqer/shipping/qwqer.save', 'user_token=' . $this->session->data['user_token'], true);
 
 		$data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=shipping', true);
 
@@ -137,7 +151,7 @@ class ControllerExtensionShippingQwqer extends Controller {//
             $data['config_complete_status'] = array();
         }
 
-        $this->load->model('extension/shipping/qwqer');
+        $this->load->model('extension/qwqer/shipping/qwqer');
 
         foreach ( $this->shipping_qwqer->getOrderCategories() as $option){
             $data['shipping_qwqer_trade_cat_options'][] = $this->language->get('qwqer_opt_'.$option);
@@ -197,7 +211,7 @@ class ControllerExtensionShippingQwqer extends Controller {//
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
 
-		$this->response->setOutput($this->load->view('extension/shipping/qwqer', $data));
+		$this->response->setOutput($this->load->view('extension/qwqer/shipping/qwqer', $data));
 	}
 
 	protected function validate() {
@@ -299,15 +313,38 @@ class ControllerExtensionShippingQwqer extends Controller {//
     }
 
     public function install(){
-        $this->load->model('extension/shipping/qwqer');
-        $this->model_extension_shipping_qwqer->install();
+        $this->load->model('extension/qwqer/shipping/qwqer');
+        $this->model_extension_qwqer_shipping_qwqer->install();
     }
 
     public function uninstall(){
-        $this->load->model('extension/shipping/qwqer');
-        $this->model_extension_shipping_qwqer->uninstall();
+        $this->load->model('extension/qwqer/shipping/qwqer');
+        $this->model_extension_qwqer_shipping_qwqer->uninstall();
     }
 
 
+    /**
+     * @return void
+     */
+    public function save(): void {
+        $this->load->language('extension/qwqer/shipping/qwqer');
 
+        $json = [];
+
+
+        if (!$this->user->hasPermission('modify', 'extension/qwqer/shipping/qwqer')) {
+            $json['error'] = $this->language->get('error_permission');
+        }
+
+        if (!$json) {
+            $this->load->model('setting/setting');
+
+            $this->model_setting_setting->editSetting('shipping_qwqer', $this->request->post);
+
+            $json['success'] = $this->language->get('text_success');
+        }
+
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
+    }
 }

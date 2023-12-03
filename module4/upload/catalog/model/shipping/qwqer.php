@@ -1,19 +1,19 @@
 <?php
-
+namespace Opencart\Catalog\Model\Extension\Qwqer\Shipping;
 use library\qweqr\QwqerApi;
 
 /**
  *
  * @property QwqerApi $shipping_qwqer
  */
-class ModelExtensionShippingQwqer extends Model {
+class Qwqer extends \Opencart\System\Engine\Model {
 
 
     public function __construct($registry)
     {
         parent::__construct($registry);
 
-        require_once DIR_SYSTEM."library/qwqer/QwqerApi.php";
+        require_once DIR_EXTENSION."qwqer/system/library/qwqer/QwqerApi.php";
         new QwqerApi($registry);
 
 
@@ -21,7 +21,7 @@ class ModelExtensionShippingQwqer extends Model {
     }
 
 	public function getQuote($address) {
-		$this->load->language('extension/shipping/qwqer');
+		$this->load->language('extension/qwqer/shipping/qwqer');
 
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('shipping_qwqer_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
 
@@ -99,19 +99,22 @@ class ModelExtensionShippingQwqer extends Model {
                                 $autocompletehidden = '';
                             }
 
-
-                            $template   = $this->load->view('extension/shipping/qwqer', array(
-                                                                                        'text_title_order_type'   =>  $var,
+                            $css_file = $this->shipping_qwqer->generateLink("catalog/view/stylesheet/qwqer/autocomplete.min.css");
+                            $js_file  = $this->shipping_qwqer->generateLink("catalog/view/javascript/qwqer/autocomplete.min.js");
+                            $template   = $this->load->view('extension/qwqer/shipping/qwqer', array(
+                                                                                        'js_file'                 => $js_file,
+                                                                                        'css_file'                => $css_file,
+                                                                                        'text_title_order_type'   => $var,
                                                                                         'terminals'               => $terminals['data']["omniva"],
                                                                                         'order_id'                => $order_id,
                                                                                         'session_id'              => $s_id,
                                                                                         'autocomplete'            => $autocomplete,
                                                                                         'autocompletehidden'      => $autocompletehidden));
                         }else{
-                            $template   = $this->load->view('extension/shipping/qwqer', array('text_title_order_type'=> $var));
+                            $template   = $this->load->view('extension/qwqer/shipping/qwqer', array('text_title_order_type'=> $var));
                         }
                     }else{
-                        $template   = $this->load->view('extension/shipping/qwqer', array('text_title_order_type'=> $var));
+                        $template   = $this->load->view('extension/qwqer/shipping/qwqer', array('text_title_order_type'=> $var));
                     }
 
 
@@ -122,7 +125,7 @@ class ModelExtensionShippingQwqer extends Model {
 
                     $quote_data[$key_r] = array(
                         'code'         => 'qwqer.'.$key_r,
-                        'title'        => $template,
+                        'name'        => $template,
                         'cost'         => $this->currency->convert($price['data']['client_price']/100, 'EUR', $this->config->get('config_currency')),
                         'tax_class_id' => $this->config->get('shipping_qwqer_tax_class_id'),
                         'text'         => $text
@@ -133,9 +136,10 @@ class ModelExtensionShippingQwqer extends Model {
                     $method_data = array();
 
                 }else{
+                    $img = $this->shipping_qwqer->generateLink("catalog/view/images/qwqer.svg");
                     $method_data = array(
                         'code'       => 'qwqer.standart',
-                        'title'      => $this->language->get('text_title').'<a href = "https://qwqer.lv/" target="_blank"><img src="catalog/view/images/qwqer.svg" alt="Qwqer service home page" style="margin-left:5px"></a>',
+                        'name'      => $this->language->get('text_title').'<a href = "https://qwqer.lv/" target="_blank"><img src="'.$img.'" alt="Qwqer service home page" style="margin-left:5px"></a>',
                         'quote'      => $quote_data,
                         'sort_order' => $this->config->get('shipping_qwqer_sort_order'),
                         'error'      => $error,
@@ -225,6 +229,9 @@ class ModelExtensionShippingQwqer extends Model {
         }
         return false;
     }
+
+
+
 
 
 }

@@ -1,11 +1,7 @@
 {{ text_title_order_type }}
 {% if terminals is defined %}
 
-
-
-
     <script>
-
 
         function loadjscssfile(filename, filetype,id){
             if (filetype=="js"){ //if filename is a external JavaScript file
@@ -32,18 +28,18 @@
             }
         }
 
-        loadjscssfile("catalog/view/stylesheet/qwqer/autocomplete.min.css", "css","accss");
-        loadjscssfile("catalog/view/javascript/qwqer/autocomplete.min.js", "js","acjs");
+        loadjscssfile("{{ css_file }}", "css","accss");
+        loadjscssfile("{{ js_file }}", "js","acjs");
 
         document.querySelector("#acjs").addEventListener("load",()=>{
             if (typeof parentDiv === 'undefined'){
-                var parentDiv = document.querySelector("#qwqer\\.omnivaparcelterminal").parentElement;
+                var parentDiv = document.querySelector("#input-shipping-method-qwqer-omnivaparcelterminal").parentElement;
                 if (document.querySelector("#autoComplete")===null){
                     parentDiv.innerHTML += '<input name="autoComplete" data-onchange="reloadAll" id="autoComplete" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" value="{{ autocomplete }}" autocapitalize="off">';
                     parentDiv.innerHTML += '<input id="autoCompleteHidden" data-onchange="reloadAll" type="hidden" name="autoCompleteHidden" value="{{ autocompletehidden }}">';
                 }
 
-                let ffs = document.querySelector("#qwqer\\.omnivaparcelterminal");
+                let ffs = document.querySelector("#input-shipping-method-qwqer-omnivaparcelterminal");
                 let autocomplete2 = document.querySelector("#autoComplete")
 
                 if (ffs.checked){
@@ -72,12 +68,30 @@
 
 
             }
+
+            var terminalRadioButton = document.querySelector("#input-shipping-method-qwqer-omnivaparcelterminal");
+
+            document.querySelectorAll("input[type=\"radio\"]").forEach((e)=>{
+                e.addEventListener('change',(e)=>{
+                    console.log('onChange');
+                    let autocomplete2 = document.querySelector("#autoComplete")
+                    if (autocomplete2){
+                        if (terminalRadioButton.checked){
+                            autocomplete2.style.visibility = "visible";
+                        }else{
+                            autocomplete2.style.visibility = "hidden";
+                        }
+                    }
+                    if (typeof reloadAll === 'function' ){
+                        reloadAll();
+                    }
+                });
+            });
+
         })
 
 
         document.querySelector("#acjs").addEventListener("load",()=>{
-
-
 
              const autoCompleteJS = new autoComplete({
                         selector: "#autoComplete",
@@ -132,6 +146,7 @@
                                 selection: (event) => {
                                     const selection = event.detail.selection.value;
                                     autoCompleteJS.input.value = selection.name;
+                                    save_parcel_terminal(document.querySelector("#autoCompleteHidden").value);
                                     document.querySelector("#autoCompleteHidden").value = JSON.stringify(event.detail.selection.value);
                                     if (typeof reloadAll === 'function' ){
                                         reloadAll();
@@ -140,6 +155,7 @@
                             }
                         }
                     });
+
         })
 
         var autocomplete = document.querySelector("#autoComplete")
@@ -156,6 +172,22 @@
             });
         }
 
+        if (typeof save_parcel_terminal !== 'function'){
+            function save_parcel_terminal(data) {
+                data = {'parcel_terminal':data}
+                fetch('index.php?route=extension/qwqer/shipping/qwqer.save_parcel_terminal',{
+                    body: new URLSearchParams(data),
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                        //'Content-Type': 'text/plain;charset=utf-8',
+                        //"Content-Type": "application/json",
+                    },
+                }).then((res)=>{return res.json()}).then((r)=>{console.log(r)})
+            }
+        }
+
 
     </script>
+
 {% endif %}

@@ -396,5 +396,22 @@ class QwqerApi {
         return $ret;
     }
 
+    public function generateLink($href){
+        $href = "extension/qwqer/".$href;
+
+        if (defined("HTTPS_CATALOG")){
+            return HTTPS_CATALOG.$href;
+        }
+        if (defined("HTTP_CATALOG")){
+            return HTTP_CATALOG.$href;
+        }
+        if (defined("HTTPS_SERVER")){
+            return HTTPS_SERVER.$href;
+        }
+        if (defined("HTTP_SERVER")){
+            return HTTP_SERVER.$href;
+        }
+    }
+
 
 }

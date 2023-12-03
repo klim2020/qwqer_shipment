@@ -1,5 +1,5 @@
 <?php
-
+namespace Opencart\Admin\Model\Extension\Qwqer\Shipping;
 
 use library\qweqr\QwqerApi;
 
@@ -7,7 +7,7 @@ use library\qweqr\QwqerApi;
  *
  * @property QwqerApi $shipping_qwqer
  */
-class ModelExtensionShippingQwqer extends Model {
+class Qwqer extends \Opencart\System\Engine\Model {
 
 
 
@@ -15,7 +15,7 @@ class ModelExtensionShippingQwqer extends Model {
     public function __construct($registry)
     {
         parent::__construct($registry);
-        require_once DIR_SYSTEM."library/qwqer/QwqerApi.php";
+        require_once DIR_EXTENSION."qwqer/system/library/qwqer/QwqerApi.php";
         new QwqerApi($registry);
     }
 
@@ -42,10 +42,41 @@ class ModelExtensionShippingQwqer extends Model {
 				PRIMARY KEY (`qwqer_id`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 		");
+        $this->registerEvents();
     }
 
     public function uninstall(){
         $this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "qwqer_data`");
+        $this->unregisterEvents();
+    }
+
+    protected $events = [
+        //edit shipping field in frontend
+        'qwqer_edit_shipping_field' => [
+            'code' => 'qwqer_edit_shipping_field',
+            //catalog/model/checkout/order/deleteOrder/before
+            'trigger' => 'catalog/controller/checkout/shipping_method.save/after',
+            'action' => 'extension/qwqer/shipping/qwqer.onEditShippingField',
+            'description' => 'edit shipping field in frontend',
+            'sort_order' => 4,
+            'status' => true
+        ]
+        //
+    ];
+    private function registerEvents()
+    {
+        $this->load->model('setting/event');
+        foreach ($this->events as $event){
+            $this->model_setting_event->addEvent($event);
+        }
+    }
+
+    private function unregisterEvents()
+    {
+        $this->load->model('setting/event');
+        foreach ($this->events as $event){
+            $this->model_setting_event->deleteEventByCode($event['code']);
+        }
     }
 
 }
