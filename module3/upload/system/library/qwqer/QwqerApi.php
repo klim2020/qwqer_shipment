@@ -87,6 +87,8 @@ class QwqerApi {
     }
     private $registry;
     private  $trade_pt;
+
+    //Api url
     private  $weburl                = "https://qwqer.hostcream.eu/api/v1/plugins/opencart";
     private  $autocompleteUrl       = '/places/autocomplete';
     private  $geoCodeUrl            = '/places/geocode';
@@ -193,6 +195,8 @@ class QwqerApi {
 
         if(isset($address['telephone'])){
             $shipping_phone = $address['telephone'];
+        }elseif((isset($this->registry->get('request')->post["customer"]["telephone"])) && $this->registry->get('request')->post["guest"]["telephone"]){
+            $shipping_phone = $this->registry->get('request')->post["customer"]["telephone"];
         }elseif((isset($this->registry->get('session')->data["guest"]["telephone"]))){
             $shipping_phone = $this->registry->get('session')->data["guest"]["telephone"];
         }else{
@@ -399,6 +403,11 @@ class QwqerApi {
         };
 
         return $ret;
+    }
+
+    //Adds additional hidden fields if terminal payment have been chosen
+    public  function  addHiddenField(){
+        $s = 1;
     }
 
     /*
