@@ -195,7 +195,7 @@ class QwqerApi {
 
         if(isset($address['telephone'])){
             $shipping_phone = $address['telephone'];
-        }elseif((isset($this->registry->get('request')->post["customer"]["telephone"])) && $this->registry->get('request')->post["guest"]["telephone"]){
+        }elseif((isset($this->registry->get('request')->post["customer"]["telephone"])) && $this->registry->get('request')->post["customer"]["telephone"]){
             $shipping_phone = $this->registry->get('request')->post["customer"]["telephone"];
         }elseif((isset($this->registry->get('session')->data["guest"]["telephone"]))){
             $shipping_phone = $this->registry->get('session')->data["guest"]["telephone"];
