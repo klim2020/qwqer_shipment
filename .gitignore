@@ -8,7 +8,8 @@ v23_rename_twig_to_tpl.sh
 v23_sync_from_test copy.sh
 v23_sync_to_test.sh
 /other
-/.history/
+.history/
+
 v21_sync_from_test.sh
 release/qwqer-oc2.1.ocmod.zip
 release/qwqer-oc2.3.ocmod.zip
@@ -21,3 +22,4 @@ v4_sync_from_test.sh
 v4_sync_to_test.sh
 v23_sync_from_test_copy copy.sh
 v23_sync_from_test_copy.sh
+release/
