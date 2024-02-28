@@ -1,9 +1,0 @@
-sync_v3_from_test.sh
-sync_v3_to_test.sh
-include_filter.txt
-pack.sh
-v23_rename_twig_to_tpl.sh
-v23_sync_from_test copy.sh
-v23_sync_to_test.sh
-/other
-.history/module23/install_20231111181539.xml
