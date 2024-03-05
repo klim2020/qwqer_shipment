@@ -161,6 +161,120 @@ class ControllerExtensionShippingQwqer extends Controller {//
 
         $data['user_token'] = $this->session->data['user_token'];
 
+        $data['token']  = $this->session->data['token'];
+
+        $page = 1;
+        if(isset($this->request->get['page']) && $this->request->get['page']){
+            $page = $this->request->get['page'];
+        }
+
+        $limit = $this->config->get('config_limit_admin');
+
+
+        $return_total = $this->shipping_qwqer->getOrdersCount();
+
+        $pagination = new Pagination();
+        $pagination->total = $return_total;
+        $pagination->page = $page;
+        $pagination->limit = $limit;
+        $pagination->url = $this->url->link('shipping/qwqer', 'token=' . $this->session->data['token'] .  '&page={page}', 'SSL');
+
+        $data['pagination'] = $pagination->render();
+        $data['results'] = sprintf($this->language->get('text_pagination'), ($return_total) ? (($page - 1) * $this->config->get('config_limit_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_limit_admin')) > ($return_total - $this->config->get('config_limit_admin'))) ? $return_total : ((($page - 1) * $this->config->get('config_limit_admin')) + $this->config->get('config_limit_admin')), $return_total, ceil($return_total / $this->config->get('config_limit_admin')));
+
+        $results = $this->shipping_qwqer->getOrdersList(array('page'=>$page,'limit'=>$limit));
+        $temp = array();
+
+        //generate order tab data
+        $data['delete'] = $this->url->link('shipping/qwqer/delete', 'token=' . $this->session->data['token'], 'SSL');
+        foreach ($results as $result){
+            if (isset($result["response"])
+                && is_array($result["response"])){
+                if($result["response"]
+                    && isset($result["response"]["message"])){
+                    continue;
+                }
+                if (empty($result["response"])){
+                    $result["response"]["data"]['status'] = 'Not Created';
+                }
+            }
+            if (isset($result["response"]['data']['id'])){
+                $res = $this->shipping_qwqer->getDeliveryOrder($result["response"]['data']['id']);
+            }
+
+            if (isset($res['data']['id'])){
+                $this->shipping_qwqer->addResponseRecord($res,$result['order_id']);
+                $result['response'] = $res;
+                $res = null;
+            }
+
+            $order_link   = '';
+            $invoice_link = '';
+
+
+
+            $createlink = false;
+            if (isset ($result["response"]["data"]['status']) && ($result["response"]["data"]['status'] == 'Not Created')){
+                $createlink = $this->url->link('shipping/qwqer/create', 'token=' . $this->session->data['token'].'&order_id='.$result['order_id'], 'SSL');
+            }
+            $order_link = $this->url->link('sale/order/info', 'token=' . $this->session->data['token'] . '&order_id=' . $result['order_id'], 'SSL');
+            $invoice_link = false;
+
+            if (isset($result['response']['data']['id']) && $result['response']['data']['id']){
+                $invoice_link = $this->shipping_qwqer->getWeburl()."/storage/delivery-order-covers/{$result['response']['data']['id']}.pdf";
+            }
+            $created_at = 'none';
+            if (isset($result['response']['data']['created_at'])){
+                $created_at = date("F, d, Y, g:i ",strtotime($result['response']['data']['created_at']));
+            }
+
+            $delivery = $result['data']["shipping_method"];
+            if(isset($result['response']['data']['real_type'])){
+                $v = $result['response']['data']['real_type'];
+                if (isset($data[$v])){
+                    $delivery = $data[$v];
+                }else{
+                    $delivery = 'none';
+                }
+            }
+
+            $address = $result['data']["payment_address_1"];
+            if (isset($result['response']["data"]["places"]) &&
+                is_array($result['response']["data"]["places"]) &&
+                !empty($result['response']["data"]["places"])){
+
+                foreach ($result['response']["data"]["places"] as $val){
+                    if (isset($val['type']) && $val['type']=='Destination'){
+                        $address =   $val['address'];
+                    }
+                }
+
+            }
+
+
+            $temp[] = array(
+                'qwqer_id'       => $result['qwqer_id'],
+                'key_hash'       => $result['key_hash'],
+                'order_id'       => $result['order_id'],
+                'response'       => (isset($result['response']['data']))?$result['response']['data']:'',
+                'data'           => $result['data'],
+                'invoice_link'   => $invoice_link,
+                'created_at'     => $created_at,
+                'order_link'     => $order_link,
+                'createlink'     => $createlink,
+                'delivery_type'  => $delivery,
+                'address'        => $address,
+                'date'           => ($result['qwqer_date'])?$result['qwqer_date']:$this->language->get('text_not_created'),
+            );
+        }
+
+
+
+
+
+        $data['orders'] = $temp;
+
+
 		if (isset($this->request->post['shipping_qwqer_geo_zone_id'])) {
 			$data['shipping_qwqer_geo_zone_id'] = $this->request->post['shipping_qwqer_geo_zone_id'];
 		} else {
@@ -190,6 +304,19 @@ class ControllerExtensionShippingQwqer extends Controller {//
 		} else {
 			$data['shipping_qwqer_sort_order'] = $this->config->get('shipping_qwqer_sort_order');
 		}
+
+         //statuses options
+         $this->load->model('localisation/stock_status');
+
+         $data['stock_statuses'] = $this->model_localisation_stock_status->getStockStatuses();
+ 
+         if (isset($this->request->post['qwqer_hide_statuses'])) {
+             $data['qwqer_hide_statuses'] = $this->request->post['qwqer_hide_statuses'];
+         } elseif ($this->config->get('qwqer_hide_statuses')) {
+             $data['qwqer_hide_statuses'] = $this->config->get('qwqer_hide_statuses');
+         } else {
+             $data['qwqer_hide_statuses'] = array();
+         }
 
         $data['help_address_city'] = $this->language->get('help_address_city');
 
@@ -308,6 +435,42 @@ class ControllerExtensionShippingQwqer extends Controller {//
         $this->model_extension_shipping_qwqer->uninstall();
     }
 
+    public function create(){
 
+        $order_id = $this->request->get['order_id'];
+        $this->load->model('sale/order');
+        $order_info_tmp =  $this->model_sale_order->getOrder($order_id);
+
+        if ($order_info_tmp == null){
+            $this->response->redirect($this->url->link('shipping/qwqer', 'token=' . $this->session->data['token'], 'SSL'));
+        }
+
+        if (strpos($order_info_tmp["shipping_code"],'qwqer.')!==false){
+
+            $this->load->model('extension/shipping/qwqer');
+            $data_order =  $this->model_extension_shipping_qwqer->generateOrderObject($order_info_tmp);
+            $response = $this->model_extension_shipping_qwqer->createOrder($data_order);
+            if (isset($response['data']['id']) && $response['data']['id']){
+                $this->shipping_qwqer->addResponseRecord($response, $order_id);
+            }
+
+        }
+
+        $this->response->redirect($this->url->link('shipping/qwqer', 'token=' . $this->session->data['token'], 'SSL'));
+
+    }
+
+    public  function delete(){
+        if (($this->request->server['REQUEST_METHOD'] != 'POST')) {
+            $this->response->redirect($this->url->link('shipping/qwqer', 'token=' . $this->session->data['token'], 'SSL'));
+        }
+
+        $selected = $this->request->post['selected'];
+        foreach ($selected as $item){
+            $this->shipping_qwqer->deleteOrder($item);
+        }
+
+        $this->response->redirect($this->url->link('shipping/qwqer', 'token=' . $this->session->data['token'], 'SSL'));
+    }
 
 }

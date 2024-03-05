@@ -87,8 +87,10 @@ class QwqerApi {
     }
     private $registry;
     private  $trade_pt;
-
+//test
     private  $entry_url = "https://qwqer.hostcream.eu";
+//real
+//  private  $entry_url = "https://api.qwqer.lv";
     private  $weburl                = "/api/v1";
 
     private $prefix                 = "/plugins/open-cart";

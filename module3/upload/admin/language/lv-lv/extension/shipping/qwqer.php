@@ -45,3 +45,26 @@ $_['error_permission']          = 'BRĪDINĀJUMS: Jums nav atļaujas modificēt 
 $_['error_trade_pt']            = 'Tirdzniecības punktam jāsastāv no 4 cipariem!';
 $_['error_trade_cat']           = 'Lūdzu, izvēlieties tirdzniecības kategoriju';
 $_['error_telephone']           = 'Please enter telephone';
+
+//admin panel 05.03
+$_['tab_general']               = 'Galvenā';
+$_['tab_orders']                = 'Pasūtījumi';
+$_['text_order']                = 'Pasūtījums';
+$_['text_remote_order']         = 'Tālvadības ID';
+$_['text_delivery_type']        = 'Tips';
+$_['text_category']             = 'Kategorija';
+$_['text_created']              = 'Izveidots';
+$_['text_finished_at']          = 'Pabeigts';
+$_['text_invoice']              = 'Drukāt pavadlapu';
+$_['text_none']                 = 'Neviens';
+$_['text_status']               = 'Statuss';
+$_['text_create']               = 'Realizācija';
+$_['text_request']              = 'Izsaukt kurjeru';
+$_['text_confirm']              = 'Vai tiešām vēlaties dzēst šo produktu?';
+$_['button_delete']             = 'Dzēst';
+$_['ScheduledDelivery']         = 'Vakara piegāde';
+$_['OmnivaParcelTerminal']      = 'Piegāde uz pakomātu';
+$_['ExpressDelivery']           = 'Ekspress piegāde';
+$_['text_address']              = 'Adrese';
+$_['entry_hide_status']         = 'Slēpt piegādi pēc produkta statusa';
+$_['text_not_created']          = 'Nav izveidots';

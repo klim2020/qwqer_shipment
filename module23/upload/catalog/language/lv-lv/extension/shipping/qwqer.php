@@ -3,9 +3,9 @@
 
 $_['text_title']                       = 'QWQER piegāde';
 
-$_['text_title_ScheduledDelivery']     = 'Vakara piegāde';
-$_['text_title_ExpressDelivery']       = 'Ekspress piegāde';
-$_['text_title_OmnivaParcelTerminal']  = 'Piegāde uz pakomātu (Omniva)';
+$_['text_title_ScheduledDelivery']     = 'QWQER kurjers šovakar (18:00 - 22:00)';
+$_['text_title_ExpressDelivery']       = 'QWQER Express (90 min)';
+$_['text_title_OmnivaParcelTerminal']  = 'QWQER pakomāts šovakar (18:00 - 22:00)';
 
 $_['text_select_box']                  = 'Ievadiet adresi vai ID';
 

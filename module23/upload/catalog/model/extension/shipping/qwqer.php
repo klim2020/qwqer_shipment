@@ -33,6 +33,15 @@ class ModelExtensionShippingQwqer extends Model {
 			$status = false;
 		}
 
+         //check if product have restricted stock status
+         $statuses = array();
+         $statuses = $this->config->get('qwqer_hide_statuses');
+         foreach ($this->cart->getProducts() as $product){
+            $status = $this->getProductStatusId($product['product_id']);
+            if (in_array($status,$statuses)){
+                $status = false;
+            }
+
 		$error = '';
 
 		$quote_data = array();
@@ -225,6 +234,10 @@ class ModelExtensionShippingQwqer extends Model {
             }
         }
         return false;
+    }
+
+    public  function  getProductStatusId($id){
+        return $this->db->query("SELECT `stock_status_id` FROM " .DB_PREFIX. "product WHERE `product_id` = {$id} limit 1")->rows[0]['stock_status_id'];
     }
 
 
