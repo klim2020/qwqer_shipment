@@ -25,13 +25,23 @@ class ModelShippingQwqer extends Model {
 
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('qwqer_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
 
-		if (!$this->config->get('qwqer_geo_zone_id')) {
+		if (!$this->config->get('qwqer_geo_zone_id') ) {
 			$status = true;
 		} elseif ($query->num_rows) {
 			$status = true;
 		} else {
 			$status = false;
 		}
+
+        //check if product have restricted stock status
+        $statuses = array();
+        $statuses = $this->config->get('qwqer_hide_statuses');
+        foreach ($this->cart->getProducts() as $product){
+           $status = $this->getProductStatusId($product['product_id']);
+           if (in_array($status,$statuses)){
+               $status = false;
+           }
+        }
 
 		$error = '';
 
@@ -225,6 +235,10 @@ class ModelShippingQwqer extends Model {
             }
         }
         return false;
+    }
+
+    public  function  getProductStatusId($id){
+        return $this->db->query("SELECT `stock_status_id` FROM " .DB_PREFIX. "product WHERE `product_id` = {$id} limit 1")->rows[0]['stock_status_id'];
     }
 
 
