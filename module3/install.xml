@@ -6,32 +6,6 @@
   <author> Alex</author>
   <link>https://t.me/alex_klimenko</link>
 
-  <file path="catalog/model/extension/payment/*.php|catalog/model/checkout/order.php">
-       <operation>
-         <search regex="true"><![CDATA[/^(.*INSERT.*order_history.*order_status_id.*=.*(\$order_status_id)\s.*)$/mU]]></search>
-         <add position="after"><![CDATA[
-          
-          /*qwqer Module order creation*/
-         if ($this->config->get('shipping_qwqer_status') && isset($order_status_id) && $order_status_id == (int)$order_status_id && isset($order_id)){
-           $complete_statses_array = $this->config->get('config_complete_status');
-           if (in_array($order_status_id,$complete_statses_array)){
-               $this->load->model('checkout/order');
-               $order_info_tmp =  $this->model_checkout_order->getOrder($order_id);
-            if (strpos($order_info_tmp["shipping_code"],'qwqer.')!==false){
-                $this->load->model('extension/shipping/qwqer');
-                $data_order =  $this->model_extension_shipping_qwqer->generateOrderObject($order_info_tmp);
-
-                $response = $this->model_extension_shipping_qwqer->createOrder($data_order);
-                $this->shipping_qwqer->addResponseRecord($response, $order_id);
-            }
-           }
-         }
-         /*!qwqer Module order creation*/
-         
-         $1
-          ]]></add>
-        </operation>
-  </file>
 
   <file path="catalog/controller/checkout/success.php">
        <operation>
@@ -57,6 +31,36 @@
                 $this->session->data['shipping_method']['title'] = 'Omnival Parcel Terminal';
             }
           /*!qwqer Module additional field saving*/
+          ]]></add>
+        </operation>
+  </file>
+
+
+<!--
+
+  <file path="catalog/model/extension/payment/*.php|catalog/model/checkout/order.php">
+       <operation>
+         <search regex="true"><![CDATA[/^(.*INSERT.*order_history.*order_status_id.*=.*(\$order_status_id)\s.*)$/mU]]></search>
+         <add position="after"><![CDATA[
+          
+          /*qwqer Module order creation*/
+         if ($this->config->get('shipping_qwqer_status') && isset($order_status_id) && $order_status_id == (int)$order_status_id && isset($order_id)){
+           $complete_statses_array = $this->config->get('config_complete_status');
+           if (in_array($order_status_id,$complete_statses_array)){
+               $this->load->model('checkout/order');
+               $order_info_tmp =  $this->model_checkout_order->getOrder($order_id);
+            if (strpos($order_info_tmp["shipping_code"],'qwqer.')!==false){
+                $this->load->model('extension/shipping/qwqer');
+                $data_order =  $this->model_extension_shipping_qwqer->generateOrderObject($order_info_tmp);
+
+                $response = $this->model_extension_shipping_qwqer->createOrder($data_order);
+                $this->shipping_qwqer->addResponseRecord($response, $order_id);
+            }
+           }
+         }
+         /*!qwqer Module order creation*/
+         
+         $1
           ]]></add>
         </operation>
   </file>
@@ -115,7 +119,8 @@
           //!Qwqer show order creation results
           ]]></add>
         </operation>
-  </file>     
-
+  </file>   
+    
+-->
 
 </modification>
