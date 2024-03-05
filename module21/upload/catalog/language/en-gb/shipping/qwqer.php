@@ -1,11 +1,11 @@
 <?php
 // Text
 
-$_['text_title']                       = 'QWQER delivery';
+$_['text_title']                       = 'QWQER Delivery';
 
-$_['text_title_ScheduledDelivery']     = 'Sheduled delivery';
-$_['text_title_ExpressDelivery']       = 'Express delivery';
-$_['text_title_OmnivaParcelTerminal']  = 'Omnival Parcel Terminal';
+$_['text_title_ScheduledDelivery']     = 'QWQER Same-day (18:00 - 22:00)';
+$_['text_title_ExpressDelivery']       = 'QWQER Express (90 min)';
+$_['text_title_OmnivaParcelTerminal']  = 'QWQER Same-day Parcel Terminal (18:00-22:00)';
 
 $_['text_select_box']                  = 'Enter Address or Id';
 

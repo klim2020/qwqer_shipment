@@ -45,3 +45,15 @@ $_['error_permission']          = 'BRĪDINĀJUMS: Jums nav atļaujas modificēt 
 $_['error_trade_pt']            = 'Tirdzniecības punktam jāsastāv no 4 cipariem!';
 $_['error_trade_cat']           = 'Lūdzu, izvēlieties tirdzniecības kategoriju';
 $_['error_telephone']           = 'Please enter telephone';
+
+$_['tab_general']               = 'Main';
+$_['tab_orders']                = 'Orders';
+
+$_['text_order']                = 'Order';
+$_['text_remote_order']         = 'Remote Id';
+$_['text_delivery_type']        = 'Type';
+$_['text_category']             = 'Category';
+$_['text_created']              = 'Created';
+$_['text_finished_at']          = 'Finished';
+$_['text_invoice']              = 'Print PDF';
+$_['text_none']                 = 'none';

@@ -45,3 +45,16 @@ $_['error_permission']          = 'Предупреждение: у вас не�
 $_['error_trade_pt']            = 'Торговая точка должна состоять из 4 цифр.';
 $_['error_trade_cat']           = 'Пожалуйста, выберите торговую категорию';
 $_['error_telephone']           = 'Пожалуйста, введите телефон';
+
+$_['tab_general']               = 'Main';
+$_['tab_orders']                = 'Orders';
+
+$_['text_order']                = 'Order';
+$_['text_remote_order']         = 'Remote Id';
+$_['text_delivery_type']        = 'Type';
+$_['text_category']             = 'Category';
+$_['text_created']              = 'Created';
+$_['text_finished_at']          = 'Finished';
+$_['text_invoice']              = 'Print PDF';
+$_['text_none']                 = 'none';
+

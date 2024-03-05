@@ -3,9 +3,9 @@
 
 $_['text_title']                       = 'Доставка QWQER';
 
-$_['text_title_ScheduledDelivery']     = 'Обычная доставка';
-$_['text_title_ExpressDelivery']       = 'Экспресс -доставка';
-$_['text_title_OmnivaParcelTerminal']  = 'Доставка через терминал';
+$_['text_title_ScheduledDelivery']     = 'QWQER Курьер сегодня вечером (18:00 - 22:00)';
+$_['text_title_ExpressDelivery']       = 'QWQER Экспресс (90 мин)';
+$_['text_title_OmnivaParcelTerminal']  = 'QWQER Почтомат сегодня вечером (18:00–22:00)';
 
 $_['text_select_box']                  = 'Введите адрес или идентификатор';
 

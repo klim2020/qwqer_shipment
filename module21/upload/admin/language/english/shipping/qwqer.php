@@ -1,11 +1,11 @@
 <?php
 // Heading
-$_['heading_title']             = 'QWQER delivery';
+$_['heading_title']             = 'QWQER Delivery';
 // Text
-$_['text_title']                = 'QWQER delivery';
+$_['text_title']                = 'QWQER Delivery';
 $_['text_extension']            = 'Extensions';
 $_['text_success']              = 'Warning: You have modified QWQER delivery!';
-$_['text_edit']                 = 'Edit QWQER delivery';
+$_['text_edit']                 = 'Edit QWQER Delivery';
 $_['text_button_validate']      = 'Validate address';
 $_['text_telephone']            = 'Your telephone';
 
@@ -45,3 +45,28 @@ $_['error_permission']          = 'Warning: You do not have permission to modify
 $_['error_trade_pt']            = 'Trading Point must consist of 4 digits.';
 $_['error_trade_cat']           = 'Please select trading category';
 $_['error_telephone']           = 'Please enter telephone';
+
+$_['tab_general']               = 'Main';
+$_['tab_orders']                = 'Orders';
+
+$_['text_order']                = 'Order';
+$_['text_remote_order']         = 'Remote Id';
+$_['text_delivery_type']        = 'Type';
+$_['text_category']             = 'Category';
+$_['text_created']              = 'Created';
+$_['text_finished_at']          = 'Finished';
+$_['text_invoice']              = 'Print Label';
+$_['text_none']                 = 'none';
+$_['text_status']               = 'Status';
+$_['text_create']               = 'Fulfill';
+$_['text_request']              = 'Request courier';
+$_['text_confirm']              = 'You really want to delete this product?';
+$_['button_delete']             = 'Delete';
+
+$_['ScheduledDelivery']         = 'Scheduled Delivery';
+$_['OmnivaParcelTerminal']      = 'Omniva Parcel Terminal';
+$_['ExpressDelivery']           = 'Express Delivery';
+
+$_['text_address']              = 'Address';
+$_['entry_hide_status']         = 'Hide delivery on product status';
+$_['text_not_created']          = 'Not created';
