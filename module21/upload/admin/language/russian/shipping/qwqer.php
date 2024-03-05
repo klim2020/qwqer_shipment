@@ -46,15 +46,25 @@ $_['error_trade_pt']            = 'Торговая точка должна со
 $_['error_trade_cat']           = 'Пожалуйста, выберите торговую категорию';
 $_['error_telephone']           = 'Пожалуйста, введите телефон';
 
-$_['tab_general']               = 'Main';
-$_['tab_orders']                = 'Orders';
-
-$_['text_order']                = 'Order';
-$_['text_remote_order']         = 'Remote Id';
-$_['text_delivery_type']        = 'Type';
-$_['text_category']             = 'Category';
-$_['text_created']              = 'Created';
-$_['text_finished_at']          = 'Finished';
-$_['text_invoice']              = 'Print PDF';
-$_['text_none']                 = 'none';
-
+//admin panel 05.03
+$_['tab_general']               = 'Основной';
+$_['tab_orders']                = 'Заказы';
+$_['text_order']                = 'Заказ';
+$_['text_remote_order']         = 'Внешний ключ';
+$_['text_delivery_type']        = 'Тип';
+$_['text_category']             = 'Категория';
+$_['text_created']              = 'Время создания';
+$_['text_finished_at']          = 'Время доставки';
+$_['text_invoice']              = 'Распечатать этикетку';
+$_['text_none']                 = 'Пусто';
+$_['text_status']               = 'Статус';
+$_['text_create']               = 'Реализация';
+$_['text_request']              = 'Запросить курьера';
+$_['text_confirm']              = 'Вы действительно хотите удалить этот продукт?';
+$_['button_delete']             = 'Удалить';
+$_['ScheduledDelivery']         = 'Вечерняя доставка';
+$_['OmnivaParcelTerminal']      = 'Доставка в почтомат';
+$_['ExpressDelivery']           = 'Экспресс доставка';
+$_['text_address']              = 'Адрес';
+$_['entry_hide_status']         = 'Скрыть доставку при статусе товара';
+$_['text_not_created']          = 'Не создан';

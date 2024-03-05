@@ -45,10 +45,9 @@ $_['error_permission']          = 'Warning: You do not have permission to modify
 $_['error_trade_pt']            = 'Trading Point must consist of 4 digits.';
 $_['error_trade_cat']           = 'Please select trading category';
 $_['error_telephone']           = 'Please enter telephone';
-
+//admin panel 05.03
 $_['tab_general']               = 'Main';
 $_['tab_orders']                = 'Orders';
-
 $_['text_order']                = 'Order';
 $_['text_remote_order']         = 'Remote Id';
 $_['text_delivery_type']        = 'Type';
@@ -62,11 +61,9 @@ $_['text_create']               = 'Fulfill';
 $_['text_request']              = 'Request courier';
 $_['text_confirm']              = 'You really want to delete this product?';
 $_['button_delete']             = 'Delete';
-
 $_['ScheduledDelivery']         = 'Scheduled Delivery';
 $_['OmnivaParcelTerminal']      = 'Omniva Parcel Terminal';
 $_['ExpressDelivery']           = 'Express Delivery';
-
 $_['text_address']              = 'Address';
 $_['entry_hide_status']         = 'Hide delivery on product status';
 $_['text_not_created']          = 'Not created';
