@@ -134,6 +134,7 @@ class ControllerExtensionShippingQwqer extends Controller {//
                         'text_request',
                         'button_delete',
                         'text_confirm',
+                        'text_telephone',
                         'entry_hide_status');
         foreach ($langs_values as $lang){
             $data[$lang] = $this->language->get($lang);
