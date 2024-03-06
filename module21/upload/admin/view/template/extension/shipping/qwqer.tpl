@@ -252,6 +252,8 @@
                             </div>
                         </div>
 
+
+
                         <div class="form-group">
                             <label class="col-sm-2 control-label" for="input-tax-class"><?php echo  $entry_tax_class ; ?></label>
                             <div class="col-sm-10">
@@ -294,6 +296,21 @@
                                     <?php }else{ ?>
                                         <option value="1"><?php echo  $text_enabled ; ?></option>
                                         <option value="0" selected="selected"><?php echo  $text_disabled ; ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="input-status">Production Server?</label>
+                            <div class="col-sm-10">
+                                <select name="qwqer_is_prod" id="input-is-prod" class="form-control">
+                                    <?php if(isset($qwqer_is_prod)) { ?>
+                                        <option value="1" selected="selected">On</option>
+                                        <option value="0">Off</option>
+                                    <?php }else{ ?>
+                                        <option value="1">On</option>
+                                        <option value="0" selected="selected">Off</option>
                                     <?php } ?>
                                 </select>
                             </div>

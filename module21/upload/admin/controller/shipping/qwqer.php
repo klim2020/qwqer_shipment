@@ -348,6 +348,12 @@ class ControllerShippingQwqer extends Controller {//
             $data['qwqer_status'] = $this->config->get('qwqer_status');
         }
 
+        if (isset($this->request->post['qwqer_is_prod'])) {
+            $data['qwqer_is_prod'] = $this->request->post['qwqer_is_prod'];
+        } else {
+            $data['qwqer_is_prod'] = $this->config->get('qwqer_is_prod');
+        }
+
 		if (isset($this->request->post['qwqer_sort_order'])) {
 			$data['qwqer_sort_order'] = $this->request->post['qwqer_sort_order'];
 		} else {
