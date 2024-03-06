@@ -297,6 +297,22 @@
                 </div>
               </div>
 
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-status">Production Server?</label>
+                <div class="col-sm-10">
+                  <select name="qwqer_is_prod" id="input-is-prod" class="form-control">
+                    <?php if (isset($qwqer_is_prod)) { ?>
+                      <option value="1" selected="selected">On</option>
+                      <option value="0">Off</option>
+                    <?php } else { ?>
+                      <option value="1">On</option>
+                      <option value="0" selected="selected">Off</option>
+                    <?php } ?>
+                  </select>
+                </div>
+              </div>
+
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-sort-order"><?php echo  $entry_sort_order; ?></label>
                 <div class="col-sm-10">

@@ -318,6 +318,13 @@ class ControllerExtensionShippingQwqer extends Controller {//
              $data['qwqer_hide_statuses'] = array();
          }
 
+         if (isset($this->request->post['qwqer_is_prod'])) {
+            $data['qwqer_is_prod'] = $this->request->post['qwqer_is_prod'];
+        } else {
+            $data['qwqer_is_prod'] = $this->config->get('qwqer_is_prod');
+        }
+
+
         $data['help_address_city'] = $this->language->get('help_address_city');
 
 		$data['header'] = $this->load->controller('common/header');

@@ -350,6 +350,14 @@ class ControllerExtensionShippingQwqer extends Controller {//
 			$data['qwqer_sort_order'] = $this->config->get('qwqer_sort_order');
 		}
 
+        if (isset($this->request->post['qwqer_is_prod'])) {
+            $data['qwqer_is_prod'] = $this->request->post['qwqer_is_prod'];
+        } else {
+            $data['qwqer_is_prod'] = $this->config->get('qwqer_is_prod');
+        }
+
+
+
         //statuses options
         $this->load->model('localisation/stock_status');
 

@@ -90,7 +90,7 @@ class QwqerApi {
 //test
     private  $entry_url = "https://qwqer.hostcream.eu";
 //real
-//  private  $entry_url = "https://api.qwqer.lv";
+    private  $entry_url = "https://api.qwqer.lv";
     private  $weburl                = "/api/v1";
 
     private $prefix                 = "/plugins/open-cart";
@@ -115,6 +115,12 @@ class QwqerApi {
 
         $this->token    = $registry->get('config')->get('qwqer_api');
         $this->trade_pt = $registry->get('config')->get('qwqer_trade_pt');
+
+        $is_prod    = $registry->get('config')->get('qwqer_is_prod');
+
+        if ($is_prod){
+            $this->entry_url = $this->entry_url_real;
+        }
 
         $this->autocompleteUrl      = $this->weburl . $this->autocompleteUrl;
         $this->geoCodeUrl           = $this->weburl . $this->geoCodeUrl;
