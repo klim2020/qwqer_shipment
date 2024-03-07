@@ -215,7 +215,7 @@ class ControllerExtensionShippingQwqer extends Controller {//
 
             $createlink = false;
             if (isset ($result["response"]["data"]['status']) && ($result["response"]["data"]['status'] == 'Not Created')){
-                $createlink = $this->url->link('shipping/qwqer/create', 'user_token=' . $this->session->data['user_token'].'&order_id='.$result['order_id'], 'SSL');
+                $createlink = $this->url->link('extension/shipping/qwqer/create', 'user_token=' . $this->session->data['user_token'].'&order_id='.$result['order_id'], 'SSL');
             }
             $order_link = $this->url->link('sale/order/info', 'user_token=' . $this->session->data['user_token'] . '&order_id=' . $result['order_id'], 'SSL');
             $invoice_link = false;
@@ -465,7 +465,7 @@ class ControllerExtensionShippingQwqer extends Controller {//
 
         }
 
-        $this->response->redirect($this->url->link('shipping/qwqer', 'user_token=' . $this->session->data['user_token'], 'SSL'));
+        $this->response->redirect($this->url->link('extension/shipping/qwqer', 'user_token=' . $this->session->data['user_token'], 'SSL'));
 
     }
 

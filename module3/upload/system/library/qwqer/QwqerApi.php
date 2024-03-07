@@ -176,8 +176,9 @@ class QwqerApi {
 
         $api_key  = $this->token;
         $trade_pt = $this->trade_pt;
+        $address_object = $this->registry->get('config')->get('shipping_qwqer_address_object' );
 
-        $store_info  = json_decode( html_entity_decode( stripslashes ($this->registry->get('config')->get('shipping_qwqer_address_object' ) ) ), true );
+        $store_info  = json_decode( html_entity_decode( stripslashes ( $address_object ) ), true );
         //Pickup address wasnt added in admin dashboard
         if (!isset($store_info['data']['address'])){
             return array();
@@ -530,6 +531,20 @@ class QwqerApi {
      */
     public function getOrdersCount(){
         return $this->registry->get('db')->query("SELECT COUNT(*) as `count` FROM ". DB_PREFIX . "qwqer_data")->rows[0]['count'];
+    }
+
+    /** Checks if city is Riga
+     * @param mixed $shipping_phone
+     */
+    public function checkCity($city)
+    {
+        $cities   = array('riga','рига','rīga');
+        $raw_city = preg_replace("/[^A-Za-z0-9 ]/", '', $city);
+        $raw_city = strtolower($raw_city);
+        if (in_array($raw_city,$cities)){
+            return true;
+        }
+        return false;
     }
 
 }

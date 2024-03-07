@@ -130,7 +130,7 @@ data.append("address", address);
 data.append("api_token", api);
 data.append("trade_point", pt);
 console.log(data)
-fetch('index.php?route=extension/shipping/qwqer/geocode&user_token=   {{ user_token }}', {
+fetch('index.php?route=extension/shipping/qwqer/geocode&user_token={{ user_token }}', {
 method: "POST",
 body: data
 }).then(res => res.json()).then((data) => {
@@ -183,7 +183,7 @@ let data = new FormData()
 data.append("api_token", api);
 data.append("trade_point", pt);
 data.append("input", input);
-fetch('index.php?route=extension/shipping/qwqer/autocomplete&user_token=   {{ user_token }}', {
+fetch('index.php?route=extension/shipping/qwqer/autocomplete&user_token={{ user_token }}', {
 method: "POST",
 body: data
 }).then((response) => { // 1. check response.ok
