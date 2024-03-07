@@ -161,7 +161,7 @@ class ControllerExtensionShippingQwqer extends Controller {//
 
         $data['user_token'] = $this->session->data['user_token'];
 
-        $data['token']  = $this->session->data['token'];
+        $data['user_token']  = $this->session->data['user_token'];
 
         $page = 1;
         if(isset($this->request->get['page']) && $this->request->get['page']){
@@ -177,7 +177,7 @@ class ControllerExtensionShippingQwqer extends Controller {//
         $pagination->total = $return_total;
         $pagination->page = $page;
         $pagination->limit = $limit;
-        $pagination->url = $this->url->link('shipping/qwqer', 'token=' . $this->session->data['token'] .  '&page={page}', 'SSL');
+        $pagination->url = $this->url->link('shipping/qwqer', 'user_token=' . $this->session->data['user_token'] .  '&page={page}', 'SSL');
 
         $data['pagination'] = $pagination->render();
         $data['results'] = sprintf($this->language->get('text_pagination'), ($return_total) ? (($page - 1) * $this->config->get('config_limit_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_limit_admin')) > ($return_total - $this->config->get('config_limit_admin'))) ? $return_total : ((($page - 1) * $this->config->get('config_limit_admin')) + $this->config->get('config_limit_admin')), $return_total, ceil($return_total / $this->config->get('config_limit_admin')));
@@ -186,7 +186,7 @@ class ControllerExtensionShippingQwqer extends Controller {//
         $temp = array();
 
         //generate order tab data
-        $data['delete'] = $this->url->link('shipping/qwqer/delete', 'token=' . $this->session->data['token'], 'SSL');
+        $data['delete'] = $this->url->link('shipping/qwqer/delete', 'user_token=' . $this->session->data['user_token'], 'SSL');
         foreach ($results as $result){
             if (isset($result["response"])
                 && is_array($result["response"])){
@@ -215,9 +215,9 @@ class ControllerExtensionShippingQwqer extends Controller {//
 
             $createlink = false;
             if (isset ($result["response"]["data"]['status']) && ($result["response"]["data"]['status'] == 'Not Created')){
-                $createlink = $this->url->link('shipping/qwqer/create', 'token=' . $this->session->data['token'].'&order_id='.$result['order_id'], 'SSL');
+                $createlink = $this->url->link('shipping/qwqer/create', 'user_token=' . $this->session->data['user_token'].'&order_id='.$result['order_id'], 'SSL');
             }
-            $order_link = $this->url->link('sale/order/info', 'token=' . $this->session->data['token'] . '&order_id=' . $result['order_id'], 'SSL');
+            $order_link = $this->url->link('sale/order/info', 'user_token=' . $this->session->data['user_token'] . '&order_id=' . $result['order_id'], 'SSL');
             $invoice_link = false;
 
             if (isset($result['response']['data']['id']) && $result['response']['data']['id']){
@@ -264,7 +264,7 @@ class ControllerExtensionShippingQwqer extends Controller {//
                 'createlink'     => $createlink,
                 'delivery_type'  => $delivery,
                 'address'        => $address,
-                'date'           => ($result['qwqer_date'])?$result['qwqer_date']:$this->language->get('text_not_created'),
+                'date'           => $result["data"]["date_added"]
             );
         }
 
@@ -310,19 +310,21 @@ class ControllerExtensionShippingQwqer extends Controller {//
 
          $data['stock_statuses'] = $this->model_localisation_stock_status->getStockStatuses();
  
-         if (isset($this->request->post['qwqer_hide_statuses'])) {
-             $data['qwqer_hide_statuses'] = $this->request->post['qwqer_hide_statuses'];
-         } elseif ($this->config->get('qwqer_hide_statuses')) {
-             $data['qwqer_hide_statuses'] = $this->config->get('qwqer_hide_statuses');
+         if (isset($this->request->post['shipping_qwqer_hide_statuses'])) {
+             $data['shipping_qwqer_hide_statuses'] = $this->request->post['shipping_qwqer_hide_statuses'];
+         } elseif ($this->config->get('shipping_qwqer_hide_statuses')) {
+             $data['shipping_qwqer_hide_statuses'] = $this->config->get('shipping_qwqer_hide_statuses');
          } else {
-             $data['qwqer_hide_statuses'] = array();
+             $data['shipping_qwqer_hide_statuses'] = array();
          }
 
          if (isset($this->request->post['qwqer_is_prod'])) {
-            $data['qwqer_is_prod'] = $this->request->post['qwqer_is_prod'];
+            $data['shipping_qwqer_is_prod'] = $this->request->post['shipping_qwqer_is_prod'];
+        } elseif($this->config->get('shipping_qwqer_is_prod')) {
+            $data['shipping_qwqer_is_prod'] = $this->config->get('shipping_qwqer_is_prod');
         } else {
-            $data['qwqer_is_prod'] = $this->config->get('qwqer_is_prod');
-        }
+             $data['shipping_qwqer_is_prod'] = 0;
+         }
 
 
         $data['help_address_city'] = $this->language->get('help_address_city');
@@ -449,7 +451,7 @@ class ControllerExtensionShippingQwqer extends Controller {//
         $order_info_tmp =  $this->model_sale_order->getOrder($order_id);
 
         if ($order_info_tmp == null){
-            $this->response->redirect($this->url->link('shipping/qwqer', 'token=' . $this->session->data['token'], 'SSL'));
+            $this->response->redirect($this->url->link('shipping/qwqer', 'user_token=' . $this->session->data['user_token'], 'SSL'));
         }
 
         if (strpos($order_info_tmp["shipping_code"],'qwqer.')!==false){
@@ -463,13 +465,13 @@ class ControllerExtensionShippingQwqer extends Controller {//
 
         }
 
-        $this->response->redirect($this->url->link('shipping/qwqer', 'token=' . $this->session->data['token'], 'SSL'));
+        $this->response->redirect($this->url->link('shipping/qwqer', 'user_token=' . $this->session->data['user_token'], 'SSL'));
 
     }
 
     public  function delete(){
         if (($this->request->server['REQUEST_METHOD'] != 'POST')) {
-            $this->response->redirect($this->url->link('shipping/qwqer', 'token=' . $this->session->data['token'], 'SSL'));
+            $this->response->redirect($this->url->link('shipping/qwqer', 'user_token=' . $this->session->data['user_token'], 'SSL'));
         }
 
         $selected = $this->request->post['selected'];
@@ -477,7 +479,7 @@ class ControllerExtensionShippingQwqer extends Controller {//
             $this->shipping_qwqer->deleteOrder($item);
         }
 
-        $this->response->redirect($this->url->link('shipping/qwqer', 'token=' . $this->session->data['token'], 'SSL'));
+        $this->response->redirect($this->url->link('shipping/qwqer', 'user_token=' . $this->session->data['user_token'], 'SSL'));
     }
 
 }

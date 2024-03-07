@@ -304,8 +304,8 @@ debounce: 200
 					<div class="form-group">
 						<label class="col-sm-2 control-label" for="input-status">Production Server?</label>
 						<div class="col-sm-10">
-							<select name="qwqer_is_prod" id="input-is-prod" class="form-control">
-								{% if qwqer_is_prod  %}
+							<select name="shipping_qwqer_is_prod" id="input-is-prod" class="form-control">
+								{% if shipping_qwqer_is_prod  %}
 									<option value="1" selected="selected">On</option>
 									<option value="0">Off</option>
 								{% else  %}
@@ -349,11 +349,11 @@ debounce: 200
 								{% for   order_status in stock_statuses  %}
 									<div class="checkbox">
 										<label>
-											{% if (in_array($order_status['stock_status_id'], $qwqer_hide_statuses)) %}
-												<input type="checkbox" name="qwqer_hide_statuses[]" value="{{ order_status['stock_status_id'] }}" checked="checked"/>
+											{% if order_status['stock_status_id'] in shipping_qwqer_hide_statuses %}
+												<input type="checkbox" name="shipping_qwqer_hide_statuses[]" value="{{ order_status['stock_status_id'] }}" checked="checked"/>
 												{{ order_status['name'] }}
 											{%  else  %}
-												<input type="checkbox" name="qwqer_hide_statuses[]" value="{{ order_status['stock_status_id'] }}"/>
+												<input type="checkbox" name="shipping_qwqer_hide_statuses[]" value="{{ order_status['stock_status_id'] }}"/>
 												{{ order_status['name'] }}
 											{% endif %}
 										</label>
@@ -420,7 +420,7 @@ debounce: 200
 
 
 										<td class="text-left">
-											{% if (isset(order['address']) && order['address']) %}
+											{% if  order['address'] %}
 												{{ order['address'] }}
 											{% else %}
 												{{ text_none }}
@@ -435,14 +435,14 @@ debounce: 200
 											</td>
 										</td>
 										<td class="text-center">
-											{% if $order['createlink'] %}
+											{% if order['createlink'] %}
 												<a href="{{ order['createlink'] }}" data-toggle="tooltip" title="{{ text_request }}" class="btn btn-success ml-2" data-original-title="Edit">
 													<i class="fa fa-plus"></i>
 												{% endif %}
 											</td>
 										</td>
 										<td class="text-center">
-											{% if $order['invoice_link'] %}
+											{% if order['invoice_link'] %}
 												<a href="{{ order['invoice_link'] }}" target="_blank" data-toggle="tooltip" title="{{ text_invoice }}" class="btn btn-primary" data-original-title="Edit">
 													<i class="fa fa fa-print"></i>
 												</a>

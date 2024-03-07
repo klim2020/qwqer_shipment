@@ -35,7 +35,7 @@ class ModelExtensionShippingQwqer extends Model {
 
         //check if product have restricted stock status
         $statuses = array();
-        $statuses = $this->config->get('qwqer_hide_statuses');
+        $statuses = $this->config->get('shipping_qwqer_hide_statuses');
         foreach ($this->cart->getProducts() as $product){
            $status = $this->getProductStatusId($product['product_id']);
            if (in_array($status,$statuses)){

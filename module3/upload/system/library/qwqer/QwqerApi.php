@@ -90,7 +90,8 @@ class QwqerApi {
 //test
     private  $entry_url = "https://qwqer.hostcream.eu";
 //real
-    private  $entry_url = "https://api.qwqer.lv";
+    private  $entry_url_real =  "https://api.qwqer.lv";
+//real
     private  $weburl                = "/api/v1";
 
     private $prefix                 = "/plugins/open-cart";
@@ -113,10 +114,10 @@ class QwqerApi {
     {
         $this->weburl = $this->entry_url . $this->weburl . $this->prefix;
 
-        $this->token    = $registry->get('config')->get('qwqer_api');
-        $this->trade_pt = $registry->get('config')->get('qwqer_trade_pt');
+        $this->token    = $registry->get('config')->get('shipping_qwqer_api');
+        $this->trade_pt = $registry->get('config')->get('shipping_qwqer_trade_pt');
 
-        $is_prod    = $registry->get('config')->get('qwqer_is_prod');
+        $is_prod    = $registry->get('config')->get('shipping_qwqer_is_prod');
 
         if ($is_prod){
             $this->entry_url = $this->entry_url_real;
@@ -133,7 +134,7 @@ class QwqerApi {
         $registry->set('shipping_qwqer',$this);
         $this->registry = $registry;
 
-        $this->telephone    = $registry->get('config')->get('qwqer_telephone');
+        $this->telephone    = $registry->get('config')->get('shipping_qwqer_telephone');
 
         foreach ($this->delivery_types as $delivery_type){
             $ret[mb_strtolower($delivery_type)] = $delivery_type;
@@ -176,7 +177,7 @@ class QwqerApi {
         $api_key  = $this->token;
         $trade_pt = $this->trade_pt;
 
-        $store_info  = json_decode( html_entity_decode( stripslashes ($this->registry->get('config')->get('qwqer_address_object' ) ) ), true );
+        $store_info  = json_decode( html_entity_decode( stripslashes ($this->registry->get('config')->get('shipping_qwqer_address_object' ) ) ), true );
         //Pickup address wasnt added in admin dashboard
         if (!isset($store_info['data']['address'])){
             return array();
@@ -186,7 +187,7 @@ class QwqerApi {
         $store_phone = '+371'.preg_replace(array('/\s/m','/^\+/m','/^\+371/m','/^371/m'),array('','','',''),$store_phone);
         $store_name = $this->registry->get('config')->get('config_name');
         //Order Shipping data
-        $shipping_category = $this->order_categories[$this->registry->get('config')->get('qwqer_trade_cat')];
+        $shipping_category = $this->order_categories[$this->registry->get('config')->get('shipping_qwqer_trade_cat')];
 
         if(isset($address['telephone'])){
             $shipping_phone = $address['telephone'];
