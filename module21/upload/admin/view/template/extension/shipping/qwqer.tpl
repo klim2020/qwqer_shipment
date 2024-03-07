@@ -305,7 +305,7 @@
                             <label class="col-sm-2 control-label" for="input-status">Production Server?</label>
                             <div class="col-sm-10">
                                 <select name="qwqer_is_prod" id="input-is-prod" class="form-control">
-                                    <?php if(isset($qwqer_is_prod)) { ?>
+                                    <?php if(isset($qwqer_is_prod) && $qwqer_is_prod) { ?>
                                         <option value="1" selected="selected">On</option>
                                         <option value="0">Off</option>
                                     <?php }else{ ?>

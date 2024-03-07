@@ -314,7 +314,7 @@ class ControllerShippingQwqer extends Controller {//
                 'createlink'     => $createlink,
                 'delivery_type'  => $delivery,
                 'address'        => $address,
-                'date'           => ($result['qwqer_date'])?$result['qwqer_date']:$this->language->get('text_not_created'),
+                'date'           => $result["data"]["date_added"]
             );
         }
 
