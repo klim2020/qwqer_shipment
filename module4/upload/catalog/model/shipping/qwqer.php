@@ -164,7 +164,7 @@ class Qwqer extends \Opencart\System\Engine\Model {
     public function generateOrderObject($order_info){
         $address = array();
         foreach ($order_info as $key=>$value){
-            if (strpos($key,'shipping_',) !== false){
+            if (strpos($key,'shipping_') !== false){
                 $v = str_replace('shipping_','',$key);
                 $address[$v] = $value;
             }
