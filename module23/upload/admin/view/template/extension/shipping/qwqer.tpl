@@ -157,7 +157,10 @@
                                 placeHolder: "<?php echo $help_address; ?>",
                                 data: {
                                   src: async (query)=>{
-                                      return await suggest(query);
+                                      d = await suggest(query);
+
+                                      return d;
+
                                   },
                                   cache: false,
                                 },
@@ -240,8 +243,9 @@
                                           return data.data;
                                           //autoCompleteJS.data.keys = ["title"];
                                       }).catch(response => {
+                                          return [];
                                           response.json().then((json) => {
-                                              console.log(json.message);
+
                                           })
                                       });
                                   //autoCompleteJS.data.src = d;

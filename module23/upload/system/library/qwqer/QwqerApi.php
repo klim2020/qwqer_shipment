@@ -112,7 +112,7 @@ class QwqerApi {
 
     public function __construct($registry)
     {
-        $this->weburl = $this->entry_url . $this->weburl . $this->prefix;
+
 
         $this->token    = $registry->get('config')->get('qwqer_api');
         $this->trade_pt = $registry->get('config')->get('qwqer_trade_pt');
@@ -122,7 +122,7 @@ class QwqerApi {
         if ($is_prod){
             $this->entry_url = $this->entry_url_real;
         }
-
+        $this->weburl = $this->entry_url . $this->weburl . $this->prefix;
 
         $this->autocompleteUrl      = $this->weburl . $this->autocompleteUrl;
         $this->geoCodeUrl           = $this->weburl . $this->geoCodeUrl;
