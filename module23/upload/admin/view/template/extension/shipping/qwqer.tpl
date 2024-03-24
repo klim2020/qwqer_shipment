@@ -156,7 +156,9 @@
                               const autoCompleteJS = new autoComplete({
                                 placeHolder: "<?php echo $help_address; ?>",
                                 data: {
-                                  src: [],
+                                  src: async (query)=>{
+                                      return await suggest(query);
+                                  },
                                   cache: false,
                                 },
 
@@ -164,42 +166,15 @@
                                   highlight: true
                                 },
 
-                                trigger: (query) => {
+                                trigger: async (query) => {
                                   if (query.length >= autoCompleteJS.threshold - 1) {
-                                    let input = document.querySelector("#autoComplete").value
-                                    const api = document.querySelector("input[name=qwqer_api]").value;
-                                    const pt = document.querySelector("input[name=qwqer_trade_pt]").value;
-                                    let data = new FormData()
-                                    data.append("api_token", api);
-                                    data.append("trade_point", pt);
-                                    data.append("input", input);
-                                    fetch('index.php?route=extension/shipping/qwqer/autocomplete&token=<?php echo $token; ?>', {
-                                        method: "POST",
-                                        body: data,
-                                      })
-                                      .then((response) => {
-                                        // 1. check response.ok
-                                        if (response.ok) {
-                                          return response.json();
-                                        }
-                                        return Promise.reject(response); // 2. reject instead of throw
-                                      })
-                                      .then((data) => {
-
-                                        autoCompleteJS.data.src = data.data;
-                                        //autoCompleteJS.data.keys = ["title"];
-                                      }).catch(response => {
-                                        response.json().then((json) => {
-                                          console.log(json.message);
-                                        })
-                                      });
                                     return true;
                                   }
 
                                   return false;
                                   //return query.replace(/ /g, "").length; // Returns "Boolean"
                                 },
-                                query: function(input) { //
+                                query: function(input) {
                                   return input;
                                 },
                                 events: {
@@ -208,7 +183,8 @@
                                       const selection = event.detail.selection.value;
                                       //console.log(selection)
                                       this.value = selection;
-                                    }
+                                    },
+                                    open() {}
                                   }
                                 },
                                 resultsList: {
@@ -240,6 +216,40 @@
                                 threshold: 3,
                                 debounce: 200,
                               });
+                              async function suggest(resource) {
+                                  let input = document.querySelector("#autoComplete").value
+                                  const api = document.querySelector("input[name=qwqer_api]").value;
+                                  const pt = document.querySelector("input[name=qwqer_trade_pt]").value;
+                                  let data = new FormData()
+                                  data.append("api_token", api);
+                                  data.append("trade_point", pt);
+                                  data.append("input", input);
+                                  let d =await fetch('index.php?route=extension/shipping/qwqer/autocomplete&token=<?php echo $token; ?>', {
+                                      method: "POST",
+                                      body: data,
+                                  })
+                                      .then((response) => {
+                                          // 1. check response.ok
+                                          if (response.ok) {
+                                              return response.json();
+                                          }
+                                          return Promise.reject(response); // 2. reject instead of throw
+                                      })
+                                      .then((data) => {
+
+                                          return data.data;
+                                          //autoCompleteJS.data.keys = ["title"];
+                                      }).catch(response => {
+                                          response.json().then((json) => {
+                                              console.log(json.message);
+                                          })
+                                      });
+                                  //autoCompleteJS.data.src = d;
+                                  return d;
+
+                              }
+
+
                             </script>
                           </div>
 
