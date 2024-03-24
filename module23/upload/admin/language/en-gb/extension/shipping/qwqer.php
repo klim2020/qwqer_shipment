@@ -67,3 +67,5 @@ $_['ExpressDelivery']           = 'Express Delivery';
 $_['text_address']              = 'Address';
 $_['entry_hide_status']         = 'Hide delivery on product status';
 $_['text_not_created']          = 'Not created';
+
+$_['error_not_saved']           = 'Check form for errors';

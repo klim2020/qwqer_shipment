@@ -68,3 +68,5 @@ $_['ExpressDelivery']           = 'Ekspress piegāde';
 $_['text_address']              = 'Adrese';
 $_['entry_hide_status']         = 'Slēpt piegādi pēc produkta statusa';
 $_['text_not_created']          = 'Nav izveidots';
+
+$_['error_not_saved']           = 'Lūdzu, ievadiet sava veikala tālruņa numuru (TIKAI MOBĪLAJĀ tālrunī)';
