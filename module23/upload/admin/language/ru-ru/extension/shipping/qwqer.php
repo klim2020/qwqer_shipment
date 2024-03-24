@@ -70,4 +70,14 @@ $_['text_address']              = 'Адрес';
 $_['entry_hide_status']         = 'Скрыть доставку при статусе товара';
 $_['text_not_created']          = 'Не создан';
 
-$_['error_not_saved']           = 'Обнаружены ошибки, проверьте форму на наличие ошибок';
+$_['error_not_saved']           = 'Проверьте форму на наличие ошибок';
+$_['tab_info']                  = 'Информация';
+$_['text_company_name']         = 'Название компании';
+$_['text_company_type']         = 'Тип доставки';
+$_['text_company_address']      = 'Адрес компании';
+$_['text_company_map']          = 'карта';
+$_['text_working_time']         = 'Рабочее время';
+$_['text_working_day']          = 'Рабочий день';
+$_['text_working_from']         = 'от';
+$_['text_working_to']           = 'до';
+$_['text_address_link']         = 'ссылка';

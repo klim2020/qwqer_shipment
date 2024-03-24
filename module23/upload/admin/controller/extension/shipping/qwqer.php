@@ -164,7 +164,19 @@ class ControllerExtensionShippingQwqer extends Controller {//
                         'button_delete',
                         'text_confirm',
                         'text_telephone',
-                        'entry_hide_status');
+                        'entry_hide_status',
+                        'error_not_saved',
+                        'tab_info',
+                        'text_company_name',
+                        'text_company_type',
+                        'text_company_address',
+                        'text_company_map',
+                        'text_working_time',
+                        'text_working_day',
+                        'text_working_from',
+                        'text_working_to',
+                        'text_address_link',
+            );
         foreach ($langs_values as $lang){
             $data[$lang] = $this->language->get($lang);
         }
@@ -338,6 +350,14 @@ class ControllerExtensionShippingQwqer extends Controller {//
         }
 
         $data['orders'] = $temp;
+
+        $working_time = $this->shipping_qwqer->getInfo();
+
+        usort($working_time['working_hours'], function ($a,$b){
+            return date('N', strtotime($a['day_of_week'])) > date('N', strtotime($b['day_of_week']));
+        });
+
+        $data['working_time'] = $working_time;
 
 		if (isset($this->request->post['qwqer_geo_zone_id'])) {
 			$data['qwqer_geo_zone_id'] = $this->request->post['qwqer_geo_zone_id'];

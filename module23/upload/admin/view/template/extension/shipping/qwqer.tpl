@@ -34,6 +34,7 @@
         <ul class="nav nav-tabs">
           <li class="active"><a href="#tab-general" data-toggle="tab"><?php echo $tab_general; ?></a></li>
           <li><a href="#tab-orders" data-toggle="tab"><?php echo $tab_orders; ?></a></li>
+          <li><a href="#tab-info" data-toggle="tab"><?php echo $tab_info; ?></a></li>
         </ul>
           <form action="<?php echo  $action; ?>" method="post" enctype="multipart/form-data" id="form-shipping" class="form-horizontal">
                 <div class="tab-content">
@@ -428,6 +429,60 @@
                           <div class="col-sm-6 text-left"><?php echo $pagination; ?></div>
                           <div class="col-sm-6 text-right"><?php echo $results; ?></div>
                         </div>
+                      </div>
+
+                      <!-- info  -->
+                      <div class="tab-pane" id="tab-info">
+                          <div class="form-group required">
+                              <div class="col-sm-2"><?php echo  $text_company_name; ?></div>
+                              <div class="col-sm-9"><?php echo  $working_time['merchant']['name']??''; ?></div>
+                          </div>
+
+                          <div class="form-group required">
+                              <div class="col-sm-2"><?php echo  $text_company_type; ?></div>
+                              <div class="col-sm-9 "><?php echo  $working_time['type']??''; ?></div>
+                          </div>
+
+                          <div class="form-group required">
+                              <div class="col-sm-2"><?php echo  $text_company_address; ?></div>
+                              <div class="col-sm-9"><?php echo  $working_time['address']??''; ?></div>
+                          </div>
+
+
+                          <div class="form-group required">
+                              <div class="col-sm-2"><?php echo  $text_company_map; ?></div>
+                              <div class="col-sm-9">
+                                  <?php if (isset($working_time['address'])){ ?>
+                                    <a target = "_blank" href = "https://www.google.com/maps/place/<?php echo $working_time['address']; ?>/@<?php echo $working_time['coordinates'][0]; ?>,<?php echo $working_time['coordinates'][1]; ?>,19z/data=!4m6!3m5!1s0x46eed05339e7af95:0x22d458bb0ee9a4ef!8m2!3d56.9088952!4d24.082184!16s%2Fg%2F11b8v4vyl2?entry=ttu" > <?php echo $text_address_link; ?></a>
+                                  <?php } ?>
+                               </div>
+                          </div>
+
+                          <div class="form-group required">
+                              <div class="col-sm-2"><?php echo  $text_working_time; ?></div>
+                              <div class="col-sm-9">    <table class="table table-bordered">
+                                      <thead>
+                                      <tr>
+                                          <td style="width: 50%;"><b><?php echo $text_working_day; ?></b></td>
+                                          <td style="width: auto;"><b><?php echo $text_working_from; ?></b></td>
+                                          <td style="width: auto;"><b><?php echo $text_working_to; ?></b></td>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+
+                                      <?php if (isset($working_time['working_hours'])){
+                                          foreach ($working_time['working_hours'] as $the_day)  { ?>
+                                              <tr>
+                                                  <td><?php echo $the_day['day_of_week']; ?></td>
+                                                  <td style="width: auto;"><?php echo $the_day['time_from']; ?><br/></td>
+                                                  <td><?php echo $the_day['time_to']; ?><br/></td>
+                                              </tr>
+                                          <?php }
+                                      }?>
+                                      </tbody>
+                                  </table> </div>
+                          </div>
+
                       </div>
 
                 </div>

@@ -2,6 +2,8 @@
 namespace library\qweqr;
 
 
+use Cache;
+
 /**
  * class that wraps server connection
  * https://qwqer-api-docs.netlify.app/api/resources/basic-concept
@@ -94,6 +96,8 @@ class QwqerApi {
     
     private  $weburl                = "/api/v1";
 
+    private $getInfoUrl             = "";
+
     private $prefix                 = "/plugins/open-cart";
 
     /**
@@ -108,6 +112,7 @@ class QwqerApi {
     private  $getPriceUrl           = '/clients/auth/trading-points/{trading_points}/delivery-orders/get-price';
     private  $getParcelMachinesUrl  = '/parcel-machines';
     private  $getDeliveryOrders     = '/delivery-orders/${id}?include=places';
+    private  $getInfo               = '/trading-points/{trading_points}';
     private  $createOrderUrl;
 
     public function __construct($registry)
@@ -129,9 +134,12 @@ class QwqerApi {
         $this->getPriceUrl          = $this->weburl . $this->getPriceUrl;
         $this->createOrderUrl       = $this->weburl . '/clients/auth/trading-points/' . $this->trade_pt . '/delivery-orders';
         $this->getParcelMachinesUrl = $this->weburl . $this->getParcelMachinesUrl;
-        $this->getDeliveryOrders    = $this->entry_url . '/api/v1' . $this->getDeliveryOrders;
+        $this->getDeliveryOrders    = $this->weburl . $this->getDeliveryOrders;
+        $this->getInfo              = $this->weburl . $this->getInfo;
 
         $this->getPriceUrl  = str_replace(['{trading_points}'],[$this->trade_pt],$this->getPriceUrl);
+        $this->getInfoUrl      = str_replace(['{trading_points}'],[$this->trade_pt],$this->getInfo);
+
         $registry->set('shipping_qwqer',$this);
         $this->registry = $registry;
 
@@ -453,6 +461,47 @@ class QwqerApi {
 
     }
 
+    /** get info about trading point
+     * @link
+     * @param $data_order
+     * @return mixed|null
+     */
+    public function getInfo(){
+        $info = $this->getCache('qwqer_info');
+        if ($info){
+            return $info;
+        }
+        $query = array(
+            'include' => 'working_hours,merchant'
+        );
+        $curl = $this->getCurlHandle();
+        $query = http_build_query($query);
+        $j = $this->getInfoUrl.'?'.$query;
+        curl_setopt_array($curl, array(
+            CURLOPT_URL             => $j,
+            CURLOPT_RETURNTRANSFER  => true,
+            CURLOPT_ENCODING        => '',
+            CURLOPT_MAXREDIRS       => 10,
+            CURLOPT_TIMEOUT         => 0,
+            CURLOPT_FOLLOWLOCATION  => true,
+            CURLOPT_HTTP_VERSION    => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST   => 'GET',
+        ));
+
+        $response = curl_exec($curl);
+        $r = mb_detect_encoding($response);
+        $response = mb_convert_encoding($response,$r,'utf-8');
+        curl_close($curl);
+        $response = json_decode($response,true);
+        if ($response && isset($response['data']['address'])){
+            $this->setCache('qwqer_info',$response['data']);
+        }else{
+            return [];
+        }
+
+        return $response['data'];
+    }
+
     /* DATABASE FUNCTIONS*/
 
     public function addResponseRecord($response,$order_id){
@@ -549,6 +598,29 @@ class QwqerApi {
      */
     public function getOrdersCount(){
         return $this->registry->get('db')->query("SELECT COUNT(*) as `count` FROM ". DB_PREFIX . "qwqer_data")->rows[0]['count'];
+    }
+
+    /** Cache functions */
+    private function initCache(){
+        if (isset($this->cache) && $this->cache){
+            return $this->cache;
+        }
+
+        require_once DIR_SYSTEM.'library/cache.php';
+        $datediff = strtotime("+1 day")-strtotime('now');
+
+        $this->cache = new Cache('file',$datediff);
+        return  $this->cache;
+    }
+
+    private function getCache($name){
+        $cache = $this->initCache();
+        return $cache->get($name);
+    }
+
+    private function setCache($name,$values){
+        $cache = $this->initCache();
+        $cache->set($name,$values);
     }
 
 }
