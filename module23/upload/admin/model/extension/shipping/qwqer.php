@@ -40,6 +40,7 @@ class ModelExtensionShippingQwqer extends Model {
 				`data`  TEXT NULL,
                 `qwqer_date` DATETIME NULL,
 				`response` TEXT NULL,
+				`address`  TEXT NULL,
 				PRIMARY KEY (`qwqer_id`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 		");
