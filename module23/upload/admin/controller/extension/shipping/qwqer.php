@@ -25,6 +25,13 @@ class ControllerExtensionShippingQwqer extends Controller {//
     }
 
 	public function index() {
+
+        $this->load->model('extension/shipping/qwqer');
+
+        if($this->shipping_qwqer->healthCheck()==false){
+            $this->response->redirect($this->url->link('extension/extension', 'token=' . $this->session->data['token'], true));
+        }
+
 		$this->load->language('extension/shipping/qwqer');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -186,7 +193,7 @@ class ControllerExtensionShippingQwqer extends Controller {//
             $data['config_complete_status'] = array();
         }
 
-        $this->load->model('extension/shipping/qwqer');
+
 
         foreach ( $this->shipping_qwqer->getOrderCategories() as $option){
             $data['qwqer_trade_cat_options'][] = $this->language->get('qwqer_opt_'.$option);

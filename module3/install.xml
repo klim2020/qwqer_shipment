@@ -14,11 +14,12 @@
           
            /*qwqer Module additional field saving*/
           
-            $this->load->model('extension/shipping/qwqer');
-            $this->load->model('account/order');
-            $order_info =  $this->session->data;
+            
             //qwqer.omnivaparcelterminal
             if ($this->config->get('shipping_qwqer_status') && isset($this->session->data['shipping_method']['code']) && strpos($this->session->data['shipping_method']['code'],'qwqer.')!==false){
+                $this->load->model('extension/shipping/qwqer');
+                $this->load->model('account/order');
+                $order_info =  $this->session->data;
                 $this->load->model('checkout/order');
                 $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
                 if (isset($order_info) && $this->session->data['shipping_method']['code'] == 'qwqer.omnivaparcelterminal' ){

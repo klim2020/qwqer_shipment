@@ -141,6 +141,9 @@ class QwqerApi {
             $ret[mb_strtolower($delivery_type)] = $delivery_type;
         }
         $this->delivery_types = $ret;
+
+        //add opencart submodules
+        $this->db = $registry->get('db');
         
     }
 
@@ -244,6 +247,21 @@ class QwqerApi {
 
         return  $data_orders;
 
+    }
+
+    /** check Health of module, databases, etc.
+     * prevents crashes
+     * @return void
+     */
+    public function healthCheck(){
+
+        //check if database exists
+        $ret = $this->db->query("SHOW TABLES FROM " .DB_DATABASE. " LIKE '" .DB_PREFIX."qwqer_data';")->rows;
+        if  (count($ret) == 0){
+            return false;
+        }
+
+        return true;
     }
 
     //!!!Api
