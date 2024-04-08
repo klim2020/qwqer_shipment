@@ -1,13 +1,6 @@
-<?php echo $text_title_order_type; ?>
-<?php if (isset($terminals) && !empty($terminals))  {?>
+    <script>
 
-
-
-
-<script>
-
-
-    function loadjscssfile(filename, filetype,id){
+      function loadjscssfile(filename, filetype,id){
         if (filetype=="js"){ //if filename is a external JavaScript file
             var fileref=document.createElement('script')
             fileref.setAttribute("type","text/javascript")
@@ -32,11 +25,11 @@
         }
     }
 
-    loadjscssfile("catalog/view/stylesheet/qwqer/shipping_qwqer.css", "css","accss");
-    loadjscssfile("catalog/view/javascript/qwqer/shipping_qwqer.js", "js","acjs");
-
-   
-
-
-</script>
-<?php } ?>
+      document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(() =>{
+          loadjscssfile("/qwqer_shipping.css", "css","accjs");
+          loadjscssfile("/qwqer_shipping.js", "js","accjs");
+          console.log("done loading");
+        },10000);
+      });
+    </script>

@@ -1,0 +1,42 @@
+{
+   
+ 
+   // required The url you want to test
+   "url": "https://example.com",
+   // options Cookies required for this test. It's usually a cookie for login information Array | Object
+   "cookies": [{
+      "name": "token",
+      "value": "9+cL224Xh6VuRT",
+      "domain": "example.com",
+      "path": "/",
+      "size": 294,
+      "httpOnly": true
+   }],
+   // options default: 20 Test times
+   "count": 100,
+   // options default: true Whether to use headless mode 
+   "headless": true,
+   // options default: false Disable cache 
+   "noCache": false,
+   // options default: false Disable javascript
+   "noJavascript": false,
+   // options default: false Disable network
+   "noOnline": false,
+   // options Set the useragent information
+   "useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36",
+   // options Set the viewport information
+   "viewport": {
+      // options
+      "width": 375,
+      // options
+      "height": 812,
+      // options default: 1 devicePixelRatio
+      "deviceScaleFactor": 3,
+      // options default: false Whether to simulate mobile
+      "isMobile": false,
+      // options default: false Whether touch events are supported
+      "hasTouch": false,
+      // options default: false Is it horizontal or not
+      "isLandscape": false
+   }
+}
