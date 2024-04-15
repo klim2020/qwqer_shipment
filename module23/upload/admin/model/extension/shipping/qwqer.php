@@ -78,8 +78,8 @@ class ModelExtensionShippingQwqer extends Model {
         if (count($res)){
             $rawObj = $res[0]['data'];
             $obj = json_decode($rawObj,true);
-            $obj = $obj['autoCompleteHidden'];
-            $obj = json_decode(html_entity_decode(strip_tags($obj)),true);
+            $obj = $obj['qwqer'];
+            //$obj = json_decode(html_entity_decode(strip_tags($obj)),true);
             if ($obj) {
                 return $obj;
             }

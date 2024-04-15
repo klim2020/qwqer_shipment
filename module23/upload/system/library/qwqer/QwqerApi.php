@@ -225,9 +225,12 @@ class QwqerApi {
         $address_country = mb_strtolower($address['iso_code_2']);
 
 
-        if (isset($address['new_destination'])){
+        if (isset($address['new_destination']) && isset($address['new_destination']['name'])){
             $info_client['data'] = $address['new_destination'];
             $info_client['data']['address'] = $address['new_destination']['name'];
+
+        }elseif(!isset($address['new_destination']['name'])){
+            $info_client['data']['address'] = $address['new_destination']['destinations'][0]['address'];
         }else{
             $info_client = $this->getGeoCode($data_info_client,$address_city,$address_country);
         }
@@ -661,6 +664,19 @@ class QwqerApi {
 
         return $ret;
 
+    }
+
+    public function getOrderServerData($order_id){
+        $str = "SELECT `data` FROM " .DB_PREFIX. "qwqer_data WHERE `order_id` =". $order_id;
+        $ret = $this->db->query($str);
+        if ($ret->rows && isset($ret->rows[0]['data'])){
+            $ret = $ret->rows[0]['data'];
+            $ret = json_decode($ret,true);
+        }else{
+            $ret = [];
+        };
+
+        return $ret;
     }
 
 
