@@ -544,8 +544,10 @@ class ControllerExtensionShippingQwqer extends Controller {//
             $r_data = $this->shipping_qwqer->getOrderServerData($order_info_tmp['order_id']);
             if (isset($r_data['qwqer'])){
                 unset($r_data['qwqer']['pickup_datetime']);
+
                 $response = $this->model_extension_shipping_qwqer->createOrder($r_data['qwqer']);
             }else{
+                $data_order =  $this->model_extension_shipping_qwqer->generateOrderObject($order_info_tmp);
                 $response = $this->model_extension_shipping_qwqer->createOrder($data_order);
             }
 

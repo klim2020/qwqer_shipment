@@ -5,6 +5,7 @@ import CheckIcon from '@mui/icons-material/Check';
 
 import Box from "@mui/material/Box";
 import PropTypes from 'prop-types';
+import { useLanguage } from '../providers/LanguageProvider';
 
 //msg box component
 
@@ -17,6 +18,8 @@ Complete.prototypes={
 }
 
 export default function Complete({form}) {
+
+  const { t } = useLanguage();
   
   React.useEffect(() => {
     //console.log(form);
@@ -31,12 +34,12 @@ export default function Complete({form}) {
             alignItems: "center",
           }}
         >
-          <Alert icon={<CheckIcon fontSize="inherit" />}  severity="success">all data is valid</Alert>
+          <Alert icon={<CheckIcon fontSize="inherit" />}  severity="success">{t("qw_text_submit_success")}</Alert>
           <div style={{textAlign:"left"}}>
-            <p>Name:{form.inputName}</p>
-            <p>Address:{form.inputAddress.name}</p>
-            <p>phone:{form.phone}</p>
-            <p>price:{(form.callbackObject.client_price / 100).toFixed(2)}</p>
+            <p>{t("text_name")}:{form.inputName}</p>
+            <p>{t("text_address")}:{form.inputAddress.name}</p>
+            <p>{t("text_phone")}:{form.phone}</p>
+            <p>{t("text_price")}:{(form.callbackObject.client_price / 100).toFixed(2)}</p>
           </div>
 
         </Box>

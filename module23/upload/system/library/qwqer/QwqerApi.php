@@ -47,8 +47,8 @@ class QwqerApi {
      * @var string[]
      */
     public $delivery_types = array(
-        'ScheduledDelivery',
         'ExpressDelivery',
+        'ScheduledDelivery',
         'OmnivaParcelTerminal',
     );
 
@@ -229,7 +229,7 @@ class QwqerApi {
             $info_client['data'] = $address['new_destination'];
             $info_client['data']['address'] = $address['new_destination']['name'];
 
-        }elseif(!isset($address['new_destination']['name'])){
+        }elseif(!isset($address['new_destination']['name']) && isset($address['new_destination']['destinations'][0]['address']) ){
             $info_client['data']['address'] = $address['new_destination']['destinations'][0]['address'];
         }else{
             $info_client = $this->getGeoCode($data_info_client,$address_city,$address_country);

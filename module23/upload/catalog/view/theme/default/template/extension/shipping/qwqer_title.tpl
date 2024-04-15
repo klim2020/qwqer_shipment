@@ -68,6 +68,7 @@
         document.querySelector('input[name="shipping_qwqerd[address]"]').value = address;
         document.querySelector('input[name="shipping_qwqerd[response]"]').value = JSON.stringify(object);
     }
+    window.shipping_qwqer.url = '<?php echo $url; ?>';
     //mount scripts
 
     document.querySelector("#acjs").addEventListener("load",()=>{

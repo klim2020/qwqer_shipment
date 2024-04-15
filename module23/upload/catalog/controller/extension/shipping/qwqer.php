@@ -72,6 +72,10 @@ class ControllerExtensionShippingQwqer extends Controller {
             //$name, $address, $type, $phone
             $ret =      $this->shipping_qwqer->generateSingleOrderObject($name, $address, $type, $phone);
             //$this->shipping_qwqer->
+            if (isset($address)){
+                unset($ret['destinations'][0]['address']);
+                $ret['destinations'][0]['address'] = $address;
+            }
 
             if ($ret){
                 $json = $ret;

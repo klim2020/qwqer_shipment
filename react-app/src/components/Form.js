@@ -150,7 +150,7 @@ export default function Form({ OnSetForm }) {
             alignItems: "center",
           }}
         >
-          {info && <Alert severity="warning">Server Error</Alert>}
+          {info && <Alert severity="warning">{t('qw_text_server_error')}</Alert>}
           <Grid container spacing={2}>
 
             <Grid item xs={12}>
@@ -172,7 +172,7 @@ export default function Form({ OnSetForm }) {
             <label  style={{color:primary}} >{t('text_phone')}</label> 
               <MuiTelInput
                 required={true}
-                placeholder="Entre phone number"
+                placeholder={t('qw_enter_phone_label')}
                 variant="outlined"
                 sx={{ width: "100%" }}
                 rules={{
@@ -206,7 +206,7 @@ export default function Form({ OnSetForm }) {
             sx={{ mt: 3, mb: 2 }}
             onClick={handleSubmit}
           >
-            Go
+            {t('qw_text_submit')}
           </Button>
         </Box>
       )}

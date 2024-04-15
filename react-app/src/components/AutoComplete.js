@@ -27,8 +27,7 @@ export default function AutoComplete({onValueChange}) {
   const [options, setOptions] = React.useState([]);
 //loading state when autocomplete  is loading data
   const [loading,setLoading] = React.useState(open && options.length === 0)
-//translations, should change to context  
-  const [translation, setTranslation] = React.useState([]);
+
 //source that is responsible for switching fetching functions,    
   const [source, setSource] = React.useState("");//terminals address
  
@@ -40,15 +39,7 @@ export default function AutoComplete({onValueChange}) {
     setLoading(open && options.length === 0);
   },[open,options])
 
-//replace with context
-  React.useEffect(() => {
 
-    //set translation
-    setTranslation((val)=>{return { ...val,label:"select city",loading:"loading"}})
-    //set source
-  }, []);
-
- 
 
   //bind with html events
   const bindHtmlEvent = (e)=>{

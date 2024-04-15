@@ -5,12 +5,13 @@
 //loading the array
 //todo remove oc23 in prod
 
-let prefix = "/ocs23"
+let url = window.shipping_qwqer.url;
+console.log(url)
 
 const fetchDataTerminals = (val) => {
     return new Promise((resolve) => {
       let token = window.shipping_qwqer.token
-      fetch(prefix+"/index.php?route=extension/shipping/qwqer/get_terminals&qwqer_token="+token, {}).then((response) => {
+      fetch(url+"index.php?route=extension/shipping/qwqer/get_terminals&qwqer_token="+token, {}).then((response) => {
          return response.json()
       }).then((data)=>{
          resolve(data)
@@ -28,13 +29,13 @@ const fetchDataTerminals = (val) => {
       body: formdata,
       redirect: 'follow'
     };
-    let ret =  await fetch(prefix+"/index.php?route=extension/shipping/qwqer/get_adress&qwqer_token="+token, requestOptions).then((response) => {
+    let ret =  await fetch(url+"index.php?route=extension/shipping/qwqer/get_adress&qwqer_token="+token, requestOptions).then((response) => {
       return response.json()
    }).then((data)=>{
       return data;
    })
    if ('error' in ret){
-    return [{id:"no data",name:"no data"}]
+    return [{id:"...",name:"..."}]
    }
    ret = ret.map((v,i)=>{
     return {id:i,name:v}
@@ -68,7 +69,7 @@ const fetchDataTerminals = (val) => {
       redirect: 'follow'
     };
 
-    let ret =  await fetch(prefix+"/index.php?route=extension/shipping/qwqer/validate_data&qwqer_token="+token, requestOptions).then((response) => {
+    let ret =  await fetch(url+"index.php?route=extension/shipping/qwqer/validate_data&qwqer_token="+token, requestOptions).then((response) => {
       return response.json()
     }).then((data)=>{
         return data;

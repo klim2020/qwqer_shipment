@@ -151,21 +151,31 @@ class ModelExtensionShippingQwqer extends Model {
                      //    );
                      //}
                      foreach ($data_types as $type){
+
                          $key_r = mb_strtolower($type);
-                         $template = $this->load->view('extension/shipping/qwqer', array('text_title_order_type' => $type));
+                         $template = $this->load->view('extension/shipping/qwqer', array('text_title_order_type' => $type, 'langs'=>$lang));
                          $quote_data[$key_r] = array(
                              'code' => 'qwqer.' . $key_r,
                              'title' => $template,
-                             'cost' => 0,//$this->currency->convert($price['data']['client_price'] / 100, 'EUR', $this->config->get('config_currency')),
+                             'cost' => ($key_r!=='expressdelivery')?"3.00":"0",//$this->currency->convert(300 / 100, 'EUR', $this->config->get('config_currency')),
                              'tax_class_id' => $this->config->get('qwqer_tax_class_id'),
-                             'text' => "",//$text
+
+                             'text' => ($key_r!=='expressdelivery')?$this->currency->format(3,  $this->session->data['currency'], $this->config->get('config_tax')):"",
                          );
                      }
+
                      $token = rand(100000000,999999999);
                      $this->session->data['qwqer_token']  = $token;
+
+                     if (isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1'))) {
+                         $url = HTTPS_SERVER;
+                     } else {
+                         $url  = HTTP_SERVER;
+                     }
+
                      $method_data = array(
                          'code' => 'qwqer.standart',
-                         'title' => $this->load->view('extension/shipping/qwqer_title', array('text_title' => $this->language->get('text_title'), 'token'=>$token, 'langs'=>$lang)),//
+                         'title' => $this->load->view('extension/shipping/qwqer_title', array('text_title' => $this->language->get('text_title'), 'token'=>$token, 'langs'=>$lang,'url'=>$url)),//
                          'quote' => $quote_data,
                          'sort_order' => $this->config->get('qwqer_sort_order'),
                          'error' => $error,
@@ -207,11 +217,7 @@ class ModelExtensionShippingQwqer extends Model {
     }
 
     public function  addOrderData($order_info){
-        if (isset($this->session->data['autoCompleteHidden'])){
-            $order_info['autoCompleteHidden'] = $this->session->data['autoCompleteHidden'];
-        }elseif(isset($this->request->data['autoCompleteHidden'])){
-            $order_info['autoCompleteHidden'] = $this->request->data['autoCompleteHidden'];
-        }
+
         $data['shipping_address'] =  $order_info['shipping_address'];
         $data['payment_method'] =  $order_info['payment_method'];
         $data['order_id'] =  $order_info['order_id'];
