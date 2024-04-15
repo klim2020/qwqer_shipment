@@ -154,7 +154,7 @@ export default function Form({ OnSetForm }) {
           <Grid container spacing={2}>
 
             <Grid item xs={12}>
-            <label className="Font_for_labels" style={{color:primary}} for="phoneinput">{t('text_name')}</label> 
+            <label style={{color:primary}} >{t('text_name')}</label> 
               <TextField
                 autoComplete="given-name"
                 name="firstName"
@@ -169,7 +169,7 @@ export default function Form({ OnSetForm }) {
             </Grid>
 
             <Grid item xs={12}>
-            <label  style={{color:primary}} for="phoneinput">{t('text_phone')}</label> 
+            <label  style={{color:primary}} >{t('text_phone')}</label> 
               <MuiTelInput
                 required={true}
                 placeholder="Entre phone number"
@@ -188,7 +188,7 @@ export default function Form({ OnSetForm }) {
             </Grid>
 
             <Grid item xs={12}>
-            <label style={{color:primary}} for="phoneinput">{t('text_address')}</label> 
+            <label style={{color:primary}} >{t('text_address')}</label> 
               <AutoComplete
                 
                 sx={{ width: "100%" }}

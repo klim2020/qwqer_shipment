@@ -99,7 +99,7 @@ export default function AutoComplete({onValueChange}) {
         ret = await fetchDataTerminals(''); // For demo purposes)
       }else if(source === "address"){
         ret = await fetchDataAddress('');
-        ret = filterTerminal(ret,/riga/gmi);
+        ret = filterTerminal(ret,/riga,/gmi);
       }else{
         ret = [];
       }
@@ -125,7 +125,7 @@ export default function AutoComplete({onValueChange}) {
       //console.log("refrtching "+val)
       fetchDataAddress(val).then((v)=>{
         let out = filterTerminal(v,/riga/gmi);
-        setOptions(v)
+        setOptions(out)
       });
     }
   }
