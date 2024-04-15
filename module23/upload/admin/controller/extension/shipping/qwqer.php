@@ -353,9 +353,11 @@ class ControllerExtensionShippingQwqer extends Controller {//
 
         $working_time = $this->shipping_qwqer->getInfo();
 
-        usort($working_time['working_hours'], function ($a,$b){
-            return date('N', strtotime($a['day_of_week'])) > date('N', strtotime($b['day_of_week']));
-        });
+        if ($working_time){
+            usort($working_time['working_hours'], function ($a,$b){
+                return date('N', strtotime($a['day_of_week'])) > date('N', strtotime($b['day_of_week']));
+            });
+        }
 
         $data['working_time'] = $working_time;
 
