@@ -23,6 +23,10 @@ class ModelExtensionShippingQwqer extends Model {
 	public function getQuote($address) {
 		$this->load->language('extension/shipping/qwqer');
 
+        foreach ($this->language->all() as $key=>$lang_val){
+            $lang[$key] = htmlentities($lang_val);
+        }
+
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('qwqer_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
 
 		if (!$this->config->get('qwqer_geo_zone_id')) {
@@ -157,18 +161,18 @@ class ModelExtensionShippingQwqer extends Model {
                              'text' => "",//$text
                          );
                      }
+                     $token = rand(100000000,999999999);
+                     $this->session->data['qwqer_token']  = $token;
                      $method_data = array(
                          'code' => 'qwqer.standart',
-                         'title' => $this->load->view('extension/shipping/qwqer_title', array('text_title' => $this->language->get('text_title'))),//
+                         'title' => $this->load->view('extension/shipping/qwqer_title', array('text_title' => $this->language->get('text_title'), 'token'=>$token, 'langs'=>$lang)),//
                          'quote' => $quote_data,
                          'sort_order' => $this->config->get('qwqer_sort_order'),
                          'error' => $error,
                      );
                      return $method_data;
              }
-
              return [];
-
          }
 	}
 
@@ -208,7 +212,14 @@ class ModelExtensionShippingQwqer extends Model {
         }elseif(isset($this->request->data['autoCompleteHidden'])){
             $order_info['autoCompleteHidden'] = $this->request->data['autoCompleteHidden'];
         }
-        $data = json_encode($order_info);
+        $data['shipping_address'] =  $order_info['shipping_address'];
+        $data['payment_method'] =  $order_info['payment_method'];
+        $data['order_id'] =  $order_info['order_id'];
+        $data['qwqer'] =  $order_info['qwqer'];
+        $data['shipping_method'] =  $order_info['shipping_method'];
+        $data['date_added']  = date('Y-m-d H:i');
+        $data = json_encode($data);
+        //$data = trim( addslashes( json_encode( $order_info ) ) );
         $str = "SELECT COUNT(*) AS  total FROM " . DB_PREFIX . "qwqer_data where `order_id` = " . $order_info['order_id'];
         $isOrderExist = $this->db->query($str)->rows[0]['total'];
         if ($isOrderExist){

@@ -28,6 +28,12 @@ class QwqerApi {
         'Jewelry',
     );
 
+    public $type_map = array(
+        'qwqer.expressdelivery'=>"ExpressDelivery",
+        'qwqer.scheduleddelivery'=>"ScheduledDelivery",
+        'qwqer.omnivaparcelterminal'=>"OmnivaParcelTerminal",
+    );
+
     /**
      * @return string[]
      */
@@ -151,7 +157,8 @@ class QwqerApi {
         $this->delivery_types = $ret;
 
         //add opencart submodules
-        $this->db = $registry->get('db');
+        $this->db       = $registry->get('db');
+        $this->config   = $this->registry->get('config');
         
     }
 
@@ -257,6 +264,75 @@ class QwqerApi {
 
     }
 
+    /** Generates single order objects
+     * @param $name
+     * @param $address
+     * @param $type
+     * @param $phone
+     * @return void
+     */
+    public function generateSingleOrderObject($name, $address, $type, $phone){
+
+        $type = $this->type_map[$type];
+        $api_key  = $this->token;
+        $trade_pt = $this->trade_pt;
+        $store_info  = json_decode( html_entity_decode( stripslashes ($this->config->get('qwqer_address_object' ) ) ), true );
+        //Pickup address wasnt added in admin dashboard
+        if (!isset($store_info['data']['address'])){
+            return false;
+        }
+        //Store data
+        $store_phone = $this->telephone;
+        $store_phone = '+371'.preg_replace(array('/\s/m','/^\+/m','/^\+371/m','/^371/m'),array('','','',''),$store_phone);
+        $store_name = $this->config->get('config_name');
+
+        //Order Shipping data
+        $shipping_category = $this->order_categories[$this->config->get('qwqer_trade_cat')];
+        $shipping_phone = $phone;
+        $shipping_phone = '+371'.preg_replace(array('/\s/m','/^\+/m','/^\+371/m','/^371/m'),array('','','',''),$shipping_phone);
+        /* Get client coordinates and address */
+        $data_info_client =  $address;
+        $info_client = $this->getGeoCode($data_info_client,'','');
+        //Client data not valid
+        if (!isset($info_client['data']['coordinates'])){
+            return false;
+        }
+
+        $storeOwnerAddress["address"] = $store_info['data']['address'];
+        $storeOwnerAddress["coordinates"] = $store_info['data']['coordinates'];
+        $storeOwnerAddress["name"] = $store_name;
+        $storeOwnerAddress["phone"] = $store_phone;
+
+        $clientOwnerAddress = array();
+        $clientOwnerAddress["address"] = $info_client['data']['address'];
+        $clientOwnerAddress["coordinates"] = $info_client['data']['coordinates'];
+        $clientOwnerAddress["name"] = $name;
+        $clientOwnerAddress["phone"] = $shipping_phone;
+
+        //Creating all needed objects
+
+        $data_order = array(
+             'type' => 'Regular',
+             'category' => $shipping_category,
+             'real_type' => $type,
+             'origin' => $storeOwnerAddress,
+             'destinations' => [$clientOwnerAddress],
+
+        );
+
+        if ($type == "OmnivaParcelTerminal"){
+            $data_order['parcel_size']  = "L";
+        }
+        //bad response
+        //return false;
+        $ret = $this->calculatePrice($data_order);
+        if (!isset($ret['data'])){
+            return false;
+        }
+        return  $ret['data'];
+
+    }
+
     /** check Health of module, databases, etc.
      * prevents crashes
      * @return void
@@ -339,6 +415,10 @@ class QwqerApi {
         curl_close($curl);
         $response = json_decode($response,true);
         return $response;
+
+    }
+
+    public function calculateSinglePrice(){
 
     }
 

@@ -310,7 +310,7 @@ class ControllerExtensionShippingQwqer extends Controller {//
                 $created_at = date("F, d, Y, g:i ",strtotime($result['response']['data']['created_at']));
             }
 
-            $delivery = $result['data']["shipping_method"];
+            $delivery = $result['data']["shipping_method"]["title"];
             if(isset($result['response']['data']['real_type'])){
                 $v = $result['response']['data']['real_type'];
                 if (isset($data[$v])){
@@ -320,7 +320,7 @@ class ControllerExtensionShippingQwqer extends Controller {//
                 }
             }
 
-            $address = $result['data']["payment_address_1"];
+            $address = $result['data']['qwqer']['destinations'][0]['address'];
             if (isset($result['response']["data"]["places"]) &&
                 is_array($result['response']["data"]["places"]) &&
                 !empty($result['response']["data"]["places"])){
