@@ -1,15 +1,20 @@
 import * as React from "react";
-import AutoComplete from "./AutoComplete";
 import PropTypes from 'prop-types';
 
 import Box from "@mui/material/Box";
-import HomeIcon from "@mui/icons-material/Home";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import { MuiTelInput, matchIsValidTel } from "mui-tel-input";
 import CircularProgress from "@mui/material/CircularProgress";
+import Alert from '@mui/material/Alert';
+
+import AutoComplete from "./AutoComplete";
+
+import { fetchValidate } from './../transport/transport'
+import { useLanguage } from "../providers/LanguageProvider";
+
+import { blue } from '@mui/material/colors';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
@@ -25,38 +30,62 @@ Form.prototypes = {
 };
 
 export default function Form({ OnSetForm }) {
+  //name state
   const [inputName, setInput] = React.useState('');
+  //address state
   const [inputAddress, setInputAddress] = React.useState({});
+  //phone state
   const [phone, setPhone] = React.useState("");
+  //loading state, shows loading indicator
   const [loading, setLoading] = React.useState(false);
-  const [isSubmit,setSubmit] = React.useState(false);
+  //state that checks if user data is valid
+  //const [isSubmit,setSubmit] = React.useState(false);
+  const [info, setInfo] = React.useState(false)
+
+  const { t } = useLanguage();
+
+  const primary = blue[500]; 
 
   //event handlers
   const handleChange = (newPhone) => {
     setPhone(newPhone);
   };
 
+//check button click
   const handleSubmit = (event) => {
     event.preventDefault();
-
+//validates inputs
     if (checkInputs()) {
       setLoading(true);
-      loadEmulation().then((ok)=>{
+      //dummy function 
+
+      let type = window.shipping_qwqer.getSource();
+      
+      fetchValidate(inputAddress, phone, inputName, type).then((ok)=>{
+        //console.log(ok);
         if (ok){
-          setSubmit(true);
+          //shows submit message
+          //setSubmit(true);
+          //hides loading  indicator
           setLoading(false);
-          OnSetForm({inputName:inputName,inputAddress:inputAddress,phone:phone});
-          console.log({inputName:inputName,inputAddress:inputAddress,phone:phone});
+          //emits state with OnSetForm prop
+          OnSetForm({inputName:inputName,inputAddress:inputAddress,phone:phone,callbackObject:ok});
+          //console.log({inputName:inputName,inputAddress:inputAddress,phone:phone});
+        }else{
+          setLoading(false);
+          setInfo(true);
         }
       });
+
     }
   }
 
+  //changes autocomplete 
   const onAutoCompleteChange = (val) => {
     setInputAddress((v) => (v = val));
   };
 
-  
+//clears form on changing radio button  
   const bindHtmlEvent = (e)=>{
     if (e.detail !== false){
       setInput('');    
@@ -78,31 +107,24 @@ export default function Form({ OnSetForm }) {
   //validators
   const checkInputs = () => {
     if (typeof inputName !== "string" || inputName === "") {
-      alert("Name is required");
+      alert(t("qw_text_name_req"));
       return false;
     }
 
     if (typeof inputAddress.name !== "string" || inputAddress.name < 1) {
-      alert("Address is required");
+      alert(t("qw_text_address_req"));
       return false;
     }
 
     if (!matchIsValidTel(phone, { onlyCountryies: ["LV"] })) {
-      alert("Latvian Phone is required");
+      alert(t("qw_text_phone_req"));
       return false;
     }
 
     return true;
   };
 
-  //dummies
-  const loadEmulation = async ()=>{
-    await new Promise((resolve)=>{
-      setTimeout(()=>{resolve()},2000)
-    });
-    console.log("2 sec");
-    return true;
-  }
+
 
   return (
     <>
@@ -128,12 +150,11 @@ export default function Form({ OnSetForm }) {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <HomeIcon />
-          </Avatar>
-
+          {info && <Alert severity="warning">Server Error</Alert>}
           <Grid container spacing={2}>
+
             <Grid item xs={12}>
+            <label className="Font_for_labels" style={{color:primary}} for="phoneinput">{t('text_name')}</label> 
               <TextField
                 autoComplete="given-name"
                 name="firstName"
@@ -141,15 +162,18 @@ export default function Form({ OnSetForm }) {
                   setInput((v) => (v = e.target.value));
                 }}
                 value={inputName}
-                required
+                required={true}
                 fullWidth
                 id="firstName"
-                label="First Name"
-                autoFocus
               />
             </Grid>
+
             <Grid item xs={12}>
+            <label  style={{color:primary}} for="phoneinput">{t('text_phone')}</label> 
               <MuiTelInput
+                required={true}
+                placeholder="Entre phone number"
+                variant="outlined"
                 sx={{ width: "100%" }}
                 rules={{
                   validate: (value) =>
@@ -159,16 +183,21 @@ export default function Form({ OnSetForm }) {
                 defaultCountry={"LV"}
                 value={phone}
                 onChange={handleChange}
+                id = "phoneinput"
               />
             </Grid>
+
             <Grid item xs={12}>
+            <label style={{color:primary}} for="phoneinput">{t('text_address')}</label> 
               <AutoComplete
+                
                 sx={{ width: "100%" }}
                 style={{ with: "100%" }}
                 onValueChange={onAutoCompleteChange}
                 value={inputAddress}
               ></AutoComplete>
             </Grid>
+
           </Grid>
 
           <Button

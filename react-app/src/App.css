@@ -36,3 +36,7 @@
     transform: rotate(360deg);
   }
 }
+
+.Font_for_labels{
+  font-size: 1.6rem
+}
