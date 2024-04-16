@@ -540,9 +540,14 @@ class ControllerExtensionShippingQwqer extends Controller {//
         if (strpos($order_info_tmp["shipping_code"],'qwqer.')!==false){
 
             $this->load->model('extension/shipping/qwqer');
-            $data_order =  $this->model_extension_shipping_qwqer->generateOrderObject($order_info_tmp);
+            $order_info_tmp['qwqer'] = $this->shipping_qwqer->getOrderServerData($order_info_tmp['order_id']);
+            //$data_order =  $this->model_extension_shipping_qwqer->generateOrderObject($order_info_tmp);
+
             $r_data = $this->shipping_qwqer->getOrderServerData($order_info_tmp['order_id']);
             if (isset($r_data['qwqer'])){
+                if (isset($r_data['qwqer']['real_type']) &&  $r_data['qwqer']['real_type'] == "OmnivaParcelTerminal"){
+                    $r_data['qwqer']['parcel_size'] = "L";
+                }
                 unset($r_data['qwqer']['pickup_datetime']);
 
                 $response = $this->model_extension_shipping_qwqer->createOrder($r_data['qwqer']);

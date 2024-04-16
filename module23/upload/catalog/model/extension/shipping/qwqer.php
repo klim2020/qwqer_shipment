@@ -154,13 +154,14 @@ class ModelExtensionShippingQwqer extends Model {
 
                          $key_r = mb_strtolower($type);
                          $template = $this->load->view('extension/shipping/qwqer', array('text_title_order_type' => $type, 'langs'=>$lang));
+                         $price = $this->currency->convert(300 / 100, 'EUR', $this->config->get('config_currency'));
                          $quote_data[$key_r] = array(
                              'code' => 'qwqer.' . $key_r,
                              'title' => $template,
-                             'cost' => ($key_r!=='expressdelivery')?"3.00":"0",//$this->currency->convert(300 / 100, 'EUR', $this->config->get('config_currency')),
+                             'cost' => ($key_r!=='expressdelivery')?$price:"0",//$this->currency->convert(300 / 100, 'EUR', $this->config->get('config_currency')),
                              'tax_class_id' => $this->config->get('qwqer_tax_class_id'),
 
-                             'text' => ($key_r!=='expressdelivery')?$this->currency->format(3,  $this->session->data['currency'], $this->config->get('config_tax')):"",
+                             'text' => ($key_r!=='expressdelivery')?$this->currency->format($price,  $this->session->data['currency'], $this->config->get('config_tax')):"",
                          );
                      }
 
@@ -186,22 +187,29 @@ class ModelExtensionShippingQwqer extends Model {
          }
 	}
 
-    public function generateOrderObject($order_info){
-        $address = array();
-        foreach ($order_info as $key=>$value){
-            if (strpos($key,'shipping_') !== false){
-                $v = str_replace('shipping_','',$key);
-                $address[$v] = $value;
-            }
-        }
-        if($order_info['shipping_code'] == 'qwqer.omnivaparcelterminal'){
-            $new_destination = $this->getParcelAddress($order_info);
-            $address['new_destination'] = $new_destination;
-        }
-        $delivery_type = str_replace('qwqer.','',$address['code']);
+    //generates a propper valid object for Qwqer library
+    public function generateOrderObject($name,$phone,$address,$type){
+        $arr['code'] = $type;
+        //if($order_info['shipping_code'] == 'qwqer.omnivaparcelterminal'){
+        //    $new_destination = $this->getParcelAddress($order_info);
+        //    $address['new_destination'] = $new_destination;
+        //}
+        $delivery_type = str_replace('qwqer.','',$arr['code']);
         $delivery_types = $this->shipping_qwqer->getDeliveryTypes();
-        $address['telephone']=$order_info['telephone'];
-        $ret = $this->shipping_qwqer->generateOrderObjects($address,array($delivery_types[$delivery_type]));
+
+        $arr['telephone']  = $phone;
+        $arr['firstname']  = $name;
+        $arr['address_1']  = $address['name'];
+        $arr['iso_code_2'] = 'LV';
+        $arr['address_2'] = '';
+        $arr["lastname"] = '';
+        $arr['city'] = '';
+        if (isset($address['coordinates'])){
+            $arr['terminal'] = $address;
+        }
+
+
+        $ret = $this->shipping_qwqer->generateOrderObjects($arr,array($delivery_types[$delivery_type]));
         if (isset($ret[0])){
             return $ret[0];
         }
@@ -222,6 +230,7 @@ class ModelExtensionShippingQwqer extends Model {
         $data['payment_method'] =  $order_info['payment_method'];
         $data['order_id'] =  $order_info['order_id'];
         $data['qwqer'] =  $order_info['qwqer'];
+        $data['qwqer_price'] =  $order_info['qwqer_price'];
         $data['shipping_method'] =  $order_info['shipping_method'];
         $data['date_added']  = date('Y-m-d H:i');
         $data = json_encode($data);
@@ -261,6 +270,8 @@ class ModelExtensionShippingQwqer extends Model {
     public  function  getProductStatusId($id){
         return $this->db->query("SELECT `stock_status_id` FROM " .DB_PREFIX. "product WHERE `product_id` = {$id} limit 1")->rows[0]['stock_status_id'];
     }
+
+
 
 
 }

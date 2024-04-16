@@ -196,143 +196,31 @@ class QwqerApi {
         $api_key  = $this->token;
         $trade_pt = $this->trade_pt;
 
-        $store_info  = json_decode( html_entity_decode( stripslashes ($this->registry->get('config')->get('qwqer_address_object' ) ) ), true );
-        //Pickup address wasnt added in admin dashboard
-        if (!isset($store_info['data']['address'])){
-            return array();
-        }
-        //Store data
-        $store_phone = $this->telephone;
-        $store_phone = '+371'.preg_replace(array('/\s/m','/^\+/m','/^\+371/m','/^371/m'),array('','','',''),$store_phone);
-        $store_name = $this->registry->get('config')->get('config_name');
-        //Order Shipping data
-        $shipping_category = $this->order_categories[$this->registry->get('config')->get('qwqer_trade_cat')];
+        //store owner info
+       $storeOwmerObject = $this->generateStoreOwnerObject();
 
-        if(isset($address['telephone'])){
-            $shipping_phone = $address['telephone'];
-        }elseif((isset($this->registry->get('session')->data["guest"]["telephone"]))){
-            $shipping_phone = $this->registry->get('session')->data["guest"]["telephone"];
-        }else{
-            $shipping_phone = $this->registry->get('customer')->getTelephone();
-        }
+       $shipping_category = $this->order_categories[$this->registry->get('config')->get('qwqer_trade_cat')];
 
-        $shipping_phone = '+371'.preg_replace(array('/\s/m','/^\+/m','/^\+371/m','/^371/m'),array('','','',''),$shipping_phone);
+        //Client Shipping info
 
-        /* Get client coordinates and address */
-        $data_info_client =  $address['address_1'] . ' ' . $address['address_2'];
+        $clientObject = $this->generateClientOwnerObject($address);
 
-        $address_city = mb_strtolower($address['city']);
-        $address_country = mb_strtolower($address['iso_code_2']);
-
-
-        if (isset($address['new_destination']) && isset($address['new_destination']['name'])){
-            $info_client['data'] = $address['new_destination'];
-            $info_client['data']['address'] = $address['new_destination']['name'];
-
-        }elseif(!isset($address['new_destination']['name']) && isset($address['new_destination']['destinations'][0]['address']) ){
-            $info_client['data']['address'] = $address['new_destination']['destinations'][0]['address'];
-        }else{
-            $info_client = $this->getGeoCode($data_info_client,$address_city,$address_country);
-        }
-
-
-        //Client data not valid
-        if (!isset($info_client['data']['coordinates'])){
-            return array();
-        }
-
-        $storeOwnerAddress["address"] = $store_info['data']['address'];
-        $storeOwnerAddress["coordinates"] = $store_info['data']['coordinates'];
-        $storeOwnerAddress["name"] = $store_name;
-        $storeOwnerAddress["phone"] = $store_phone;
-
-        $clientOwnerAddress = array();
-        $clientOwnerAddress["address"] = $info_client['data']['address'];
-        $clientOwnerAddress["coordinates"] = $info_client['data']['coordinates'];
-        $clientOwnerAddress["name"] = $address["firstname"]. ' '. $address["lastname"];
-        $clientOwnerAddress["phone"] = $shipping_phone;
 
         //Creating all needed objects
         foreach ($delivery_objects as $delivery_type){
-            $data_orders[] = array(
-                'type' => 'Regular',
-                'category' => $shipping_category,
-                'real_type' => $delivery_type,
-                'origin' => $storeOwnerAddress,
-                'destinations' => [$clientOwnerAddress],
-            );
+            if($delivery_type){
+                $data_orders[] = array(
+                    'type' => 'Regular',
+                    'category' => $shipping_category,
+                    'real_type' => $delivery_type,
+                    'origin' => $storeOwmerObject,
+                    'destinations' => [$clientObject],
+                );
+            }
+
         }
 
         return  $data_orders;
-
-    }
-
-    /** Generates single order objects
-     * @param $name
-     * @param $address
-     * @param $type
-     * @param $phone
-     * @return void
-     */
-    public function generateSingleOrderObject($name, $address, $type, $phone){
-
-        $type = $this->type_map[$type];
-        $api_key  = $this->token;
-        $trade_pt = $this->trade_pt;
-        $store_info  = json_decode( html_entity_decode( stripslashes ($this->config->get('qwqer_address_object' ) ) ), true );
-        //Pickup address wasnt added in admin dashboard
-        if (!isset($store_info['data']['address'])){
-            return false;
-        }
-        //Store data
-        $store_phone = $this->telephone;
-        $store_phone = '+371'.preg_replace(array('/\s/m','/^\+/m','/^\+371/m','/^371/m'),array('','','',''),$store_phone);
-        $store_name = $this->config->get('config_name');
-
-        //Order Shipping data
-        $shipping_category = $this->order_categories[$this->config->get('qwqer_trade_cat')];
-        $shipping_phone = $phone;
-        $shipping_phone = '+371'.preg_replace(array('/\s/m','/^\+/m','/^\+371/m','/^371/m'),array('','','',''),$shipping_phone);
-        /* Get client coordinates and address */
-        $data_info_client =  $address;
-        $info_client = $this->getGeoCode($data_info_client,'','');
-        //Client data not valid
-        if (!isset($info_client['data']['coordinates'])){
-            return false;
-        }
-
-        $storeOwnerAddress["address"] = $store_info['data']['address'];
-        $storeOwnerAddress["coordinates"] = $store_info['data']['coordinates'];
-        $storeOwnerAddress["name"] = $store_name;
-        $storeOwnerAddress["phone"] = $store_phone;
-
-        $clientOwnerAddress = array();
-        $clientOwnerAddress["address"] = $info_client['data']['address'];
-        $clientOwnerAddress["coordinates"] = $info_client['data']['coordinates'];
-        $clientOwnerAddress["name"] = $name;
-        $clientOwnerAddress["phone"] = $shipping_phone;
-
-        //Creating all needed objects
-
-        $data_order = array(
-             'type' => 'Regular',
-             'category' => $shipping_category,
-             'real_type' => $type,
-             'origin' => $storeOwnerAddress,
-             'destinations' => [$clientOwnerAddress],
-
-        );
-
-        if ($type == "OmnivaParcelTerminal"){
-            $data_order['parcel_size']  = "L";
-        }
-        //bad response
-        //return false;
-        $ret = $this->calculatePrice($data_order);
-        if (!isset($ret['data'])){
-            return false;
-        }
-        return  $ret['data'];
 
     }
 
@@ -717,6 +605,80 @@ class QwqerApi {
     private function setCache($name,$values){
         $cache = $this->initCache();
         $cache->set($name,$values);
+    }
+
+    /** Generators **/
+
+    public function generateStoreOwnerObject(){
+        $store_info  = json_decode( html_entity_decode( stripslashes ($this->registry->get('config')->get('qwqer_address_object' ) ) ), true );
+        //Pickup address wasnt added in admin dashboard
+        if (!isset($store_info['data']['address'])){
+            return false;
+        }
+
+
+        //Store data
+        $store_phone = $this->telephone;
+        $store_phone = '+371'.preg_replace(array('/\s/m','/^\+/m','/^\+371/m','/^371/m'),array('','','',''),$store_phone);
+        $store_name = $this->registry->get('config')->get('config_name');
+
+        $storeOwnerAddress["address"] = $store_info['data']['address'];
+        $storeOwnerAddress["coordinates"] = $store_info['data']['coordinates'];
+        $storeOwnerAddress["name"] = $store_name;
+        $storeOwnerAddress["phone"] = $store_phone;
+
+        return  $storeOwnerAddress;
+    }
+
+    public function generateClientOwnerObject($address){
+        //read from widjet field first then from opencart fields
+        if(isset($address['telephone'])){
+            $shipping_phone = $address['telephone'];
+        }elseif((isset($this->registry->get('session')->data["guest"]["telephone"]))){
+            $shipping_phone = $this->registry->get('session')->data["guest"]["telephone"];
+        }else{
+            $shipping_phone = $this->registry->get('customer')->getTelephone();
+        }
+        $shipping_phone = '+371'.preg_replace(array('/\s/m','/^\+/m','/^\+371/m','/^371/m'),array('','','',''),$shipping_phone);
+
+
+
+        /* Get client coordinates and address */
+        $data_info_client =  $address['address_1'] . ' ' . $address['address_2'];
+        $address_city = mb_strtolower($address['city']);
+        $address_country = mb_strtolower($address['iso_code_2']);
+
+
+        if (isset($address['new_destination']) && isset($address['new_destination']['name'])){
+            $info_client['data'] = $address['new_destination'];
+            $info_client['data']['address'] = $address['new_destination']['name'];
+
+        }elseif(!isset($address['new_destination']['name']) && isset($address['new_destination']['destinations'][0]['address']) ){
+            $info_client['data']['address'] = $address['new_destination']['destinations'][0]['address'];
+            $info_client['data']['coordinates'] = $address['new_destination']['destinations'][0]['coordinates'];
+        }else{
+            $info_client = $this->getGeoCode($data_info_client,$address_city,$address_country);
+        }
+
+
+        //Client data not valid
+        if (!isset($info_client['data']['coordinates'])){
+            return false;
+        }
+
+        $clientOwnerAddress = array();
+        $clientOwnerAddress["address"] = $info_client['data']['address'];
+        $clientOwnerAddress["coordinates"] = $info_client['data']['coordinates'];
+        $clientOwnerAddress["name"] = $address["firstname"]. ' '. $address["lastname"];
+        $clientOwnerAddress["phone"] = $shipping_phone;
+
+        if (isset($address['terminal'])){
+            $clientOwnerAddress = $address['terminal'];
+            $clientOwnerAddress["address"] = $address['terminal']['name'];
+            $clientOwnerAddress["name"] = $address["firstname"]. ' '. $address["lastname"];
+            $clientOwnerAddress["phone"] = $shipping_phone;
+        }
+        return  $clientOwnerAddress;
     }
 
 }

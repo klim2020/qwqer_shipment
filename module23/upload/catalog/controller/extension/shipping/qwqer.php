@@ -67,19 +67,30 @@ class ControllerExtensionShippingQwqer extends Controller {
             $this->session->data['qwqer'] = array();
             $name =     $this->request->post['qwqer_name'];
             $phone =    $this->request->post['qwqer_phone'];
-            $address =  $this->request->post['qwqer_address'];
+            $address =   json_decode( html_entity_decode( stripslashes ($this->request->post['qwqer_address'] ) ),true );
             $type  =    $this->request->post['qwqer_type'];
             //$name, $address, $type, $phone
-            $ret =      $this->shipping_qwqer->generateSingleOrderObject($name, $address, $type, $phone);
+            $this->load->model('extension/shipping/qwqer');
+            $ret = $this->model_extension_shipping_qwqer->generateOrderObject($name,$phone,$address,$type );
+            $price = array(
+                'data'=>array('client_price' => $this->currency->convert(300 / 100, 'EUR', $this->config->get('config_currency')) * 100)
+            );
+            if (isset($ret['real_type']) && $ret['real_type']=="ExpressDelivery"){
+                $price = $this->shipping_qwqer->calculatePrice($ret);
+            }
+
+
             //$this->shipping_qwqer->
             if (isset($address)){
-                unset($ret['destinations'][0]['address']);
-                $ret['destinations'][0]['address'] = $address;
+                //unset($ret['destinations'][0]['address']);
+                //$ret['destinations'][0]['address'] = $address;
             }
 
             if ($ret){
-                $json = $ret;
+                $json['delivery'] = $ret;
+                $json['price'] = $price['data'];
                 $this->session->data['qwqer'] = $ret;
+                $this->session->data['qwqer_price'] = $price;
             }else{
                 $json = ['error'=>'checking error'];
             }

@@ -50,6 +50,7 @@ class ModelExtensionShippingQwqer extends Model {
         $this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "qwqer_data`");
     }
 
+    //generate a valid object and sends it to a QwQer library object generator
     public function generateOrderObject($order_info){
         $address = array();
         foreach ($order_info as $key=>$value){
@@ -65,6 +66,9 @@ class ModelExtensionShippingQwqer extends Model {
         $delivery_type = str_replace('qwqer.','',$address['code']);
         $delivery_types = $this->shipping_qwqer->getDeliveryTypes();
         $address['telephone']=$order_info['telephone'];
+        if (isset($order_info['qwqer'])){
+            $address['qwqer'] = $order_info['qwqer'];
+        }
         $ret = $this->shipping_qwqer->generateOrderObjects($address,array($delivery_types[$delivery_type]));
         if (isset($ret[0])){
             return $ret[0];
