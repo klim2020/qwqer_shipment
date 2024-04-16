@@ -56,12 +56,12 @@ const fetchDataTerminals = (val) => {
     let token = window.shipping_qwqer.token
     let formdata = new FormData();
 
-    formdata.append("qwqer_address", address.name);
+    formdata.append("qwqer_address", JSON.stringify(address));
     formdata.append("qwqer_phone", phone);
     formdata.append("qwqer_name", name);
     formdata.append("qwqer_type", orderType);
    
-    //console.log(formdata);
+    console.log(address);
 
     var requestOptions = {
       method: 'POST',
@@ -75,7 +75,7 @@ const fetchDataTerminals = (val) => {
         return data;
     })
     console.log(ret);
-    if ('client_price' in ret){
+    if ('price' in ret && 'client_price' in ret.price){
         return ret;
     }
     

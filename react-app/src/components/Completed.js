@@ -39,7 +39,7 @@ export default function Complete({form}) {
             <p>{t("text_name")}:{form.inputName}</p>
             <p>{t("text_address")}:{form.inputAddress.name}</p>
             <p>{t("text_phone")}:{form.phone}</p>
-            <p>{t("text_price")}:{(form.callbackObject.client_price / 100).toFixed(2)}</p>
+            <p>{t("text_price")}:{(form.callbackObject.price.client_price / 100).toFixed(2)}</p>
           </div>
 
         </Box>

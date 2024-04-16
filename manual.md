@@ -19,6 +19,8 @@
 
 ## Installation
 
+   ***This module requires EUR currency or your store ***
+
    1.**Download** realease using [Opencart marketplace](https://www.opencart.com/index.php?route=marketplace/extension/info&member_token=c49bd63f358f8de3e70897b531b7c108&extension_id=45603) or  [Release section](https://github.com/klim2020/qwqer_shipment/releases)
 
    2.**Install** module using simple Installation process, navigate to your admin panel *Extension-> Installer* then click on ***install*** button and install  extension
