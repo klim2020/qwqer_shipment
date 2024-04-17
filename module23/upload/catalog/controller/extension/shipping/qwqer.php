@@ -91,8 +91,16 @@ class ControllerExtensionShippingQwqer extends Controller {
                 $json['price'] = $price['data'];
                 $this->session->data['qwqer'] = $ret;
                 $this->session->data['qwqer_price'] = $price;
+
             }else{
                 $json = ['error'=>'checking error'];
+            }
+
+            $chk_t = $this->config->get('qwqer_checkout_type');
+            if ($chk_t == 1 && $ret['real_type'] == "ExpressDelivery"){
+                $json['forcereload'] = true;
+            }else{
+                $json['forcereload'] = false;
             }
 
         }

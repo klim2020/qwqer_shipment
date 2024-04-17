@@ -3,9 +3,9 @@
 //https://docs.google.com/spreadsheets/d/14CbGIfTyk_SS5M1Twu7_jOHW9aDlhiAGq5ekc8P29t4/edit#gid=0
 
 $_['text_title']                       = 'QWQER доставка';
-$_['text_title_ScheduledDelivery']     = 'Доставка сегодня вечером (18:00-22:00)';
-$_['text_title_ExpressDelivery']       = 'ЭКСПРЕС доставка (90 мин)';
-$_['text_title_OmnivaParcelTerminal']  = 'Доставка в Омнива пакомат сегодня вечером (18:00-22:00)';
+$_['text_title_ScheduledDelivery']     = 'Сегодня вечером (18:00-22:00)';
+$_['text_title_ExpressDelivery']       = 'ЭКСПРЕС (90 мин)';
+$_['text_title_OmnivaParcelTerminal']  = 'Доставка в пакомат сегодня вечером (18:00-22:00)';
 $_['text_select_box']                  = 'Введите адрес или ИД';
 $_['message_status_order_success']     = 'QWQER статус: ✅ Заказ успешно опубликован';
 $_['message_status_order_error']       = 'QWQER статус: ❌ Заказ не удалось опубликовать';

@@ -18,6 +18,7 @@ const fetchDataTerminals = (val) => {
       })
     });
   }
+
   //todo remove oc23 in prod
   const fetchDataAddress = async (val) => {
     let token = window.shipping_qwqer.token

@@ -155,13 +155,24 @@ class ModelExtensionShippingQwqer extends Model {
                          $key_r = mb_strtolower($type);
                          $template = $this->load->view('extension/shipping/qwqer', array('text_title_order_type' => $type, 'langs'=>$lang));
                          $price = $this->currency->convert(300 / 100, 'EUR', $this->config->get('config_currency'));
+                         if ($key_r=='expressdelivery'){
+    //this logic is aimed to show price on next rerender after widget asks for reloading after right price have come to widget
+                             if (isset($this->session->data['qwqer_price'])
+                                 &&( (isset($this->request->post['shipping_qwqerd']['removeprice']) && $this->request->post['shipping_qwqerd']['removeprice'] == 0 )
+                                 || (isset($this->request->get['qwqer_show_price']) && $this->request->get['qwqer_show_price'] ==1))){
+                                 $price = $this->currency->convert($this->session->data['qwqer_price']['data']['client_price'] / 100, 'EUR', $this->config->get('config_currency'));
+                             }else{
+                                 $price = 0;
+                                 unset($this->session->data['qwqer_price']);
+                             }
+                         }
                          $quote_data[$key_r] = array(
                              'code' => 'qwqer.' . $key_r,
                              'title' => $template,
-                             'cost' => ($key_r!=='expressdelivery')?$price:"0",//$this->currency->convert(300 / 100, 'EUR', $this->config->get('config_currency')),
+                             'cost' =>  $price,//$this->currency->convert(300 / 100, 'EUR', $this->config->get('config_currency')),
                              'tax_class_id' => $this->config->get('qwqer_tax_class_id'),
 
-                             'text' => ($key_r!=='expressdelivery')?$this->currency->format($price,  $this->session->data['currency'], $this->config->get('config_tax')):"",
+                             'text' => ($price)?$this->currency->format($price,  $this->session->data['currency'], $this->config->get('config_tax')):"",
                          );
                      }
 

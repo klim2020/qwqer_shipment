@@ -5,6 +5,7 @@
 <input name="shipping_qwqerd[name]"  type='hidden'/>
 <input name="shipping_qwqerd[phone]"  type='hidden'/>
 <input name="shipping_qwqerd[response]"  type='hidden'/>
+<input name="shipping_qwqerd[removeprice]"  type='hidden'/>
 
 <script>
 //load css and js programaticly
@@ -32,6 +33,8 @@
                 document.getElementsByTagName("head")[0].appendChild(fileref);
             }
         }
+
+
 
    loadjscssfile("catalog/view/stylesheet/qwqer/shipping_qwqer.css", "css","accss");
    loadjscssfile("catalog/view/javascript/qwqer/shipping_qwqer.js", "js","acjs");
@@ -63,13 +66,37 @@
         return false;
     }
     window.shipping_qwqer.insertQwqer = (name, phone, address, object) => {
-        document.querySelector('input[name="shipping_qwqerd[name]"]').value = name;
-        document.querySelector('input[name="shipping_qwqerd[phone]"]').value = phone;
-        document.querySelector('input[name="shipping_qwqerd[address]"]').value = address;
+        document.querySelector('input[name="shipping_qwqerd[name]"]').value     = name;
+        document.querySelector('input[name="shipping_qwqerd[phone]"]').value    = phone;
+        document.querySelector('input[name="shipping_qwqerd[address]"]').value  = address;
         document.querySelector('input[name="shipping_qwqerd[response]"]').value = JSON.stringify(object);
+        let qwqer_obj = object;
+        qwqer_obj.selecter = window.shipping_qwqer.getSource();
     }
     window.shipping_qwqer.url = '<?php echo $url; ?>';
+    //sets the price removal from a back end side on a next rere
     //mount scripts
+    window.shipping_qwqer.setRemovePrice = (val)=>{
+        document.querySelector('input[name="shipping_qwqerd[removeprice]"]').value = val;
+    }
+    window.shipping_qwqer.insertUrlParam = (key, value) => {
+        if (history.pushState) {
+            let searchParams = new URLSearchParams(window.location.search);
+            searchParams.set(key, value);
+            let newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + searchParams.toString();
+            window.history.pushState({path: newurl}, '', newurl);
+        }
+    }
+
+    // to remove the specific key
+    window.shipping_qwqer.removeUrlParameter = (paramKey) => {
+        const url = window.location.href
+        var r = new URL(url)
+        r.searchParams.delete(paramKey)
+        const newUrl = r.href
+        window.history.pushState({ path: newUrl }, '', newUrl)
+    }
+
 
     document.querySelector("#acjs").addEventListener("load",()=>{
 

@@ -52,6 +52,8 @@
 
       -*Company Phone Number* - Needs to be mobile, the phone number of your store, by this number couriers can connect with you in case something went wrong
 
+      -*Set type of checkout module* - You need to set checkout module, this is required if you are using modules like SimpleCheckout.
+
    
 
    After succesful instalation, plus icon will change to pensil button, that means now you can edit module settings, So press "edit(pensil)" button:

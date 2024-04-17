@@ -24,6 +24,7 @@ class ControllerExtensionShippingQwqer extends Controller {//
 
 	public function index() {
 
+
         $this->load->model('extension/shipping/qwqer');
 
         if($this->shipping_qwqer->healthCheck()==false){
@@ -176,6 +177,8 @@ class ControllerExtensionShippingQwqer extends Controller {//
                         'text_working_from',
                         'text_working_to',
                         'text_address_link',
+                        'text_checkout_type',
+                        'help_checkout_type'
             );
         foreach ($langs_values as $lang){
             $data[$lang] = $this->language->get($lang);
@@ -397,7 +400,18 @@ class ControllerExtensionShippingQwqer extends Controller {//
             $data['qwqer_is_prod'] = $this->config->get('qwqer_is_prod');
         }
 
+        if (isset($this->request->post['qwqer_checkout_type'])) {
+            $data['qwqer_checkout_type'] = $this->request->post['qwqer_checkout_type'];
+        } else {
+            $data['qwqer_checkout_type'] = $this->config->get('qwqer_checkout_type');
+        }
 
+        $checkout_types = array();
+        foreach ($this->shipping_qwqer->getCheckoutTypes() as $key=>$type){
+            $val = 'checkout_type_'.$type;
+            $checkout_types[$key] = $this->language->get($val);
+        }
+        $data['qwqer_checkout_types'] = $checkout_types;
 
         //statuses options
         $this->load->model('localisation/stock_status');

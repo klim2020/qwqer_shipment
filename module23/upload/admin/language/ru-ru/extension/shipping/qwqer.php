@@ -81,3 +81,8 @@ $_['text_working_day']          = 'Рабочий день';
 $_['text_working_from']         = 'от';
 $_['text_working_to']           = 'до';
 $_['text_address_link']         = 'ссылка';
+
+$_['checkout_type_standart']    = 'Стандартная форма';
+$_['checkout_type_simple']      = 'Модуль simple Checkout';
+$_['text_checkout_type']        = 'Выберите тип оформления заказа';
+$_['help_checkout_type']        = 'Выбрите установленный модуль оформления заказа';

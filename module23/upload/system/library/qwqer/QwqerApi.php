@@ -11,6 +11,11 @@ use Cache;
  */
 class QwqerApi {
 
+    private $checkout_types = array(
+        'standart',//standart
+        'simple'//simplecheckout
+    );
+
 
     /**
      * @link https://qwqer-api-docs.netlify.app/api/resources/enumerations#delivery-order-categories
@@ -679,6 +684,14 @@ class QwqerApi {
             $clientOwnerAddress["phone"] = $shipping_phone;
         }
         return  $clientOwnerAddress;
+    }
+
+
+    /** get all checkout types
+     * @return string[]
+     */
+    public function getCheckoutTypes(){
+        return $this->checkout_types;
     }
 
 }

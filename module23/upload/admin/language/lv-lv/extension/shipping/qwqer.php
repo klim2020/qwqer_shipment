@@ -80,3 +80,8 @@ $_['text_working_day']          = 'Working day';
 $_['text_working_from']         = 'from';
 $_['text_working_to']           = 'to';
 $_['text_address_link']         = 'Link';
+
+$_['checkout_type_standart']    = 'Standart checkout';
+$_['checkout_type_simple']      = 'Simple checkout';
+$_['text_checkout_type']        = 'Choose checkout type';
+$_['help_checkout_type']        = 'select installed checkout module';

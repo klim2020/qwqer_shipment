@@ -336,6 +336,22 @@
                           </div>
 
                           <div class="form-group">
+                              <label class="col-sm-2 control-label" for="input-status"><span data-toggle="tooltip" title="" data-original-title="<?php echo $help_checkout_type; ?>"><?php echo  $text_checkout_type; ?></span></label>
+                              <div class="col-sm-10">
+                                  <select name="qwqer_checkout_type" id="input-is-prod" class="form-control">
+                                      <?php foreach ($qwqer_checkout_types as $key=>$checkout_type) {?>
+                                           <?php if ($qwqer_checkout_type == $key) {?>
+                                              <option value="<?php echo $key; ?>" selected="selected"><?php echo $checkout_type; ?></option>
+                                           <?php }else{?>
+                                              <option value="<?php echo $key; ?>"><?php echo $checkout_type; ?></option>
+                                           <?php } ?>
+                                      <?php } ?>
+
+                                  </select>
+                              </div>
+                          </div>
+
+                          <div class="form-group">
                             <label class="col-sm-2 control-label" for="input-sort-order"><?php echo  $entry_sort_order; ?></label>
                             <div class="col-sm-10">
                               <input type="text" name="qwqer_sort_order" value="<?php echo $qwqer_sort_order; ?>" placeholder="<?php echo $entry_sort_order; ?>" id="input-sort-order" class="form-control" />

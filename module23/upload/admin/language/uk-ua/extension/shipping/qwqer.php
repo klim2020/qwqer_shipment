@@ -68,3 +68,6 @@ $_['ExpressDelivery']           = 'Экспресс доставка';
 $_['text_address']              = 'Адрес';
 $_['entry_hide_status']         = 'Скрыть доставку при статусе товара';
 $_['text_not_created']          = 'Не создан';
+
+$_['checkout_type_standart']    = 'Standart checkout';
+$_['checkout_type_simple']      = 'Simple checkout';
