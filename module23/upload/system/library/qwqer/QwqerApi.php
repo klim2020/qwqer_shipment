@@ -11,6 +11,11 @@ use Cache;
  */
 class QwqerApi {
 
+    private $delivery_static_cost = array(
+        'scheduleddelivery' => 300,
+        'omnivaparcelterminal' => 300,
+    );
+
     private $checkout_types = array(
         'standart',//standart
         'simple'//simplecheckout
@@ -34,18 +39,12 @@ class QwqerApi {
     );
 
     public $type_map = array(
-        'qwqer.expressdelivery'=>"ExpressDelivery",
-        'qwqer.scheduleddelivery'=>"ScheduledDelivery",
+        'qwqer.expressdelivery'     =>"ExpressDelivery",
+        'qwqer.scheduleddelivery'   =>"ScheduledDelivery",
         'qwqer.omnivaparcelterminal'=>"OmnivaParcelTerminal",
     );
 
-    /**
-     * @return string[]
-     */
-    public function getOrderCategories()
-    {
-        return $this->order_categories;
-    }
+    private  $token;
 
     /**Order types
      *
@@ -57,52 +56,10 @@ class QwqerApi {
         'OmnivaParcelTerminal',
     );
 
-    /**
-     * @return string[]
-     */
-    public function getDeliveryTypes()
-    {
-        return $this->delivery_types;
-    }
-
-    private  $token;
-
-    /**
-     * @return mixed
-     */
-    public function getToken()
-    {
-        return $this->token;
-    }
-
-    /**
-     * @param mixed $token
-     */
-    public function setToken($token)
-    {
-        $this->token = $token;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getTradePt()
-    {
-        return $this->trade_pt;
-    }
-
-    /**
-     * @param mixed $trade_pt
-     */
-    public function setTradePt($trade_pt)
-    {
-        $this->trade_pt = $trade_pt;
-    }
     private $registry;
     private  $trade_pt;
-//test
+
     private  $entry_url = "https://qwqer.hostcream.eu";
-//real
     private  $entry_url_real = "https://api.qwqer.lv";
     
     private  $weburl                = "/api/v1";
@@ -110,14 +67,6 @@ class QwqerApi {
     private $getInfoUrl             = "";
 
     private $prefix                 = "/plugins/open-cart";
-
-    /**
-     * @return string
-     */
-    public function getWeburl(): string
-    {
-        return $this->entry_url;
-    }
     private  $autocompleteUrl       = '/places/autocomplete';
     private  $geoCodeUrl            = '/places/geocode';
     private  $getPriceUrl           = '/clients/auth/trading-points/{trading_points}/delivery-orders/get-price';
@@ -164,7 +113,76 @@ class QwqerApi {
         //add opencart submodules
         $this->db       = $registry->get('db');
         $this->config   = $this->registry->get('config');
+        $this->session  = $this->registry->get('session');
+        $this->response  = $this->registry->get('response');
         
+    }
+
+    /** Getters **/
+
+    /** get all checkout types
+     * @return string[]
+     */
+    public function getCheckoutTypes(){
+        return $this->checkout_types;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getOrderCategories()
+    {
+        return $this->order_categories;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getDeliveryTypes()
+    {
+        return $this->delivery_types;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTradePt()
+    {
+        return $this->trade_pt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWeburl(): string
+    {
+        return $this->entry_url;
+    }
+
+    /** SETTERS **/
+
+    /**
+     * @param mixed $trade_pt
+     */
+    public function setTradePt($trade_pt)
+    {
+        $this->trade_pt = $trade_pt;
+    }
+
+    /**
+     * @param mixed $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
     }
 
 
@@ -192,43 +210,6 @@ class QwqerApi {
     }
 
 
-    /** Generate order object this is array for all delivery options, take a look at $delivery_types array
-     * @param $address
-     * @return array
-     */
-    public function generateOrderObjects($address, $delivery_objects=array()){
-
-        $api_key  = $this->token;
-        $trade_pt = $this->trade_pt;
-
-        //store owner info
-       $storeOwmerObject = $this->generateStoreOwnerObject();
-
-       $shipping_category = $this->order_categories[$this->registry->get('config')->get('qwqer_trade_cat')];
-
-        //Client Shipping info
-
-        $clientObject = $this->generateClientOwnerObject($address);
-
-
-        //Creating all needed objects
-        foreach ($delivery_objects as $delivery_type){
-            if($delivery_type){
-                $data_orders[] = array(
-                    'type' => 'Regular',
-                    'category' => $shipping_category,
-                    'real_type' => $delivery_type,
-                    'origin' => $storeOwmerObject,
-                    'destinations' => [$clientObject],
-                );
-            }
-
-        }
-
-        return  $data_orders;
-
-    }
-
     /** check Health of module, databases, etc.
      * prevents crashes
      * @return void
@@ -244,7 +225,7 @@ class QwqerApi {
         return true;
     }
 
-    //!!!Api
+    /** Api QWQER **/
 
     /**  Geocode for  place
      * @link https://qwqer-api-docs.netlify.app/api/endpoints/places#address-geocoding
@@ -276,7 +257,6 @@ class QwqerApi {
         $response = json_decode($response,true);
         return $response;
     }
-
 
 
     /** calculate price for a delivery
@@ -614,6 +594,43 @@ class QwqerApi {
 
     /** Generators **/
 
+    /** Generate order object this is array for all delivery options, take a look at $delivery_types array
+     * @param $address
+     * @return array
+     */
+    public function generateOrderObjects($address, $delivery_objects=array()){
+
+        $api_key  = $this->token;
+        $trade_pt = $this->trade_pt;
+
+        //store owner info
+        $storeOwmerObject = $this->generateStoreOwnerObject();
+
+        $shipping_category = $this->order_categories[$this->registry->get('config')->get('qwqer_trade_cat')];
+
+        //Client Shipping info
+
+        $clientObject = $this->generateClientOwnerObject($address);
+
+
+        //Creating all needed objects
+        foreach ($delivery_objects as $delivery_type){
+            if($delivery_type){
+                $data_orders[] = array(
+                    'type' => 'Regular',
+                    'category' => $shipping_category,
+                    'real_type' => $delivery_type,
+                    'origin' => $storeOwmerObject,
+                    'destinations' => [$clientObject],
+                );
+            }
+
+        }
+
+        return  $data_orders;
+
+    }
+
     public function generateStoreOwnerObject(){
         $store_info  = json_decode( html_entity_decode( stripslashes ($this->registry->get('config')->get('qwqer_address_object' ) ) ), true );
         //Pickup address wasnt added in admin dashboard
@@ -686,12 +703,28 @@ class QwqerApi {
         return  $clientOwnerAddress;
     }
 
-
-    /** get all checkout types
-     * @return string[]
+    /** Generates a delivery cost for different types of deliveries
+     *  All generation login is stored here
+     * @param $deliveryType - $delivery_types array
+     * @param $params
+     * @return void
      */
-    public function getCheckoutTypes(){
-        return $this->checkout_types;
+    public function generateDeliveryCost($deliveryType, $params = array()){
+        $deliveryType = mb_strtolower(str_replace('.','',$deliveryType));
+        if (array_key_exists($deliveryType,$this->delivery_static_cost)){
+            $price = $this->delivery_static_cost[$deliveryType];
+        }else{
+            if (isset($this->session->data['qwqer_price'])
+                && isset($this->session->data['qwqer_price'][$deliveryType])) {
+
+                $price = $this->session->data['qwqer_price'][$deliveryType];
+            }else{
+                $price = 0;
+            }
+        }
+        return $price;
+
     }
+
 
 }

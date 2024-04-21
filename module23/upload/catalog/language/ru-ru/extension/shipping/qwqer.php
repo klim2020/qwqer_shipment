@@ -27,3 +27,5 @@ $_['qw_text_submit']                   = 'Подать';
 $_['qw_text_submit_success']           = 'Все данные действительны';
 $_['qw_text_select_city']              = 'Пожалуйста, выберите город';
 $_['qw_text_loading']                  = 'Загрузка...';
+
+$_['qw_text_noopts']                    = 'Нет вариантов';

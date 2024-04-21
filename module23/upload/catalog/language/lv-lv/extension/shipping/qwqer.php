@@ -26,3 +26,5 @@ $_['qw_text_submit']                     = 'Iesniegt';
 $_['qw_text_submit_success']             = 'Visi dati ir derīgi';
 $_['qw_text_select_city']                = 'Lūdzu, izvēlieties pilsētu';
 $_['qw_text_loading']                    = 'Ielādējas...';
+
+$_['qw_text_noopts']                    = 'Nav variantu';

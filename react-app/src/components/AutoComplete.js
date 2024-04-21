@@ -9,10 +9,12 @@ import { useLanguage } from '../providers/LanguageProvider';
 
 import { fetchDataAddress, fetchDataTerminals } from './../transport/transport';
 
+import { debounce } from '@mui/material/utils';
+
 
 //filters terminals
-function filterTerminal(terminals,value){
-  return terminals.filter(terminal=>`${terminal.id} ${terminal.name})`.match(value)!== null)
+function filterValue(opts,value){
+  return opts.filter(opt=>`${opt.id} ${opt.name})`.match(value)!== null)
 }
 
 AutoComplete.prototypes={
@@ -25,20 +27,57 @@ export default function AutoComplete({onValueChange}) {
   const [open, setOpen] = React.useState(false);
 //array with substitution elements  
   const [options, setOptions] = React.useState([]);
+
 //loading state when autocomplete  is loading data
   const [loading,setLoading] = React.useState(open && options.length === 0)
+
+//loading = false && open == true && opts == []  == no data
+//loading == true && open == true && opts == []  == loading .... 
+
 
 //source that is responsible for switching fetching functions,    
   const [source, setSource] = React.useState("");//terminals address
  
   const { t } = useLanguage();
 
+  //funcion responsible for appearence
+
+  const showSpinner = ()=>{
+    setLoading(true);
+    setOpen(true);
+    setOptions([]);
+  }
+  
+  const showNoData = ()=>{
+    setLoading(false);
+    setOpen(true);
+    setOptions([]);
+  }
+
+  const showData = (v)=>{
+
+    if (v){
+      console.log("showData - showing data")
+      console.log(v)
+      setLoading(false);
+      setOpen(true);
+      setOptions(v);
+    }else{
+      console.log("showData - showing nodata data")
+      console.log(v)
+      showNoData();
+    }
+    
+  }
+
+  const hideDropdown = () => {
+    setOpen(false);
+    setLoading(false)
+  }
 
   //loading state logic
-  React.useEffect(()=>{
-    setLoading(open && options.length === 0);
-  },[open,options])
 
+  
 
 
   //bind with html events
@@ -68,6 +107,13 @@ export default function AutoComplete({onValueChange}) {
     }
   },[])
 
+//close if opened
+  React.useEffect(() => {
+    if (open){
+      setOpen(false);
+    }
+  },[])
+
   //check and set source
   React.useEffect(()=>{
     let ret = window.shipping_qwqer.getSource()
@@ -81,63 +127,82 @@ export default function AutoComplete({onValueChange}) {
     }
   },[])
 
-//run fetch first time
-  React.useEffect(() => {
-    (async () => {
-      let ret = [];
-      //console.log(source);
-      if (source === "terminals"){
-        ret = await fetchDataTerminals(''); // For demo purposes)
-      }else if(source === "address"){
-        ret = await fetchDataAddress('');
-        ret = filterTerminal(ret,/riga,/gmi);
-      }else{
-        ret = [];
-      }
-      setOptions(ret);
-    })();
-  },[source]);
 
 
 //element selected 
   const onSelect = (e,v) => {
     //emit value change
     onValueChange(v);
+    hideDropdown();
   }
 
+  //wrapping debounce effect + fetching data into memo
+  const fetch = React.useMemo(
+    () =>
+      debounce((val) => {
+        console.log('we are inside debounce')
+        if(source === "address"){
+          showSpinner();
+          console.log('we are inside debounce->address')
+          fetchDataAddress(val).then((v)=>{
+            console.log('inside debounce address we fetched');
+            console.log(v);
+            showData(v);
+          })
+        }
+
+        if(source === "terminals"){
+          showSpinner();
+          console.log('we are inside debounce->terminals')
+          fetchDataTerminals(val).then((v)=>{
+            console.log('inside debounce terminals we fetched');
+            console.log(v);
+            showData(v)
+          })
+        }
+      }, 400),
+    [source],
+  );
 
 //reload on text input
-  const onChangeText = (ev,val)=>{
-    
-    if(source === "address"){
-      //start loading state
+  const onChangeText = (e,val)=>{
+    console.log("onChangeText type")
+    console.log(e.type)
+    if (val.length >= 1
+       && e && e.type !== 'click'){
+        //prevent onSelect propagation
+      console.log('before  fetching')
       setOptions([]);
+      setLoading(true);
       setOpen(true);
-      //console.log("refrtching "+val)
-      fetchDataAddress(val).then((v)=>{
-        let out = filterTerminal(v,/riga/gmi);
-        setOptions(out)
-      });
+      fetch(val);
     }
   }
+  
   
 
   return (
     <Autocomplete
+      clearOnBlur={false} //vanish on click outside
+      
+      loadingText = {t('qw_text_loading')}
+      noOptionsText={t('qw_text_noopts')}
+      sx={{ width: "100%",
+          "& .MuiFilledInput-input":{padding:"15px 0px !important"},
+          "& .MuiInputBase-root":{paddingTop:"0px !important"}}}
       fullWidth
       id="asynchronous-demo"
-      sx={{ width: "100%" }}
       open={open}
       required={true}
-      onOpen={() => {
-        setOpen(true);
-      }}
-      name="blabla21"
-      filterSelectedOptions
-      onClose={() => {
-        setOpen(false);
-      }}
+
+      onBlur =  {(event) => {
+              if (open){
+                setOpen(false);
+              }
+            }}
+
       
+
       onChange = {onSelect}
       onInputChange = {onChangeText}
       getOptionLabel={(option) => {
@@ -149,21 +214,26 @@ export default function AutoComplete({onValueChange}) {
       }}
       options={options}
       loading={loading}
+
       renderInput={(params) => (
-        <TextField
+        <TextField 
+        sx = {{marginBottom:"5px",fontSize: '22px'}}
+        color="secondary"
+        variant="filled"
           {...params}
           
           InputProps={{
             ...params.InputProps,
             endAdornment: (
               <React.Fragment>
-                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                {loading ? <CircularProgress color="secondary" size={20} /> : null}
                 {params.InputProps.endAdornment}
               </React.Fragment>
             ),
           }}
         />
       )}
+
     />
   );
 

@@ -6,6 +6,10 @@ import CheckIcon from '@mui/icons-material/Check';
 import Box from "@mui/material/Box";
 import PropTypes from 'prop-types';
 import { useLanguage } from '../providers/LanguageProvider';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+
 
 //msg box component
 
@@ -17,7 +21,7 @@ Complete.prototypes={
   form:PropTypes.object,
 }
 
-export default function Complete({form}) {
+export default function Complete({form, onClose}) {
 
   const { t } = useLanguage();
   
@@ -31,17 +35,24 @@ export default function Complete({form}) {
             marginTop: 1,
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
+            alignItems: "left",
           }}
         >
-          <Alert icon={<CheckIcon fontSize="inherit" />}  severity="success">{t("qw_text_submit_success")}</Alert>
+          <Alert sx = {{alignItems:"center", padding:"0px 16px"}} icon={<CheckCircleOutlineIcon fontSize="inherit" />} action={
+            <IconButton aria-label="close" onClick={onClose}  color="error">
+              <CloseIcon color="error"/>
+            </IconButton>
+          }
+           
+          severity="success">
+            {t("qw_text_submit_success")}
+            </Alert>
           <div style={{textAlign:"left"}}>
             <p>{t("text_name")}:{form.inputName}</p>
             <p>{t("text_address")}:{form.inputAddress.name}</p>
             <p>{t("text_phone")}:{form.phone}</p>
-            <p>{t("text_price")}:{(form.callbackObject.price.client_price / 100).toFixed(2)}</p>
           </div>
-
+          
         </Box>
     );
 }

@@ -65,6 +65,7 @@
         }
         return false;
     }
+    window.shipping_qwqer.currentPrice = '<?php echo $current_price;?>';
     window.shipping_qwqer.insertQwqer = (name, phone, address, object) => {
         document.querySelector('input[name="shipping_qwqerd[name]"]').value     = name;
         document.querySelector('input[name="shipping_qwqerd[phone]"]').value    = phone;
@@ -79,6 +80,17 @@
     window.shipping_qwqer.setRemovePrice = (val)=>{
         document.querySelector('input[name="shipping_qwqerd[removeprice]"]').value = val;
     }
+
+    window.shipping_qwqer.reload = (params)=>{
+        //reload logic
+        if (params){
+            Object.entries(params).forEach((k,v)=>{
+                window.shipping_qwqer.insertUrlParam(k,v)
+            })
+        }
+        window.location.reload();
+    }
+
     window.shipping_qwqer.insertUrlParam = (key, value) => {
         if (history.pushState) {
             let searchParams = new URLSearchParams(window.location.search);

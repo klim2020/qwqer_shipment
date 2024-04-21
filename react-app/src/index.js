@@ -7,9 +7,28 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 //import { createTheme } from '@mui/material/styles';
 
+
+
 const theme = createTheme({
+  palette: {
+    secondary: {
+      main: '#8373ce',
+      contrastText: "#ffff !important"
+    },
+  },
+  typography: {
+    fontFamily: [
+      'Roboto',
+      'Arial',
+      'sans-serif',
+    ].join(','),
    
+  },
+  padding: 0,
   });
+
+  
+  
 
 
 const root = ReactDOM.createRoot(document.getElementById('shipping_qwqer_mount'));

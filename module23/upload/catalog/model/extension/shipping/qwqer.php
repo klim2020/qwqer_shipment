@@ -57,122 +57,18 @@ class ModelExtensionShippingQwqer extends Model {
                  $width = 0;
                  $height = 0;
                      $data_types = $this->shipping_qwqer->getDeliveryTypes();
-                     //if (!count($data_orders)) {
-                     //    return array();
-                     //}
-                     //foreach ($data_orders as $key => $data_order) {
-                     //    $params = array();
-                     //    if ($data_order['real_type'] == "OmnivaParcelTerminal") {
-                     //        $params['parcel_size'] = 'L';
-                     //    }
-                     //    $ret = $this->shipping_qwqer->calculatePrice($data_order, $params);
-                     //    if (isset($ret['error'])) {
-                     //        continue;
-                     //    }
-                     //    $prices[$key] = $ret;
-                     //}
-                     //if there are no services available
-                     //if (!count($prices)) {
-                     //    return array();
-                     //}
-
-                     //$data = array();
-
-                     //foreach ($prices as $key => $price) {
-                     //    if (!isset($price['data']["real_type"])) {
-                     //        continue;
-                     //    }
-                     //    $var = $this->language->get('text_title_' . $price['data']["real_type"]);
-                     //    $key_r = mb_strtolower($price['data']["real_type"]);
-                     //    if ($key_r == 'omnivaparcelterminal' && $this->request->get['route'] != 'api/shipping/methods') {
-                     //        $terminals = $this->shipping_qwqer->getParcelTerminals();
-                     //        if (isset($terminals['data']["omniva"]) && $terminals['data']["omniva"]) {
-                     //            //$this->document->addStyle('catalog/view/stylesheet/qwqer/autocomplete.min.css');
-                     //            $order_id = false;
-                     //            if (isset($this->session->data['order_id'])) {
-                     //                $order_id = $this->session->data['order_id'];
-                     //            }
-                     //            $s_id = false;
-//
-                     //            if (isset($this->request->post["autoComplete"])) {
-                     //                $autocomplete = $this->request->post["autoComplete"];
-                     //                $this->session->data["autoComplete"] = $autocomplete;
-                     //            } else {
-                     //                $autocomplete = '';
-                     //            }
-//
-                     //            if (isset($this->request->post["autoCompleteHidden"])) {
-                     //                $autocompletehidden = $this->request->post["autoCompleteHidden"];
-                     //                $this->session->data["autoCompleteHidden"] = $autocompletehidden;
-                     //            } else {
-                     //                $autocompletehidden = '';
-                     //            }
-//
-//
-                     //            $template = $this->load->view('extension/shipping/qwqer', array(
-                     //                'text_select_box' => $this->language->get('text_select_box'),
-                     //                'text_title_order_type' => $var,
-                     //                'terminals' => $terminals['data']["omniva"],
-                     //                'order_id' => $order_id,
-                     //                'session_id' => $s_id,
-                     //                'autocomplete' => $autocomplete,
-                     //                'autocompletehidden' => $autocompletehidden));
-                     //        } else {
-                     //            $template = $this->load->view('extension/shipping/qwqer', array('text_title_order_type' => $var));
-                     //        }
-                     //    } else {
-                            // $template = $this->load->view('extension/shipping/qwqer', array('text_title_order_type' => $var));
-                     //    }
-//
-//
-                     //    $calculate = $this->currency->convert($price['data']['client_price'] / 100, 'EUR', $this->session->data['currency']);
-                     //    $text = $this->currency->format($calculate,
-                     //        $this->session->data['currency'],
-                     //        $this->config->get('config_tax'));
-//
-                     //    $quote_data[$key_r] = array(
-                     //        'code' => 'qwqer.' . $key_r,
-                     //        'title' => $template,
-                     //        'cost' => $this->currency->convert($price['data']['client_price'] / 100, 'EUR', $this->config->get('config_currency')),
-                     //        'tax_class_id' => $this->config->get('qwqer_tax_class_id'),
-                     //        'text' => $text
-                     //    );
-                     //}
-//
-                     //if (!count($quote_data)) {
-                     //    $method_data = array();
-                     //} else {
-                     //    $method_data = array(
-                     //        'code' => 'qwqer.standart',
-                     //        'title' => $this->language->get('text_title') . '<a href = "https://qwqer.lv/" target="_blank"><img src="catalog/view/images/qwqer.svg" alt="Qwqer service home page" style="margin-left:5px"></a>',
-                     //        'quote' => $quote_data,
-                     //        'sort_order' => $this->config->get('qwqer_sort_order'),
-                     //        'error' => $error,
-                     //    );
-                     //}
                      foreach ($data_types as $type){
 
                          $key_r = mb_strtolower($type);
+                         $price = $this->shipping_qwqer->generateDeliveryCost($key_r);
                          $template = $this->load->view('extension/shipping/qwqer', array('text_title_order_type' => $type, 'langs'=>$lang));
-                         $price = $this->currency->convert(300 / 100, 'EUR', $this->config->get('config_currency'));
-                         if ($key_r=='expressdelivery'){
-    //this logic is aimed to show price on next rerender after widget asks for reloading after right price have come to widget
-                             if (isset($this->session->data['qwqer_price'])
-                                 &&( (isset($this->request->post['shipping_qwqerd']['removeprice']) && $this->request->post['shipping_qwqerd']['removeprice'] == 0 )
-                                 || (isset($this->request->get['qwqer_show_price']) && $this->request->get['qwqer_show_price'] ==1))){
-                                 $price = $this->currency->convert($this->session->data['qwqer_price']['data']['client_price'] / 100, 'EUR', $this->config->get('config_currency'));
-                             }else{
-                                 $price = 0;
-                                 unset($this->session->data['qwqer_price']);
-                             }
-                         }
                          $quote_data[$key_r] = array(
                              'code' => 'qwqer.' . $key_r,
                              'title' => $template,
-                             'cost' =>  $price,//$this->currency->convert(300 / 100, 'EUR', $this->config->get('config_currency')),
+                             'cost' =>  $price/100,//$this->currency->convert(300 / 100, 'EUR', $this->config->get('config_currency')),
                              'tax_class_id' => $this->config->get('qwqer_tax_class_id'),
 
-                             'text' => ($price)?$this->currency->format($price,  $this->session->data['currency'], $this->config->get('config_tax')):"",
+                             'text' => ($price)?$this->currency->format($price/100,  $this->session->data['currency'], $this->config->get('config_tax')):"",
                          );
                      }
 
@@ -184,10 +80,17 @@ class ModelExtensionShippingQwqer extends Model {
                      } else {
                          $url  = HTTP_SERVER;
                      }
+                     if (isset($this->session->data['shipping_method']['code'])){
+                         preg_match('/[\s*\.](.*)/m', $this->session->data['shipping_method']['code'], $matches, PREG_OFFSET_CAPTURE);
+                         $currentSelection = $matches[1][0];
+                     }else{
+                         $currentSelection = '';
+                     }
 
+                     $price = $this->shipping_qwqer->generateDeliveryCost($currentSelection);
                      $method_data = array(
                          'code' => 'qwqer.standart',
-                         'title' => $this->load->view('extension/shipping/qwqer_title', array('text_title' => $this->language->get('text_title'), 'token'=>$token, 'langs'=>$lang,'url'=>$url)),//
+                         'title' => $this->load->view('extension/shipping/qwqer_title', array('current_price'=>$price, 'text_title' => $this->language->get('text_title'), 'token'=>$token, 'langs'=>$lang,'url'=>$url)),//
                          'quote' => $quote_data,
                          'sort_order' => $this->config->get('qwqer_sort_order'),
                          'error' => $error,

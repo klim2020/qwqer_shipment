@@ -26,3 +26,5 @@ $_['qw_text_submit']                    = 'Submit';
 $_['qw_text_submit_success']            = 'All data is valid';
 $_['qw_text_select_city']               = 'Please select city';
 $_['qw_text_loading']                   = 'Loading...';
+
+$_['qw_text_noopts']                    = 'No options';

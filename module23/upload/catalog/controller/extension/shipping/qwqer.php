@@ -56,6 +56,9 @@ class ControllerExtensionShippingQwqer extends Controller {
             }
 
         }
+        if (isset($address['message']) && $address['message'] == 'Place not found'){
+            $json = [];
+        }
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($json));
     }
@@ -77,7 +80,10 @@ class ControllerExtensionShippingQwqer extends Controller {
             );
             if (isset($ret['real_type']) && $ret['real_type']=="ExpressDelivery"){
                 $price = $this->shipping_qwqer->calculatePrice($ret);
+                $key = mb_strtolower($ret['real_type']);
+                $this->session->data['qwqer_price'][$key] = $price['data']['client_price'];
             }
+
 
 
             //$this->shipping_qwqer->
@@ -90,7 +96,7 @@ class ControllerExtensionShippingQwqer extends Controller {
                 $json['delivery'] = $ret;
                 $json['price'] = $price['data'];
                 $this->session->data['qwqer'] = $ret;
-                $this->session->data['qwqer_price'] = $price;
+                //$this->session->data['qwqer_price'] = $price;
 
             }else{
                 $json = ['error'=>'checking error'];
@@ -103,6 +109,22 @@ class ControllerExtensionShippingQwqer extends Controller {
                 $json['forcereload'] = false;
             }
 
+        }
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
+    }
+
+    public function remove_session(){
+        if (!$this->validate() || $this->request->server['REQUEST_METHOD'] != 'POST'  ){
+            $json = ['error'=>'key invalid'];
+        }else{
+            $selected =     $this->request->post['selected'];
+            if ($this->request->post['selected'] && $this->session->data['qwqer_price'][$selected]){
+                unset($this->session->data['qwqer_price'][$selected]);
+                $json = ['message'=>'success','reboot'=>true];
+            }else{
+                $json = ['message'=>'fail'];
+            }
         }
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($json));

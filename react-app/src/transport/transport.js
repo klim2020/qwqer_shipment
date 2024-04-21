@@ -3,17 +3,35 @@
 //const GOOGLE_MAPS_API_KEY = 'AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8';
 
 //loading the array
+
+import config from './../config/config';
+
 //todo remove oc23 in prod
 
-let url = window.shipping_qwqer.url;
-console.log(url)
+function filterValue(opts,value){
+  return opts.filter(opt=>`${opt.id} ${opt.name})`.match(value)!== null)
+}
 
-const fetchDataTerminals = (val) => {
+let url = window.shipping_qwqer.url;
+
+const fetchDataTerminals = (val,callback) => {
+    if (window.terminals !== undefined){
+      console.log('fetching terminals with preloaded data');
+      if ('data' in window.terminals && window.terminals.data === 'key invalid'){
+        console.log('we have error keyt is invalid');
+        window.location.reload();
+      }
+      return new Promise((resolve) => {
+        let ret = filterValue(window.terminals,val)
+        resolve(ret)})
+    }
     return new Promise((resolve) => {
       let token = window.shipping_qwqer.token
       fetch(url+"index.php?route=extension/shipping/qwqer/get_terminals&qwqer_token="+token, {}).then((response) => {
          return response.json()
       }).then((data)=>{
+        console.log('event after fetching terminals')
+         window.terminals = data;
          resolve(data)
       })
     });
@@ -41,6 +59,10 @@ const fetchDataTerminals = (val) => {
    ret = ret.map((v,i)=>{
     return {id:i,name:v}
    })
+   let out = filterValue(ret,config.filter.rigaOnly);
+   if (out.length>0){
+    return out;
+   }
    //console.log(ret);
    return ret;
   }
@@ -84,4 +106,29 @@ const fetchDataTerminals = (val) => {
   }
 
 
-  export {fetchDataAddress, fetchDataTerminals, fetchValidate}
+    /** Removes session price  from session storage
+   * 
+   * inputAddress
+   * setPhone
+   * inputName
+   * 
+  */
+  const removeSessionValue = async (selected)=>{
+    let token = window.shipping_qwqer.token
+    let formdata = new FormData();
+    formdata.append("selected", selected);
+    var requestOptions = {
+      method: 'POST',
+      body: formdata,
+      redirect: 'follow'
+    };
+    const response =  await fetch(url+"index.php?route=extension/shipping/qwqer/remove_session&qwqer_token="+token, requestOptions)
+    const data =  await response.json();
+    if (response.status === 200 && data.message === "success"){
+      return data;
+    }
+    return false;
+  }
+
+
+  export {fetchDataAddress, fetchDataTerminals, fetchValidate, removeSessionValue}

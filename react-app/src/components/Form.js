@@ -31,7 +31,7 @@ Form.prototypes = {
 
 export default function Form({ OnSetForm }) {
   //name state
-  const [inputName, setInput] = React.useState('');
+  const [inputName, setInput] = React.useState('not provided');
   //address state
   const [inputAddress, setInputAddress] = React.useState({});
   //phone state
@@ -67,7 +67,13 @@ export default function Form({ OnSetForm }) {
           //shows submit message
           //setSubmit(true);
           //hides loading  indicator
-          setLoading(false);
+
+          // continue loading is express  App.js will reboot in few sec...
+          if (window.shipping_qwqer.getSource() !== "qwqer.expressdelivery"){
+            setLoading(false);
+          }
+
+          
           //emits state with OnSetForm prop
           OnSetForm({inputName:inputName,inputAddress:inputAddress,phone:phone,callbackObject:ok});
           //console.log({inputName:inputName,inputAddress:inputAddress,phone:phone});
@@ -88,7 +94,7 @@ export default function Form({ OnSetForm }) {
 //clears form on changing radio button  
   const bindHtmlEvent = (e)=>{
     if (e.detail !== false){
-      setInput('');    
+      setInput('not provided');    
       setPhone('');
       setInputAddress({});
       OnSetForm({})
@@ -102,6 +108,19 @@ export default function Form({ OnSetForm }) {
       window.shipping_qwqer.removeEventListener('select', bindHtmlEvent)
     }
   },[]);
+
+  //get fields from standard input
+  React.useEffect(()=>{
+    const name = document.querySelector('input[name="payment_address.firstname"]').value;
+    const phone = document.querySelector('input[name="payment_address.telephone"]').value;
+
+    if (name){
+      setInput(name)
+    }
+    if (matchIsValidTel(phone, { onlyCountries: ["LV"] })){
+      setPhone(phone)
+    }
+  },[])
 
 
   //validators
@@ -125,13 +144,15 @@ export default function Form({ OnSetForm }) {
   };
 
 
+  
+
 
   return (
     <>
       {loading && (
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 2,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -144,37 +165,24 @@ export default function Form({ OnSetForm }) {
       {!loading && (
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 2,
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
+            alignItems: "start",
           }}
         >
-          {info && <Alert severity="warning">{t('qw_text_server_error')}</Alert>}
-          <Grid container spacing={2}>
-
-            <Grid item xs={12}>
-            <label style={{color:primary}} >{t('text_name')}</label> 
-              <TextField
-                autoComplete="given-name"
-                name="firstName"
-                onChange={(e) => {
-                  setInput((v) => (v = e.target.value));
-                }}
-                value={inputName}
-                required={true}
-                fullWidth
-                id="firstName"
-              />
-            </Grid>
-
+          {info && <Alert  severity="warning">{t('qw_text_server_error')}</Alert>}
+          <Grid container spacing={2} sx = {{paddingTop:"10px !important"}}>
             <Grid item xs={12}>
             <label  style={{color:primary}} >{t('text_phone')}</label> 
               <MuiTelInput
+                error={!matchIsValidTel(phone, { onlyCountryies: ["LV"] })}
                 required={true}
                 placeholder={t('qw_enter_phone_label')}
-                variant="outlined"
-                sx={{ width: "100%" }}
+                sx={{ width: "100%", fontSize: '22px', marginBottom:"10px", "& .MuiInputAdornment-root": {
+                    marginTop: "0px !important",
+                  },
+                  "& .MuiInputBase-input":{padding:"15px 0px !important"}}}
                 rules={{
                   validate: (value) =>
                     matchIsValidTel(value, { onlyCountries: ["LV"] }),
@@ -184,14 +192,14 @@ export default function Form({ OnSetForm }) {
                 value={phone}
                 onChange={handleChange}
                 id = "phoneinput"
+                color="secondary"
+                variant="filled"
               />
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid item xs={12} sx = {{paddingTop:"10px !important"}}>
             <label style={{color:primary}} >{t('text_address')}</label> 
               <AutoComplete
-                
-                sx={{ width: "100%" }}
                 style={{ with: "100%" }}
                 onValueChange={onAutoCompleteChange}
                 value={inputAddress}
@@ -203,7 +211,8 @@ export default function Form({ OnSetForm }) {
           <Button
             type="submit"
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            color="secondary"
+            sx={{ mt: 3, mb: 2}}
             onClick={handleSubmit}
           >
             {t('qw_text_submit')}

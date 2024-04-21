@@ -13,6 +13,9 @@ import { matchIsValidTel } from "mui-tel-input";
 
 import { LanguageProvider } from "./providers/LanguageProvider";
 
+import { getStorage, setStorage, removeStorage } from './config/storage';
+import { removeSessionValue } from './transport/transport';
+
 const validate = (form) => {
   if (typeof form.inputName !== "string" || form.inputName === "") {
     return false;
@@ -41,7 +44,7 @@ function App() {
 
   //Form state that needs to be binded with input fields in html
   const [form, setForm] = React.useState({
-    inputName: "",
+    inputName: "not provided",
     inputAddress: "",
     phone: "",
     callbackObject: {},
@@ -57,7 +60,7 @@ function App() {
       //every time we switch the radio we have to init empty objects
       setShow(true);
       setForm({
-        inputName: "",
+        inputName: "not provided",
         inputAddress: "",
         phone: "",
       });
@@ -69,24 +72,82 @@ function App() {
  
   };
 
-  //mark price removal for backend
-  const removePriceIfWrongSelection = (e) => {
-    if(e.detail !== 'qwqer.expressdelivery'){
-      window.shipping_qwqer.insertUrlParam('force_remove_price','1');
-      window.shipping_qwqer.setRemovePrice(1);
-    }else{
-      window.shipping_qwqer.setRemovePrice(0);
+  const OnSetForm = (form)=>{
+    console.log("OnSetForm in App.js propagated");
+     if (validate(form)){
+      setStorage(form);  
+      console.log("Setting up the form");
+      //if user is on a express then go on server for a price
+      if (window.shipping_qwqer.getSource() === "qwqer.expressdelivery"){
+        window.shipping_qwqer.insertUrlParam('qwqer_show_price','1');
+        console.log("forcingreload on express form input");
+        window.location.reload();
+      }else{
+        //if not simply show the prce
+        setForm(form);
+      }
+    }
+  }
+
+  //removes signal to show price for back
+  const removePriceRequestForBackend = (e)=>{
+    
+    if (window.shipping_qwqer !== 'qwqer.expressdelivery'){
+      window.shipping_qwqer.removeUrlParameter('qwqer_show_price');
+    }
+  }
+
+ 
+
+  //close info block
+  const onCompleteClose = (e) => {
+    setForm({
+      inputName: "not provided",
+      inputAddress: "",
+      phone: "",
+      callbackObject: {},
+    });
+    let selection =  /[\s*\.](.*)/gm.exec(window.shipping_qwqer.getSource()).length >=2 && /[\s*\.](.*)/gm.exec(window.shipping_qwqer.getSource())[1];
+    if (window.shipping_qwqer.getSource() == "qwqer.expressdelivery"){
+      removeSessionValue(selection).then(ret=>{
+        if (ret){
+          removeStorage();
+          if(ret.reboot){
+            window.shipping_qwqer.reload();
+          }
+        }
+      });
+    }
+    else{
+      console.log("");
+      removeStorage();
     }
   }
 
 
-  //remove unnecessary data on every page load
+//window.shipping_qwqer.currentPrice != 0
+
+  //checking and restore form from storage
   React.useEffect(()=>{
-    window.shipping_qwqer.removeUrlParameter('force_remove_price')
-  },[]);
+    console.log("checking Localstorage on app loading")
+    if (getStorage() &&  window.shipping_qwqer.getSource() != 'qwqer.expressdelivery'){
+      console.log("Localstorage is present")
+      setForm(getStorage());
+    }else{
+      console.log("removing local storage cuz price ===0 & storage exitsts")
+      if (getStorage()){
+        if (window.shipping_qwqer.currentPrice != 0){
+          removeSessionValue(window.shipping_qwqer.getSource());
+          removeStorage();
+          window.shipping_qwqer.reload();
+        }
+      }
+    }
+    console.log("Localstorage is absent")
+  },[])
 
 
-  //onLoad component
+  //onLoad component binding with inner html events
   React.useEffect(() => {
     //at first render, display not working, idk why, so we forcing first render
     if (
@@ -100,11 +161,13 @@ function App() {
 
     //binding out html event
     window.shipping_qwqer.addEventListener("select", bindHtmlEvent);
-    window.shipping_qwqer.addEventListener("select", removePriceIfWrongSelection);
+    //window.shipping_qwqer.addEventListener("select", removePriceIfWrongSelection);
+    window.shipping_qwqer.addEventListener("select", removePriceRequestForBackend);
     return () => {
       window.shipping_qwqer.instances--;
       window.shipping_qwqer.removeEventListener("select", bindHtmlEvent);
-      window.shipping_qwqer.removeEventListener("select", removePriceIfWrongSelection);
+      //window.shipping_qwqer.removeEventListener("select", removePriceIfWrongSelection);
+      window.shipping_qwqer.removeEventListener("select", removePriceRequestForBackend);
     };
   }, []);
 
@@ -120,21 +183,23 @@ function App() {
         form.inputAddress.name,
         form.callbackObject
       );
-      //we get request for reloading from backend
-      if (form.callbackObject.forcereload){
-        console.log("adding session storage when form changed");
-        sessionStorage.setItem('qwqer_form',JSON.stringify(form));
-        window.shipping_qwqer.insertUrlParam('qwqer_show_price','1');
-        window.location.reload();
-      }
-      
     }
   }, [form]);
 
-  //removing force_remove param from get params
+  //Reload if needed
   React.useEffect(()=>{
-    window.shipping_qwqer.removeUrlParameter('qwqer_show_price');
-  },[])
+    if (validate(form)) {
+    //we get request for reloading from backend
+      if (form.callbackObject.forcereload){
+        console.log("adding session storage when form changed");
+        window.shipping_qwqer.insertUrlParam('qwqer_show_price','1');
+        //window.location.reload();
+      }
+    }
+          
+  },[form])
+
+
 
   //add loading counter
   React.useEffect(() => {
@@ -147,45 +212,16 @@ function App() {
     };
   });
 
-  //filling form if conditions are met after reload
-  React.useEffect(()=>{
-    try{
-      var qwqer_form = JSON.parse(sessionStorage.getItem('qwqer_form'));
-      if (typeof form !== 'object'){
-        console.log("remove SessionStorage in if");
-        sessionStorage.removeItem('qwqer_form');
-        return
-      }
-    }catch{
-      console.log("remove SessionStorage in catch");
-      sessionStorage.removeItem('qwqer_form');
-      return
-    }
-    if(sessionStorage.getItem('qwqer_form')){
-      console.log("reading sessionStorage");
-      //check if expressDelivery is selected
-      if (window.shipping_qwqer.getSource() === 'qwqer.expressdelivery'){
-        console.log(qwqer_form);
-        qwqer_form.callbackObject.forcereload = false;
-        setForm(qwqer_form);
-      }else{
-        console.log("remove SessionStorage cuz wrong option selected"+ window.shipping_qwqer.getSource() );
-        sessionStorage.removeItem('qwqer_form');
-      }
-
-    }
-
-  },[])
 
   return (
     <LanguageProvider>
       {show && (
-        <Container style={{marginLeft:"unset"}} component="main" maxWidth="xs">
+        <Container style={{marginLeft:"unset", padding:"0px"}} component="main" maxWidth="xs">
           <CssBaseline />
           {validate(form) ? (
-            <Completed form={form}></Completed>
+            <Completed style={{alignItems: "start"}} form={form} onClose={onCompleteClose}></Completed>
           ) : (
-            <Form OnSetForm={setForm}></Form>
+            <Form OnSetForm={OnSetForm}></Form>
           )}
         </Container>
       )}
