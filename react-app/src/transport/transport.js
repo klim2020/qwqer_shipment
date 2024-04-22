@@ -97,11 +97,13 @@ const fetchDataTerminals = (val,callback) => {
     }).then((data)=>{
         return data;
     })
+    debugger;
+    console.log("data recieved validate_data is:")
     console.log(ret);
     if ('price' in ret && 'client_price' in ret.price){
         return ret;
     }
-    
+    console.log("error in validate_data transport function")
     return false;
   }
 
@@ -124,6 +126,8 @@ const fetchDataTerminals = (val,callback) => {
     };
     const response =  await fetch(url+"index.php?route=extension/shipping/qwqer/remove_session&qwqer_token="+token, requestOptions)
     const data =  await response.json();
+    console.log("printing data from fetch removeSessionValue");
+    console.log(data);
     if (response.status === 200 && data.message === "success"){
       return data;
     }

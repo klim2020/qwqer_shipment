@@ -130,20 +130,22 @@ function App() {
   //checking and restore form from storage
   React.useEffect(()=>{
     console.log("checking Localstorage on app loading")
-    if (getStorage() &&  window.shipping_qwqer.getSource() != 'qwqer.expressdelivery'){
-      console.log("Localstorage is present")
+    if (getStorage() &&  window.shipping_qwqer.currentPrice != 0){
+      console.log("Localstorage is present, loading it to form")
       setForm(getStorage());
     }else{
-      console.log("removing local storage cuz price ===0 & storage exitsts")
+      console.log("storage dont exists or currentjprice is 0")
       if (getStorage()){
-        if (window.shipping_qwqer.currentPrice != 0){
+        console.log(" storage exists")
+        if (window.shipping_qwqer.currentPrice == 0){
+          console.log("currentprice is 0");
           removeSessionValue(window.shipping_qwqer.getSource());
           removeStorage();
           window.shipping_qwqer.reload();
         }
       }
     }
-    console.log("Localstorage is absent")
+    console.log("Finish hecking and restore form from storage")
   },[])
 
 
