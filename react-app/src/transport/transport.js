@@ -26,6 +26,7 @@ const fetchDataTerminals = (val,callback) => {
         resolve(ret)})
     }
     return new Promise((resolve) => {
+      console.log('we are about to fetch terminals')
       let token = window.shipping_qwqer.token
       fetch(url+"index.php?route=extension/shipping/qwqer/get_terminals&qwqer_token="+token, {}).then((response) => {
          return response.json()
@@ -134,5 +135,25 @@ const fetchDataTerminals = (val,callback) => {
     return false;
   }
 
+  const fetchWorkingHours = async()=>{
+    if (window.shipping_qwqer.workingHours !== undefined){
+      return window.shipping_qwqer.workingHours;
+    }
+    let token = window.shipping_qwqer.token
+    var requestOptions = {
+      method: 'POST',
+    };
+    const response =  await fetch(url+"index.php?route=extension/shipping/qwqer/get_working_hours&qwqer_token="+token, requestOptions)
+    const data =  await response.json();
+    console.log("printing data from fetch working hours");
+    console.log(data);
+    console.log(response.status === 200 && data.message === "success" && data.error === undefined);
+    if (response.status === 200 && data.message === "success" && data.error === undefined){
+      window.shipping_qwqer.workingHours = data;
+      return data;
+    }
+    return false;
+  }
 
-  export {fetchDataAddress, fetchDataTerminals, fetchValidate, removeSessionValue}
+
+  export {fetchDataAddress, fetchDataTerminals, fetchValidate, removeSessionValue, fetchWorkingHours}

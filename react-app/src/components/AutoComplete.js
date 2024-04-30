@@ -107,6 +107,9 @@ export default function AutoComplete({onValueChange}) {
     }
   },[])
 
+
+
+
 //close if opened
   React.useEffect(() => {
     if (open){
@@ -127,49 +130,63 @@ export default function AutoComplete({onValueChange}) {
     }
   },[])
 
+  //los
+  React.useEffect(()=>{
+    if (source === "terminals"){
+      console.log("fetching terminals data")
+      fetch('')
+    }
+  },[source]);
+
 
 
 //element selected 
   const onSelect = (e,v) => {
     //emit value change
+    console.log("emit value change")
     onValueChange(v);
     hideDropdown();
   }
 
   //wrapping debounce effect + fetching data into memo
   const fetch = React.useMemo(
-    () =>
-      debounce((val) => {
-        console.log('we are inside debounce')
-        if(source === "address"){
-          showSpinner();
-          console.log('we are inside debounce->address')
-          fetchDataAddress(val).then((v)=>{
-            console.log('inside debounce address we fetched');
+    () =>{
+      if(source === "address"){
+        return debounce((val) => {
+          console.log('we are inside debounce')
+          if(source === "address"){
+            showSpinner();
+            console.log('we are inside debounce->address')
+            fetchDataAddress(val).then((v)=>{
+              console.log('inside debounce address we fetched');
+              console.log(v);
+              showData(v);
+            })
+          }
+        }, 400);
+      }
+      
+
+      if(source === "terminals"){
+          console.log('we are inside fetchDataTerminals->terminals')
+
+        return (val)=> fetchDataTerminals(val).then((v)=>{
+            console.log('inside debounce fetchDataTerminals we fetched');
             console.log(v);
-            showData(v);
+            setOptions(v)
           })
         }
 
-        if(source === "terminals"){
-          showSpinner();
-          console.log('we are inside debounce->terminals')
-          fetchDataTerminals(val).then((v)=>{
-            console.log('inside debounce terminals we fetched');
-            console.log(v);
-            showData(v)
-          })
-        }
-      }, 400),
-    [source],
-  );
+      },[source]);
+
 
 //reload on text input
   const onChangeText = (e,val)=>{
     console.log("onChangeText type")
     console.log(e.type)
     if (val.length >= 1
-       && e && e.type !== 'click'){
+       && e && e.type !== 'click' 
+       && source !== "terminals"){
         //prevent onSelect propagation
       console.log('before  fetching')
       setOptions([]);
@@ -192,16 +209,15 @@ export default function AutoComplete({onValueChange}) {
           "& .MuiInputBase-root":{paddingTop:"0px !important"}}}
       fullWidth
       id="asynchronous-demo"
-      open={open}
+    /*  open={open} */
       required={true}
-
+/* hide dropdown on lost focus */
       onBlur =  {(event) => {
+        console.log("lost focus autocomplete");
               if (open){
                 setOpen(false);
               }
             }}
-
-      
 
       onChange = {onSelect}
       onInputChange = {onChangeText}

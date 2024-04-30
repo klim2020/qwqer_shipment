@@ -11,7 +11,14 @@ class ControllerExtensionShippingQwqer extends Controller {
     }
 
     public function validate(){
-        return isset($this->request->get['qwqer_token']) && $this->request->get['qwqer_token'] == $this->session->data['qwqer_token'];
+        $key = isset($this->request->get['qwqer_token']) && $this->request->get['qwqer_token'] == $this->session->data['qwqer_token'];
+        if ($key){
+            return $key;
+        }else{
+            $this->response->addHeader("HTTP/1.1 400 Bad Request");
+            return false;
+        }
+
     }
 
     public function save_parcel_terminal(){
@@ -30,6 +37,7 @@ class ControllerExtensionShippingQwqer extends Controller {
 
         if (!$this->validate()){
             $json = ['data'=>'key invalid'];
+
         }else{
             $terminals = $this->shipping_qwqer->getParcelTerminals();
             $json = $terminals['data']['omniva'];
@@ -47,6 +55,7 @@ class ControllerExtensionShippingQwqer extends Controller {
 
         if (!$this->validate() || $this->request->server['REQUEST_METHOD'] != 'POST'  ){
             $json = ['error'=>'key invalid'];
+
         }else{
             $address = $this->shipping_qwqer->placeAutocomplete($qwqer_address);
             if (isset($address['errors'])){
@@ -66,6 +75,7 @@ class ControllerExtensionShippingQwqer extends Controller {
     public function validate_data(){
         if (!$this->validate() || $this->request->server['REQUEST_METHOD'] != 'POST'  ){
             $json = ['error'=>'key invalid'];
+
         }else{
             $this->session->data['qwqer'] = array();
             $name =     $this->request->post['qwqer_name'];
@@ -117,14 +127,37 @@ class ControllerExtensionShippingQwqer extends Controller {
     public function remove_session(){
         if (!$this->validate() || $this->request->server['REQUEST_METHOD'] != 'POST'  ){
             $json = ['error'=>'key invalid'];
+
         }else{
             $selected =     $this->request->post['selected'];
-            if ($this->request->post['selected'] && $this->session->data['qwqer_price'][$selected]){
+            $price =  $this->shipping_qwqer->generateDeliveryCost($selected);
+            $selected = str_replace('qwqer.','',$selected);
+            if ($this->request->post['selected'] && $price){
                 unset($this->session->data['qwqer_price'][$selected]);
                 $json = ['message'=>'success','reboot'=>true];
             }else{
                 $json = ['message'=>'fail'];
             }
+        }
+        $this->response->addHeader('Content-Type: application/json');
+        $this->response->setOutput(json_encode($json));
+    }
+
+    public function get_working_hours(){
+        if (!$this->validate() || $this->request->server['REQUEST_METHOD'] != 'POST'  ){
+            $json['error']='key invalid';
+            $json['message'] = 'key invalid';
+        }else{
+            $this->load->model('extension/shipping/qwqer');
+            $working_time = $this->shipping_qwqer->getInfo();
+            if ($working_time){
+                usort($working_time['working_hours'], function ($a,$b){
+                    return date('N', strtotime($a['day_of_week'])) > date('N', strtotime($b['day_of_week']));
+                });
+            }
+            $json['message'] = 'success';
+            $json['data'] = $working_time;
+
         }
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($json));

@@ -27,7 +27,7 @@ const theme = createTheme({
   padding: 0,
   });
 
-  
+  //console.log = function() {}
   
 
 

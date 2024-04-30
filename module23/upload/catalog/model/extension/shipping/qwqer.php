@@ -143,8 +143,13 @@ class ModelExtensionShippingQwqer extends Model {
         $data['shipping_address'] =  $order_info['shipping_address'];
         $data['payment_method'] =  $order_info['payment_method'];
         $data['order_id'] =  $order_info['order_id'];
-        $data['qwqer'] =  $order_info['qwqer'];
-        $data['qwqer_price'] =  $order_info['qwqer_price'];
+        if (isset($order_info['qwqer']) && $order_info['qwqer']) {
+            $data['qwqer'] = $order_info['qwqer'];
+        }
+        if (isset($order_info['qwqer_price']) && $order_info['qwqer_price']){
+            $data['qwqer_price'] =  $order_info['qwqer_price'];
+        }
+
         $data['shipping_method'] =  $order_info['shipping_method'];
         $data['date_added']  = date('Y-m-d H:i');
         $data = json_encode($data);

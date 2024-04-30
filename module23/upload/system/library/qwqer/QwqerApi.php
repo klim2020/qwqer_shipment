@@ -710,7 +710,7 @@ class QwqerApi {
      * @return void
      */
     public function generateDeliveryCost($deliveryType, $params = array()){
-        $deliveryType = mb_strtolower(str_replace('.','',$deliveryType));
+        $deliveryType = mb_strtolower(str_replace('qwqer.','',$deliveryType));
         if (array_key_exists($deliveryType,$this->delivery_static_cost)){
             $price = $this->delivery_static_cost[$deliveryType];
         }else{

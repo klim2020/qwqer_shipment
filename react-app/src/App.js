@@ -15,6 +15,7 @@ import { LanguageProvider } from "./providers/LanguageProvider";
 
 import { getStorage, setStorage, removeStorage } from './config/storage';
 import { removeSessionValue } from './transport/transport';
+import { isOpen } from './transport/opening';
 
 const validate = (form) => {
   if (typeof form.inputName !== "string" || form.inputName === "") {
@@ -201,8 +202,6 @@ function App() {
           
   },[form])
 
-
-
   //add loading counter
   React.useEffect(() => {
     window.shipping_qwqer.instances++;
@@ -213,6 +212,18 @@ function App() {
       window.shipping_qwqer.instances--;
     };
   });
+
+  //disable Express if we are not working
+  React.useEffect(()=>{
+    isOpen().then((e)=>{
+      if (e){
+        console.log("we are open")
+      }else{
+        console.log("we are closed")
+        document.querySelector("#qwqer\\.expressdelivery").closest(".radio-input").remove();
+      }
+    });
+  },[]);
 
 
   return (
