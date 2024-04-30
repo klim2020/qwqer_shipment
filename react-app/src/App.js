@@ -14,6 +14,7 @@ import { matchIsValidTel } from "mui-tel-input";
 import { LanguageProvider } from "./providers/LanguageProvider";
 
 import { getStorage, setStorage, removeStorage } from './config/storage';
+import conf from './config/config';
 import { removeSessionValue } from './transport/transport';
 import { isOpen } from './transport/opening';
 
@@ -41,7 +42,12 @@ const validate = (form) => {
 
 function App() {
 
-  
+  const mountCheckChange = () => {
+    if (conf.isStandardPlugin() && getStorage()){
+      console.log("trying to set storage cuz storage exists on change")
+      setForm(getStorage());
+    }
+  }
 
   //Form state that needs to be binded with input fields in html
   const [form, setForm] = React.useState({
@@ -225,6 +231,13 @@ function App() {
     });
   },[]);
 
+  //mount switching storage for standard checkout
+  React.useEffect(()=>{
+    window.shipping_qwqer.addEventListener("select", mountCheckChange);
+    return () => {
+      window.shipping_qwqer.removeEventListener("select", mountCheckChange);
+    }
+  },[]);
 
   return (
     <LanguageProvider>

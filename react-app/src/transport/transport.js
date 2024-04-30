@@ -155,5 +155,4 @@ const fetchDataTerminals = (val,callback) => {
     return false;
   }
 
-
   export {fetchDataAddress, fetchDataTerminals, fetchValidate, removeSessionValue, fetchWorkingHours}

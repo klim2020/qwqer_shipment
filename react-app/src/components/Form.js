@@ -111,8 +111,22 @@ export default function Form({ OnSetForm }) {
 
   //get fields from standard input
   React.useEffect(()=>{
-    const name = document.querySelector('input[name="payment_address.firstname"]').value;
-    const phone = document.querySelector('input[name="payment_address.telephone"]').value;
+
+    let name = "";
+    if (document.querySelector('input[name="payment_address.firstname"]')){
+       name = document.querySelector('input[name="payment_address.firstname"]').value;
+    }else if(document.querySelector('input[name="firstname"]')){
+       name = document.querySelector('input[name="firstname"]').value;
+    }
+
+
+    let phone = "";
+    if (document.querySelector('input[name="payment_address.telephone"]')){
+      phone = document.querySelector('input[name="payment_address.telephone"]').value;
+    }else if(document.querySelector('input[name="telephone"]')){
+      phone = document.querySelector('input[name="telephone"]').value;
+    }
+    
 
     if (name){
       setInput(name)
