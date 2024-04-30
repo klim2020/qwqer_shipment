@@ -4,7 +4,7 @@
 
 //loading the array
 
-import config from './../config/config';
+import {filter} from './../config/config';
 
 //todo remove oc23 in prod
 
@@ -60,7 +60,7 @@ const fetchDataTerminals = (val,callback) => {
    ret = ret.map((v,i)=>{
     return {id:i,name:v}
    })
-   let out = filterValue(ret,config.filter.rigaOnly);
+   let out = filterValue(ret,filter.rigaOnly);
    if (out.length>0){
     return out;
    }
@@ -154,5 +154,6 @@ const fetchDataTerminals = (val,callback) => {
     }
     return false;
   }
+
 
   export {fetchDataAddress, fetchDataTerminals, fetchValidate, removeSessionValue, fetchWorkingHours}

@@ -9,7 +9,7 @@ import { useLanguage } from '../providers/LanguageProvider';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-
+import { isStandardPlugin } from './../config/config';
 
 //msg box component
 
@@ -51,6 +51,9 @@ export default function Complete({form, onClose}) {
             <p>{t("text_name")}:{form.inputName}</p>
             <p>{t("text_address")}:{form.inputAddress.name}</p>
             <p>{t("text_phone")}:{form.phone}</p>
+            {isStandardPlugin() 
+              && window.shipping_qwqer.getSource() === "qwqer.expressdelivery" 
+              && <p>{t("text_price")}:{form.callbackObject.price.client_price/100}</p>}
           </div>
           
         </Box>

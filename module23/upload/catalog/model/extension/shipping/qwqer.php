@@ -88,13 +88,15 @@ class ModelExtensionShippingQwqer extends Model {
                      }
 
                      $price = $this->shipping_qwqer->generateDeliveryCost($currentSelection);
+                     $moduleType = $this->config->get('qwqer_checkout_type');
                      $method_data = array(
                          'code' => 'qwqer.standart',
-                         'title' => $this->load->view('extension/shipping/qwqer_title', array('current_price'=>$price, 'text_title' => $this->language->get('text_title'), 'token'=>$token, 'langs'=>$lang,'url'=>$url)),//
+                         'title' => $this->load->view('extension/shipping/qwqer_title', array('current_price'=>$price, 'text_title' => $this->language->get('text_title'), 'token'=>$token, 'langs'=>$lang,'url'=>$url,'moduleType'=>$moduleType)),//
                          'quote' => $quote_data,
                          'sort_order' => $this->config->get('qwqer_sort_order'),
                          'error' => $error,
                      );
+
                      return $method_data;
              }
              return [];

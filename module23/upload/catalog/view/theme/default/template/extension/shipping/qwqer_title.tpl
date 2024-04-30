@@ -139,5 +139,5 @@
         })
     })
 
-
+    window.shipping_qwqer.moduleType = '<?php echo $moduleType; ?>';
 </script>

@@ -16,6 +16,8 @@ import { useLanguage } from "../providers/LanguageProvider";
 
 import { blue } from '@mui/material/colors';
 
+import { isStandardPlugin } from './../config/config';
+
 // TODO remove, this demo shouldn't need to reset the theme.
 
 
@@ -70,7 +72,10 @@ export default function Form({ OnSetForm }) {
 
           // continue loading is express  App.js will reboot in few sec...
           if (window.shipping_qwqer.getSource() !== "qwqer.expressdelivery"){
-            setLoading(false);
+            if (!isStandardPlugin()){
+              setLoading(false);
+            }
+              
           }
 
           

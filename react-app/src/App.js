@@ -14,8 +14,8 @@ import { matchIsValidTel } from "mui-tel-input";
 import { LanguageProvider } from "./providers/LanguageProvider";
 
 import { getStorage, setStorage, removeStorage } from './config/storage';
-import conf from './config/config';
-import { removeSessionValue } from './transport/transport';
+import { isStandardPlugin } from './config/config';
+import { removeSessionValue, fetchPrice } from './transport/transport';
 import { isOpen } from './transport/opening';
 
 const validate = (form) => {
@@ -42,8 +42,9 @@ const validate = (form) => {
 
 function App() {
 
+  //set form data if exists in storage on radio selection
   const mountCheckChange = () => {
-    if (conf.isStandardPlugin() && getStorage()){
+    if (isStandardPlugin() && getStorage()){
       console.log("trying to set storage cuz storage exists on change")
       setForm(getStorage());
     }
@@ -86,9 +87,14 @@ function App() {
       console.log("Setting up the form");
       //if user is on a express then go on server for a price
       if (window.shipping_qwqer.getSource() === "qwqer.expressdelivery"){
+        if (!isStandardPlugin()){
         window.shipping_qwqer.insertUrlParam('qwqer_show_price','1');
         console.log("forcingreload on express form input");
         window.location.reload();
+        }else{
+          setForm(form);
+        }
+
       }else{
         //if not simply show the prce
         setForm(form);
@@ -222,11 +228,19 @@ function App() {
   //disable Express if we are not working
   React.useEffect(()=>{
     isOpen().then((e)=>{
-      if (e){
+      if (!e){
         console.log("we are open")
       }else{
         console.log("we are closed")
-        document.querySelector("#qwqer\\.expressdelivery").closest(".radio-input").remove();
+        let rm = [...document.querySelectorAll("input[name='shipping_method']")].filter(e=>e.value == 'qwqer.expressdelivery');
+        if (rm.length >0){
+          if (isStandardPlugin()){
+            rm[0].closest(".radio").remove();
+          }else{
+            rm[0].closest(".radio-input").remove();
+          }
+          
+        }
       }
     });
   },[]);

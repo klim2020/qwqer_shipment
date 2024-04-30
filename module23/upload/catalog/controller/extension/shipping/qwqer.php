@@ -134,7 +134,12 @@ class ControllerExtensionShippingQwqer extends Controller {
             $selected = str_replace('qwqer.','',$selected);
             if ($this->request->post['selected'] && $price){
                 unset($this->session->data['qwqer_price'][$selected]);
-                $json = ['message'=>'success','reboot'=>true];
+                $json = ['message'=>'success'];
+                if ($this->config->get('qwqer_checkout_type') == 0){
+                    $json['reboot']=false;
+                }else{
+                    $json['reboot']=true;
+                }
             }else{
                 $json = ['message'=>'fail'];
             }
