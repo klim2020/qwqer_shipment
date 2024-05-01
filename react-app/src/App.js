@@ -228,7 +228,7 @@ function App() {
   //disable Express if we are not working
   React.useEffect(()=>{
     isOpen().then((e)=>{
-      if (!e){
+      if (e){
         console.log("we are open")
       }else{
         console.log("we are closed")

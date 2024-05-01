@@ -322,8 +322,15 @@ class ControllerExtensionShippingQwqer extends Controller {//
                     $delivery = 'none';
                 }
             }
+            //$address = $result['data']['qwqer']['destinations'][0]['address'];
+            if (isset($result['data']['qwqer'])){
+                $address = $result['data']['qwqer']['destinations'][0]['address'];
+            }elseif(isset($result["response"]["data"]["places"][0]["address"])){
+                $address = $result["response"]["data"]["places"][0]["address"];
+            }else{
+                $address = "none";
+            }
 
-            $address = $result['data']['qwqer']['destinations'][0]['address'];
             if (isset($result['response']["data"]["places"]) &&
                 is_array($result['response']["data"]["places"]) &&
                 !empty($result['response']["data"]["places"])){
@@ -333,7 +340,6 @@ class ControllerExtensionShippingQwqer extends Controller {//
                         $address =   $val['address'];
                     }
                 }
-
             }
 
             $temp[] = array(
