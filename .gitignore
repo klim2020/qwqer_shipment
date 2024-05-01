@@ -23,3 +23,4 @@ v4_sync_to_test.sh
 v23_sync_from_test_copy copy.sh
 v23_sync_from_test_copy.sh
 release/
+/tests/node_modules/
