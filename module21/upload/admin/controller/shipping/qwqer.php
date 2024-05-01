@@ -20,12 +20,18 @@ class ControllerShippingQwqer extends Controller {//
         require_once DIR_SYSTEM."library/qwqer/QwqerApi.php";
         new QwqerApi($registry);
 
-
-
     }
 
 	public function index() {
-		$this->load->language('shipping/qwqer');
+
+
+        $this->load->model('extension/shipping/qwqer');
+
+        if($this->shipping_qwqer->healthCheck()==false){
+            $this->response->redirect($this->url->link('extension/extension', 'token=' . $this->session->data['token'], true));
+        }
+
+		$this->load->language('extension/shipping/qwqer');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
@@ -41,14 +47,38 @@ class ControllerShippingQwqer extends Controller {//
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
-            $this->response->redirect($this->url->link('extension/shipping', 'token=' . $this->session->data['token'] . '&type=shipping', true));
+            //deletion process if needed
+            $this->delete();
+
+            $tab = 'main';
+            if (isset($this->request->get['tab']) && $this->request['tab']=='orders'){
+                $tab = 'orders';
+            }
+
+            $this->response->redirect($this->url->link('shipping/qwqer', 'token=' . $this->session->data['token'] . '&type=shipping'.'&tab='.$tab, true));
 		}
 
-		if (isset($this->error['warning'])) {
+        $data['tab'] = 'main';
+        if (isset($this->request->get['tab']) && $this->request->get['tab']=='orders'){
+            $data['tab'] = 'orders';
+        }
+
+
+        if (isset($this->error['warning'])) {
 			$data['error_warning'] = $this->error['warning'];
 		} else {
 			$data['error_warning'] = '';
 		}
+
+        if (isset($this->error['warning'])) {
+            $data['error_warning'] = $this->error['warning'];
+        } else {
+            $data['error_warning'] = '';
+        }
+
+        if (!isset($data['success'])) {
+            $data['success'] = '';
+        }
 
 		if (isset($this->error['api'])) {
 			$data['error_api'] = $this->error['api'];
@@ -115,7 +145,6 @@ class ControllerShippingQwqer extends Controller {//
                         'text_disabled',
                         'entry_telephone',
                         'help_telephone',
-                        'text_telephone',
                         'help_address',
                         'tab_general',
                         'tab_orders',
@@ -135,13 +164,25 @@ class ControllerShippingQwqer extends Controller {//
                         'text_request',
                         'button_delete',
                         'text_confirm',
-                        'entry_hide_status'
-    );
+                        'text_telephone',
+                        'entry_hide_status',
+                        'error_not_saved',
+                        'tab_info',
+                        'text_company_name',
+                        'text_company_type',
+                        'text_company_address',
+                        'text_company_map',
+                        'text_working_time',
+                        'text_working_day',
+                        'text_working_from',
+                        'text_working_to',
+                        'text_address_link',
+                        'text_checkout_type',
+                        'help_checkout_type'
+            );
         foreach ($langs_values as $lang){
             $data[$lang] = $this->language->get($lang);
         }
-
-
 
 		$data['action'] = $this->url->link('shipping/qwqer', 'token=' . $this->session->data['token'], true);
 
@@ -189,13 +230,9 @@ class ControllerShippingQwqer extends Controller {//
             $data['config_complete_status'] = array();
         }
 
-        $this->load->model('extension/shipping/qwqer');
-
         foreach ( $this->shipping_qwqer->getOrderCategories() as $option){
             $data['qwqer_trade_cat_options'][] = $this->language->get('qwqer_opt_'.$option);
         }
-
-
 
 		$this->load->model('localisation/weight_class');
 
@@ -261,11 +298,9 @@ class ControllerShippingQwqer extends Controller {//
             $order_link   = '';
             $invoice_link = '';
 
-
-
             $createlink = false;
             if (isset ($result["response"]["data"]['status']) && ($result["response"]["data"]['status'] == 'Not Created')){
-                $createlink = $this->url->link('shipping/qwqer/create', 'token=' . $this->session->data['token'].'&order_id='.$result['order_id'], 'SSL');
+                $createlink = $this->url->link('extension/shipping/qwqer/create', 'token=' . $this->session->data['token'].'&order_id='.$result['order_id'], 'SSL');
             }
             $order_link = $this->url->link('sale/order/info', 'token=' . $this->session->data['token'] . '&order_id=' . $result['order_id'], 'SSL');
             $invoice_link = false;
@@ -278,7 +313,7 @@ class ControllerShippingQwqer extends Controller {//
                 $created_at = date("F, d, Y, g:i ",strtotime($result['response']['data']['created_at']));
             }
 
-            $delivery = $result['data']["shipping_method"];
+            $delivery = $result['data']["shipping_method"]["title"];
             if(isset($result['response']['data']['real_type'])){
                 $v = $result['response']['data']['real_type'];
                 if (isset($data[$v])){
@@ -288,7 +323,7 @@ class ControllerShippingQwqer extends Controller {//
                 }
             }
 
-            $address = $result['data']["payment_address_1"];
+            $address = $result['data']['qwqer']['destinations'][0]['address'];
             if (isset($result['response']["data"]["places"]) &&
                 is_array($result['response']["data"]["places"]) &&
                 !empty($result['response']["data"]["places"])){
@@ -300,7 +335,6 @@ class ControllerShippingQwqer extends Controller {//
                 }
 
             }
-
 
             $temp[] = array(
                 'qwqer_id'       => $result['qwqer_id'],
@@ -318,11 +352,17 @@ class ControllerShippingQwqer extends Controller {//
             );
         }
 
-
-
-
-
         $data['orders'] = $temp;
+
+        $working_time = $this->shipping_qwqer->getInfo();
+
+        if ($working_time){
+            usort($working_time['working_hours'], function ($a,$b){
+                return date('N', strtotime($a['day_of_week'])) > date('N', strtotime($b['day_of_week']));
+            });
+        }
+
+        $data['working_time'] = $working_time;
 
 		if (isset($this->request->post['qwqer_geo_zone_id'])) {
 			$data['qwqer_geo_zone_id'] = $this->request->post['qwqer_geo_zone_id'];
@@ -348,18 +388,30 @@ class ControllerShippingQwqer extends Controller {//
             $data['qwqer_status'] = $this->config->get('qwqer_status');
         }
 
-        if (isset($this->request->post['qwqer_is_prod'])) {
-            $data['qwqer_is_prod'] = $this->request->post['qwqer_is_prod'];
-        } else {
-            $data['qwqer_is_prod'] = $this->config->get('qwqer_is_prod');
-        }
-
 		if (isset($this->request->post['qwqer_sort_order'])) {
 			$data['qwqer_sort_order'] = $this->request->post['qwqer_sort_order'];
 		} else {
 			$data['qwqer_sort_order'] = $this->config->get('qwqer_sort_order');
 		}
 
+        if (isset($this->request->post['qwqer_is_prod'])) {
+            $data['qwqer_is_prod'] = $this->request->post['qwqer_is_prod'];
+        } else {
+            $data['qwqer_is_prod'] = $this->config->get('qwqer_is_prod');
+        }
+
+        if (isset($this->request->post['qwqer_checkout_type'])) {
+            $data['qwqer_checkout_type'] = $this->request->post['qwqer_checkout_type'];
+        } else {
+            $data['qwqer_checkout_type'] = $this->config->get('qwqer_checkout_type');
+        }
+
+        $checkout_types = array();
+        foreach ($this->shipping_qwqer->getCheckoutTypes() as $key=>$type){
+            $val = 'checkout_type_'.$type;
+            $checkout_types[$key] = $this->language->get($val);
+        }
+        $data['qwqer_checkout_types'] = $checkout_types;
 
         //statuses options
         $this->load->model('localisation/stock_status');
@@ -406,6 +458,10 @@ class ControllerShippingQwqer extends Controller {//
             $this->error['error_telephone1'] = $this->language->get('error_telephone');
         }
 
+        if($this->error && !isset($this->error['warning'])){
+            $this->error['warning'] = $this->language->get('error_not_saved');
+        }
+
 		return !$this->error;
 	}
 
@@ -443,12 +499,6 @@ class ControllerShippingQwqer extends Controller {//
 
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($r));
-
-
-
-
-
-
 
     }
 
@@ -504,8 +554,22 @@ class ControllerShippingQwqer extends Controller {//
         if (strpos($order_info_tmp["shipping_code"],'qwqer.')!==false){
 
             $this->load->model('extension/shipping/qwqer');
-            $data_order =  $this->model_extension_shipping_qwqer->generateOrderObject($order_info_tmp);
-            $response = $this->model_extension_shipping_qwqer->createOrder($data_order);
+            $order_info_tmp['qwqer'] = $this->shipping_qwqer->getOrderServerData($order_info_tmp['order_id']);
+            //$data_order =  $this->model_extension_shipping_qwqer->generateOrderObject($order_info_tmp);
+
+            $r_data = $this->shipping_qwqer->getOrderServerData($order_info_tmp['order_id']);
+            if (isset($r_data['qwqer'])){
+                if (isset($r_data['qwqer']['real_type']) &&  $r_data['qwqer']['real_type'] == "OmnivaParcelTerminal"){
+                    $r_data['qwqer']['parcel_size'] = "L";
+                }
+                unset($r_data['qwqer']['pickup_datetime']);
+
+                $response = $this->model_extension_shipping_qwqer->createOrder($r_data['qwqer']);
+            }else{
+                $data_order =  $this->model_extension_shipping_qwqer->generateOrderObject($order_info_tmp);
+                $response = $this->model_extension_shipping_qwqer->createOrder($data_order);
+            }
+
             if (isset($response['data']['id']) && $response['data']['id']){
                 $this->shipping_qwqer->addResponseRecord($response, $order_id);
             }
@@ -517,16 +581,12 @@ class ControllerShippingQwqer extends Controller {//
     }
 
     public  function delete(){
-        if (($this->request->server['REQUEST_METHOD'] != 'POST')) {
-            $this->response->redirect($this->url->link('shipping/qwqer', 'token=' . $this->session->data['token'], 'SSL'));
+        $selected = isset($this->request->post['selected'])?$this->request->post['selected']:'';
+        if (is_array($selected)){
+            foreach ($selected as $item){
+                $this->shipping_qwqer->deleteOrder($item);
+            }
         }
-
-        $selected = $this->request->post['selected'];
-        foreach ($selected as $item){
-            $this->shipping_qwqer->deleteOrder($item);
-        }
-
-        $this->response->redirect($this->url->link('shipping/qwqer', 'token=' . $this->session->data['token'], 'SSL'));
     }
 
 }

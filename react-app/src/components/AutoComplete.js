@@ -183,7 +183,9 @@ export default function AutoComplete({onValueChange}) {
 //reload on text input
   const onChangeText = (e,val)=>{
     console.log("onChangeText type")
-    console.log(e.type)
+    if (e && e.type != undefined){
+      console.log(e && e.type)
+    }
     if (val.length >= 1
        && e && e.type !== 'click' 
        && source !== "terminals"){

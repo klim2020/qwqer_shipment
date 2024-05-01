@@ -68,3 +68,20 @@ $_['ExpressDelivery']           = 'Ekspress piegāde';
 $_['text_address']              = 'Adrese';
 $_['entry_hide_status']         = 'Slēpt piegādi pēc produkta statusa';
 $_['text_not_created']          = 'Nav izveidots';
+
+$_['error_not_saved']           = 'Check form for errors';
+$_['tab_info']                  = 'Information';
+$_['text_company_name']         = 'Company name';
+$_['text_company_type']         = 'Delivery type';
+$_['text_company_address']      = 'Company address';
+$_['text_company_map']          = 'Map';
+$_['text_working_time']         = 'Working time';
+$_['text_working_day']          = 'Working day';
+$_['text_working_from']         = 'from';
+$_['text_working_to']           = 'to';
+$_['text_address_link']         = 'Link';
+
+$_['checkout_type_standart']    = 'Standart checkout';
+$_['checkout_type_simple']      = 'Simple checkout';
+$_['text_checkout_type']        = 'Choose checkout type';
+$_['help_checkout_type']        = 'select installed checkout module';

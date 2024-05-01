@@ -46,6 +46,7 @@ $_['error_trade_pt']            = 'Торговая точка должна со
 $_['error_trade_cat']           = 'Пожалуйста, выберите торговую категорию';
 $_['error_telephone']           = 'Пожалуйста, введите телефон';
 
+
 //admin panel 05.03
 $_['tab_general']               = 'Основной';
 $_['tab_orders']                = 'Заказы';
@@ -68,3 +69,20 @@ $_['ExpressDelivery']           = 'Экспресс доставка';
 $_['text_address']              = 'Адрес';
 $_['entry_hide_status']         = 'Скрыть доставку при статусе товара';
 $_['text_not_created']          = 'Не создан';
+
+$_['error_not_saved']           = 'Проверьте форму на наличие ошибок';
+$_['tab_info']                  = 'Информация';
+$_['text_company_name']         = 'Название компании';
+$_['text_company_type']         = 'Тип доставки';
+$_['text_company_address']      = 'Адрес компании';
+$_['text_company_map']          = 'карта';
+$_['text_working_time']         = 'Рабочее время';
+$_['text_working_day']          = 'Рабочий день';
+$_['text_working_from']         = 'от';
+$_['text_working_to']           = 'до';
+$_['text_address_link']         = 'ссылка';
+
+$_['checkout_type_standart']    = 'Стандартная форма';
+$_['checkout_type_simple']      = 'Модуль simple Checkout';
+$_['text_checkout_type']        = 'Выберите тип оформления заказа';
+$_['help_checkout_type']        = 'Выбрите установленный модуль оформления заказа';

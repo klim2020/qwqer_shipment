@@ -38,8 +38,9 @@ class ModelExtensionShippingQwqer extends Model {
 				`key_hash` varchar(255) NULL,
 				`order_id` varchar(255) NOT NULL,
 				`data`  TEXT NULL,
-				`qwqer_date` DATETIME NULL,
+                `qwqer_date` DATETIME NULL,
 				`response` TEXT NULL,
+				`address`  TEXT NULL,
 				PRIMARY KEY (`qwqer_id`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 		");
@@ -49,6 +50,7 @@ class ModelExtensionShippingQwqer extends Model {
         $this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "qwqer_data`");
     }
 
+    //generate a valid object and sends it to a QwQer library object generator
     public function generateOrderObject($order_info){
         $address = array();
         foreach ($order_info as $key=>$value){
@@ -64,6 +66,9 @@ class ModelExtensionShippingQwqer extends Model {
         $delivery_type = str_replace('qwqer.','',$address['code']);
         $delivery_types = $this->shipping_qwqer->getDeliveryTypes();
         $address['telephone']=$order_info['telephone'];
+        if (isset($order_info['qwqer'])){
+            $address['qwqer'] = $order_info['qwqer'];
+        }
         $ret = $this->shipping_qwqer->generateOrderObjects($address,array($delivery_types[$delivery_type]));
         if (isset($ret[0])){
             return $ret[0];
@@ -77,8 +82,8 @@ class ModelExtensionShippingQwqer extends Model {
         if (count($res)){
             $rawObj = $res[0]['data'];
             $obj = json_decode($rawObj,true);
-            $obj = $obj['autoCompleteHidden'];
-            $obj = json_decode(html_entity_decode(strip_tags($obj)),true);
+            $obj = $obj['qwqer'];
+            //$obj = json_decode(html_entity_decode(strip_tags($obj)),true);
             if ($obj) {
                 return $obj;
             }

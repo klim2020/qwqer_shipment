@@ -6,7 +6,7 @@
   <author> Alex</author>
   <link>https://t.me/alex_klimenko</link>
 
-  
+
 
   <file path="catalog/controller/checkout/success.php">
        <operation>
@@ -14,32 +14,39 @@
          <add position="after"><![CDATA[
           
            /*qwqer Module additional field saving*/
-            
+          
 
+            //qwqer.omnivaparcelterminal
             if ($this->config->get('qwqer_status') && isset($this->session->data['shipping_method']['code']) && strpos($this->session->data['shipping_method']['code'],'qwqer.')!==false){
-                $this->load->model('shipping/qwqer');
+                $this->load->model('checkout/order');
+				$this->load->model('shipping/qwqer');
                 $this->load->model('account/order');
                 $order_info =  $this->session->data;
-                //qwqer.omnivaparcelterminal
-                $this->load->model('checkout/order');
                 $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
                 if (isset($order_info) && $this->session->data['shipping_method']['code'] == 'qwqer.omnivaparcelterminal' ){
                     $order_info['shipping_method'] = 'Omnival Parcel Terminal';
                     $this->model_shipping_qwqer->updateShippingMethod($this->session->data['order_id'],'Omnival Parcel Terminal');
+					$this->session->data['shipping_method']['title'] = 'Omnival Parcel Terminal';
                 }
-
+				if (isset($order_info) && $this->session->data['shipping_method']['code'] == 'qwqer.expressdelivery' ){
+					$this->session->data['shipping_method']['title'] = 'Express Delivery';
+				}
+				if (isset($order_info) && $this->session->data['shipping_method']['code'] == 'qwqer.scheduleddelivery' ){
+					$this->session->data['shipping_method']['title'] = 'Scheduled Delivery';
+				}
+                $order_info =  $this->session->data;
 
                 $data_order =  $this->model_shipping_qwqer->addOrderData($order_info);
-                $this->session->data['shipping_method']['title'] = 'Omnival Parcel Terminal';
+                
             }
           /*!qwqer Module additional field saving*/
           ]]></add>
         </operation>
   </file>
 
-<!-- SERVRER ORDER CREATION -->
-<!--
-<file path="catalog/model/payment/*.php|catalog/model/checkout/order.php">
+  <!-- remove not needed blocks 
+
+  <file path="catalog/model/payment/*.php|catalog/model/checkout/order.php">
        <operation>
          <search regex="true"><![CDATA[/^(.*INSERT.*order_history.*order_status_id.*=.*(\$order_status_id)\s.*)$/mU]]></search>
          <add position="after"><![CDATA[
@@ -95,7 +102,6 @@
           ]]></add>
         </operation>
   </file>
- 
   
   <file path="admin/view/template/sale/order_form.tpl">
        <operation>
@@ -121,10 +127,7 @@
           //!Qwqer show order creation results2
           ]]></add>
         </operation>
-  </file>  
-  
---> 
-
-
+  </file>     
+ -->
 
 </modification>
