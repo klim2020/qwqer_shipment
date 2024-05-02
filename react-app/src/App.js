@@ -15,7 +15,7 @@ import { LanguageProvider } from "./providers/LanguageProvider";
 
 import { getStorage, setStorage, removeStorage } from './config/storage';
 import { isStandardPlugin } from './config/config';
-import { removeSessionValue, fetchPrice } from './transport/transport';
+import { removeSessionValue, fetchValidate } from './transport/transport';
 import { isOpen } from './transport/opening';
 
 const validate = (form) => {
@@ -41,15 +41,6 @@ const validate = (form) => {
 };
 
 function App() {
-
-  //set form data if exists in storage on radio selection
-  const mountCheckChange = () => {
-    if (isStandardPlugin() && getStorage()){
-      console.log("trying to set storage cuz storage exists on change")
-      setForm(getStorage());
-    }
-  }
-
   //Form state that needs to be binded with input fields in html
   const [form, setForm] = React.useState({
     inputName: "not provided",
@@ -79,6 +70,27 @@ function App() {
     
  
   };
+
+  //set form data if exists in storage on radio selection
+  const mountCheckChange = () => {
+    if (isStandardPlugin() && getStorage()){
+      console.log("trying to set storage cuz storage exists on change")
+      let type = window.shipping_qwqer.getSource();
+      let f = getStorage()
+      fetchValidate(f.inputAddress, f.phone, f.name, type).then((ok)=>{
+        console.log(ok);
+        if (ok){
+          //emits state with OnSetForm prop
+          setForm(f);
+          //console.log({inputName:inputName,inputAddress:inputAddress,phone:phone});
+        }else{
+
+        }
+      });
+
+      
+    }
+  }
 
   const OnSetForm = (form)=>{
     console.log("OnSetForm in App.js propagated");
@@ -252,6 +264,7 @@ function App() {
       window.shipping_qwqer.removeEventListener("select", mountCheckChange);
     }
   },[]);
+
 
   return (
     <LanguageProvider>

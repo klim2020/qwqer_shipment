@@ -24,7 +24,10 @@ class ModelExtensionShippingQwqer extends Model {
 		$this->load->language('extension/shipping/qwqer');
 
         foreach ($this->language->all() as $key=>$lang_val){
-            $lang[$key] = htmlentities($lang_val);
+            if (is_string($lang_val)){
+                $lang[$key] = htmlentities($lang_val);
+            }
+
         }
 
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$this->config->get('qwqer_geo_zone_id') . "' AND country_id = '" . (int)$address['country_id'] . "' AND (zone_id = '" . (int)$address['zone_id'] . "' OR zone_id = '0')");
@@ -61,7 +64,7 @@ class ModelExtensionShippingQwqer extends Model {
 
                          $key_r = mb_strtolower($type);
                          $price = $this->shipping_qwqer->generateDeliveryCost($key_r);
-                         $template = $this->load->view('extension/shipping/qwqer', array('text_title_order_type' => $type, 'langs'=>$lang));
+                         $template = $this->load->view('extension/shipping/qwqer', array('text_title' => $lang['text_title_'.$type]));
                          $quote_data[$key_r] = array(
                              'code' => 'qwqer.' . $key_r,
                              'title' => $template,
@@ -91,7 +94,7 @@ class ModelExtensionShippingQwqer extends Model {
                      $moduleType = $this->config->get('qwqer_checkout_type');
                      $method_data = array(
                          'code' => 'qwqer.standart',
-                         'title' => $this->load->view('extension/shipping/qwqer_title', array('current_price'=>$price, 'text_title' => $this->language->get('text_title'), 'token'=>$token, 'langs'=>$lang,'url'=>$url,'moduleType'=>$moduleType)),//
+                         'title' => $this->load->view('extension/shipping/qwqer_title', array('current_price'=>$price, 'text_title' => $this->language->get('text_title'), 'token'=>$token, 'langs'=>json_encode($lang),'url'=>$url,'moduleType'=>$moduleType)),//
                          'quote' => $quote_data,
                          'sort_order' => $this->config->get('qwqer_sort_order'),
                          'error' => $error,
@@ -165,7 +168,6 @@ class ModelExtensionShippingQwqer extends Model {
         }
     }
 
-
     public function updateShippingMethod($order_id,$text){
         if ($order_id){
             $str = "UPDATE " . DB_PREFIX . "order SET `shipping_method` = '" . $this->db->escape($text) . "' WHERE `order_id` = " . $order_id;
@@ -191,8 +193,5 @@ class ModelExtensionShippingQwqer extends Model {
     public  function  getProductStatusId($id){
         return $this->db->query("SELECT `stock_status_id` FROM " .DB_PREFIX. "product WHERE `product_id` = {$id} limit 1")->rows[0]['stock_status_id'];
     }
-
-
-
 
 }
