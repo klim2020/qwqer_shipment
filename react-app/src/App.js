@@ -14,7 +14,7 @@ import { matchIsValidTel } from "mui-tel-input";
 import { LanguageProvider } from "./providers/LanguageProvider";
 
 import { getStorage, setStorage, removeStorage } from './config/storage';
-import { isStandardPlugin } from './config/config';
+import { isStandardPlugin, forceReboot } from './config/config';
 import { removeSessionValue, fetchValidate } from './transport/transport';
 import { isOpen } from './transport/opening';
 
@@ -102,7 +102,7 @@ function App() {
         if (!isStandardPlugin()){
         window.shipping_qwqer.insertUrlParam('qwqer_show_price','1');
         console.log("forcingreload on express form input");
-        window.location.reload();
+        forceReboot();
         }else{
           setForm(form);
         }
@@ -138,7 +138,7 @@ function App() {
         if (ret){
           removeStorage();
           if(ret.reboot){
-            window.shipping_qwqer.reload();
+            forceReboot()
           }
         }
       });
@@ -166,7 +166,7 @@ function App() {
           console.log("currentprice is 0");
           removeSessionValue(window.shipping_qwqer.getSource());
           removeStorage();
-          window.shipping_qwqer.reload();
+          forceReboot();
         }
       }
     }

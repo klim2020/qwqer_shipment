@@ -88,6 +88,7 @@
                 window.shipping_qwqer.insertUrlParam(k,v)
             })
         }
+        console.log("reload");
         window.location.reload();
     }
 

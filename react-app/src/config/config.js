@@ -9,4 +9,11 @@ const isStandardPlugin = ()=>{
             return false;
         }
 
-export  {filter, isStandardPlugin};
+        //params {foo: "bar".....}
+const forceReboot = (params)=>{
+    //reboot logic
+    console.log("force Reboot");
+    window.shipping_qwqer.reload(params);
+}
+
+export  {filter, isStandardPlugin, forceReboot};
