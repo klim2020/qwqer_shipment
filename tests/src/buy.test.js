@@ -1,5 +1,5 @@
-import navigator from "./opencart/navigation";
-import config from "./opencart/configs";
+const navigator  = require('./opencart/navigation.mjs');
+//const config = require("./opencart/configs.mjs");
 
 const timeout = 15000; 
 beforeAll(async () => {

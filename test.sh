@@ -1,3 +1,4 @@
 #!/bin/bash
-cd tests
-jest test
+cd ./tests
+npm run test
+cd ..

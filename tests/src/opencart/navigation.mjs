@@ -1,4 +1,4 @@
-const navigator = {
+export const navigator = {
     routes:{
         iPhone: 'index.php?route=product/product&product_id=40'
     },
@@ -6,5 +6,3 @@ const navigator = {
         await page.goto(path + where, {waitUntil: 'domcontentloaded'});
     },
 }
-
-export default navigator;
