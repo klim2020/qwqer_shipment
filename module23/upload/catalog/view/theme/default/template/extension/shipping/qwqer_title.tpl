@@ -110,7 +110,6 @@
         window.history.pushState({ path: newUrl }, '', newUrl)
     }
 
-
     document.querySelector("#acjs").addEventListener("load",()=>{
 
         //add events only for the
@@ -139,6 +138,8 @@
             })
         })
     })
+
+    window.shipping_qwqer.prices = JSON.parse(`<?php echo $prices; ?>`);
 
     window.shipping_qwqer.moduleType = '<?php echo $moduleType; ?>';
 </script>

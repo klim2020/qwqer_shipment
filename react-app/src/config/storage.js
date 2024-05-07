@@ -4,8 +4,10 @@ const setStorage = (form)=>{
     const key = window.shipping_qwqer.getSource();
     localStorage.setItem(key,JSON.stringify(form));
 }
-const getStorage = ()=>{
-    const key = window.shipping_qwqer.getSource();
+const getStorage = (key = false)=>{
+    if (key === false){
+        key = window.shipping_qwqer.getSource();
+    } 
     return JSON.parse(localStorage.getItem(key));
 }
 

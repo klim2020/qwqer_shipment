@@ -173,6 +173,19 @@ function App() {
     console.log("Finish hecking and restore form from storage")
   },[])
 
+  //clear express price if not express storage is empty
+  React.useEffect(()=>{
+    if (window.shipping_qwqer.prices !== 'undefined' 
+      && typeof(window.shipping_qwqer.prices.expressdelivery) !== 'undefined'
+      && window.shipping_qwqer.prices.expressdelivery != 0
+      && !getStorage('qwqer.expressdelivery')){
+        console.log("price for express delivery have been set but storage object doesnt exist, so we need to clear session data");
+        removeSessionValue('qwqer.expressdelivery');
+        removeStorage();
+        forceReboot();
+    }
+  },[]);
+
 
   //onLoad component binding with inner html events
   React.useEffect(() => {
@@ -220,7 +233,10 @@ function App() {
       if (form.callbackObject.forcereload){
         console.log("adding session storage when form changed");
         window.shipping_qwqer.insertUrlParam('qwqer_show_price','1');
-        //window.location.reload();
+        if (window.shipping_qwqer.moduleType == 0){
+          forceReboot();
+        }
+        
       }
     }
           
@@ -240,7 +256,7 @@ function App() {
   //disable Express if we are not working
   React.useEffect(()=>{
     isOpen().then((e)=>{
-      if (e){
+      if (!e){
         console.log("we are open")
       }else{
         console.log("we are closed")

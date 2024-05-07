@@ -136,16 +136,19 @@ class ControllerExtensionShippingQwqer extends Controller {
 
         }else{
             $selected =     $this->request->post['selected'];
-            $price =  $this->shipping_qwqer->generateDeliveryCost($selected);
-            $selected = str_replace('qwqer.','',$selected);
-            if ($this->request->post['selected'] && $price){
-                unset($this->session->data['qwqer_price'][$selected]);
-                $json = ['message'=>'success'];
-                if ($this->config->get('qwqer_checkout_type') == 0){
-                    $json['reboot']=false;
-                }else{
-                    $json['reboot']=true;
-                }
+            if ($selected)
+            {
+                $price =  $this->shipping_qwqer->generateDeliveryCost($selected);
+                $selected = str_replace('qwqer.','',$selected);
+                if ($this->request->post['selected'] && $price){
+                    $this->shipping_qwqer->clearSession($selected);
+                    $json = ['message'=>'success'];
+                    if ($this->config->get('qwqer_checkout_type') == 0){
+                        $json['reboot']=false;
+                    }else{
+                        $json['reboot']=true;
+                    }
+            }
             }else{
                 $json = ['message'=>'fail'];
             }

@@ -62,6 +62,7 @@ class ModelExtensionShippingQwqer extends Model {
                          $key_r = mb_strtolower($type);
                          $price = $this->shipping_qwqer->generateDeliveryCost($key_r);
                          $template = $this->load->view('extension/shipping/qwqer', array('text_title_order_type' => $type, 'langs'=>$lang));
+                         $prices[$key_r] = $price/100;
                          $quote_data[$key_r] = array(
                              'code' => 'qwqer.' . $key_r,
                              'title' => $template,
@@ -91,7 +92,7 @@ class ModelExtensionShippingQwqer extends Model {
                      $moduleType = $this->config->get('qwqer_checkout_type');
                      $method_data = array(
                          'code' => 'qwqer.standart',
-                         'title' => $this->load->view('extension/shipping/qwqer_title', array('current_price'=>$price, 'text_title' => $this->language->get('text_title'), 'token'=>$token, 'langs'=>$lang,'url'=>$url,'moduleType'=>$moduleType)),//
+                         'title' => $this->load->view('extension/shipping/qwqer_title', array('current_price'=>$price, 'prices' =>json_encode($prices), 'text_title' => $this->language->get('text_title'), 'token'=>$token, 'langs'=>$lang,'url'=>$url,'moduleType'=>$moduleType)),//
                          'quote' => $quote_data,
                          'sort_order' => $this->config->get('qwqer_sort_order'),
                          'error' => $error,
