@@ -38,11 +38,7 @@ class QwqerApi {
         'Jewelry',
     );
 
-    public $type_map = array(
-        'qwqer.expressdelivery'     =>"ExpressDelivery",
-        'qwqer.scheduleddelivery'   =>"ScheduledDelivery",
-        'qwqer.omnivaparcelterminal'=>"OmnivaParcelTerminal",
-    );
+
 
     private  $token;
 
@@ -55,6 +51,7 @@ class QwqerApi {
         'ScheduledDelivery',
         'OmnivaParcelTerminal',
     );
+
 
     private $registry;
     private  $trade_pt;
@@ -167,6 +164,10 @@ class QwqerApi {
         return $this->entry_url;
     }
 
+    public function getDeliveryType($val){
+
+    }
+
     /** SETTERS **/
 
     /**
@@ -223,6 +224,52 @@ class QwqerApi {
         }
 
         return true;
+    }
+
+
+    /** Work with server data */
+
+    /**
+     * @param string $key
+     * @param array $val = [order_object - order object from server
+     *                      price_object - price object from server
+     *
+     * ]
+     * @return void
+     */
+    public function storeSession($key, $val){
+        if (!isset($this->session->data['qwqer_session'])){
+             $this->session->data['qwqer_session'] = array();
+        }
+        $this->session->data['qwqer_session'][$key] = $val;
+    }
+
+    /**
+     * @param $key
+     * @return  array $key = [order_object   - order object from server
+     *                       delivery_object - validated delivery object from server
+     *                       price_object    - price object from server]
+     */
+    public function getSession($key,$type = false){
+        if (!isset($this->session->data['qwqer_session'])
+            || !isset($this->session->data['qwqer_session'][$key])){
+            return [];
+        }
+        if ($type){
+            if (!isset($this->session->data['qwqer_session'][$key])){
+                return [];
+            }
+            return $this->session->data['qwqer_session'][$key][$type];
+        }
+        return $this->session->data['qwqer_session'][$key];
+    }
+
+    /**
+     * @param $key
+     * @return void
+     */
+    public function clearSession($key){
+        unset($this->session->data['qwqer_session'][$key]);
     }
 
     /** Api QWQER **/
@@ -714,10 +761,9 @@ class QwqerApi {
         if (array_key_exists($deliveryType,$this->delivery_static_cost)){
             $price = $this->delivery_static_cost[$deliveryType];
         }else{
-            if (isset($this->session->data['qwqer_price'])
-                && isset($this->session->data['qwqer_price'][$deliveryType])) {
-
-                $price = $this->session->data['qwqer_price'][$deliveryType];
+            if ($this->getSession($deliveryType)) {
+                $currentSession = $this->getSession($deliveryType);
+                $price = $currentSession['price_object']['client_price'];
             }else{
                 $price = 0;
             }

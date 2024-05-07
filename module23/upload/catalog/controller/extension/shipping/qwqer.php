@@ -75,7 +75,6 @@ class ControllerExtensionShippingQwqer extends Controller {
     public function validate_data(){
         if (!$this->validate() || $this->request->server['REQUEST_METHOD'] != 'POST'  ){
             $json = ['error'=>'key invalid'];
-
         }else{
             $this->session->data['qwqer'] = array();
             $name =     $this->request->post['qwqer_name'];
@@ -88,13 +87,14 @@ class ControllerExtensionShippingQwqer extends Controller {
             $price = array(
                 'data'=>array('client_price' => $this->currency->convert(300 / 100, 'EUR', $this->config->get('config_currency')) * 100)
             );
-            if (isset($ret['real_type']) && $ret['real_type']=="ExpressDelivery"){
-                $price = $this->shipping_qwqer->calculatePrice($ret);
-                $key = mb_strtolower($ret['real_type']);
+            $key = mb_strtolower($ret['real_type']);
+            if ($this->shipping_qwqer->getSession($key)){
+
+            }elseif (isset($ret['real_type']) && $ret['real_type']=="ExpressDelivery"){
+                $price  = $this->shipping_qwqer->calculatePrice($ret);
+                $key    = mb_strtolower($ret['real_type']);
                 $this->session->data['qwqer_price'][$key] = $price['data']['client_price'];
             }
-
-
 
             //$this->shipping_qwqer->
             if (isset($address)){
@@ -103,9 +103,15 @@ class ControllerExtensionShippingQwqer extends Controller {
             }
 
             if ($ret){
-                $json['delivery'] = $ret;
-                $json['price'] = $price['data'];
+                $json['delivery']             = $ret;
+                $json['price']                = $price['data'];
                 $this->session->data['qwqer'] = $ret;
+
+                //create session array
+                $arr = $this->shipping_qwqer->getSession($key);
+                $arr['delivery_object'] = $ret;
+                $arr['price_object']    = $price['data'];
+                $this->shipping_qwqer->storeSession($key,$arr);
                 //$this->session->data['qwqer_price'] = $price;
 
             }else{
