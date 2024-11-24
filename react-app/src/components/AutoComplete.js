@@ -57,14 +57,14 @@ export default function AutoComplete({onValueChange}) {
   const showData = (v)=>{
 
     if (v){
-      console.log("showData - showing data")
-      console.log(v)
+     //console.log("showData - showing data")
+     //console.log(v)
       setLoading(false);
       setOpen(true);
       setOptions(v);
     }else{
-      console.log("showData - showing nodata data")
-      console.log(v)
+     //console.log("showData - showing nodata data")
+     //console.log(v)
       showNoData();
     }
     
@@ -133,7 +133,7 @@ export default function AutoComplete({onValueChange}) {
   //los
   React.useEffect(()=>{
     if (source === "terminals"){
-      console.log("fetching terminals data")
+     //console.log("fetching terminals data")
       fetch('')
     }
   },[source]);
@@ -143,7 +143,7 @@ export default function AutoComplete({onValueChange}) {
 //element selected 
   const onSelect = (e,v) => {
     //emit value change
-    console.log("emit value change")
+   //console.log("emit value change")
     onValueChange(v);
     hideDropdown();
   }
@@ -153,13 +153,13 @@ export default function AutoComplete({onValueChange}) {
     () =>{
       if(source === "address"){
         return debounce((val) => {
-          console.log('we are inside debounce')
+         //console.log('we are inside debounce')
           if(source === "address"){
             showSpinner();
-            console.log('we are inside debounce->address')
+           //console.log('we are inside debounce->address')
             fetchDataAddress(val).then((v)=>{
-              console.log('inside debounce address we fetched');
-              console.log(v);
+             //console.log('inside debounce address we fetched');
+             //console.log(v);
               showData(v);
             })
           }
@@ -168,11 +168,11 @@ export default function AutoComplete({onValueChange}) {
       
 
       if(source === "terminals"){
-          console.log('we are inside fetchDataTerminals->terminals')
+         //console.log('we are inside fetchDataTerminals->terminals')
 
         return (val)=> fetchDataTerminals(val).then((v)=>{
-            console.log('inside debounce fetchDataTerminals we fetched');
-            console.log(v);
+           //console.log('inside debounce fetchDataTerminals we fetched');
+           //console.log(v);
             setOptions(v)
           })
         }
@@ -182,15 +182,15 @@ export default function AutoComplete({onValueChange}) {
 
 //reload on text input
   const onChangeText = (e,val)=>{
-    console.log("onChangeText type")
+   //console.log("onChangeText type")
     if (e && e.type != undefined){
-      console.log(e && e.type)
+     //console.log(e && e.type)
     }
     if (val.length >= 1
        && e && e.type !== 'click' 
        && source !== "terminals"){
         //prevent onSelect propagation
-      console.log('before  fetching')
+     //console.log('before  fetching')
       setOptions([]);
       setLoading(true);
       setOpen(true);
@@ -215,7 +215,7 @@ export default function AutoComplete({onValueChange}) {
       required={true}
 /* hide dropdown on lost focus */
       onBlur =  {(event) => {
-        console.log("lost focus autocomplete");
+       //console.log("lost focus autocomplete");
               if (open){
                 setOpen(false);
               }

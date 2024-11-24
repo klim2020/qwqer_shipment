@@ -91,7 +91,7 @@
                                         data.append("address",address);
                                         data.append("api_token",api);
                                         data.append("trade_point",pt);
-                                        console.log(data);
+                                       //console.log(data);
                                         fetch('index.php?route=shipping/qwqer/geocode&token=<?php echo $token;?>',
                                             {
                                                 method: "POST",
@@ -218,7 +218,7 @@
                             //autoCompleteJS.data.keys = ["title"];
                         }).catch(response =>{
                         response.json().then((json) => {
-                            console.log(json.message);
+                           //console.log(json.message);
                         })
                     });
                     return true;

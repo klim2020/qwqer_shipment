@@ -74,11 +74,11 @@ function App() {
   //set form data if exists in storage on radio selection
   const mountCheckChange = () => {
     if (isStandardPlugin() && getStorage()){
-      console.log("trying to set storage cuz storage exists on change")
+     //console.log("trying to set storage cuz storage exists on change")
       let type = window.shipping_qwqer.getSource();
       let f = getStorage()
       fetchValidate(f.inputAddress, f.phone, f.name, type).then((ok)=>{
-        console.log(ok);
+       //console.log(ok);
         if (ok){
           //emits state with OnSetForm prop
           setForm(f);
@@ -93,15 +93,15 @@ function App() {
   }
 
   const OnSetForm = (form)=>{
-    console.log("OnSetForm in App.js propagated");
+   //console.log("OnSetForm in App.js propagated");
      if (validate(form)){
       setStorage(form);  
-      console.log("Setting up the form");
+     //console.log("Setting up the form");
       //if user is on a express then go on server for a price
       if (window.shipping_qwqer.getSource() === "qwqer.expressdelivery"){
         if (!isStandardPlugin()){
         window.shipping_qwqer.insertUrlParam('qwqer_show_price','1');
-        console.log("forcingreload on express form input");
+       //console.log("forcingreload on express form input");
         forceReboot();
         }else{
           setForm(form);
@@ -144,7 +144,7 @@ function App() {
       });
     }
     else{
-      console.log("");
+     //console.log("");
       removeStorage();
     }
   }
@@ -154,23 +154,23 @@ function App() {
 
   //checking and restore form from storage
   React.useEffect(()=>{
-    console.log("checking Localstorage on app loading")
+   //console.log("checking Localstorage on app loading !")
     if (getStorage() &&  window.shipping_qwqer.currentPrice != 0){
-      console.log("Localstorage is present, loading it to form")
+     //console.log("Localstorage is present, loading it to form")
       setForm(getStorage());
     }else{
-      console.log("storage dont exists or currentjprice is 0")
+     //console.log("storage dont exists or currentjprice is 0")
       if (getStorage()){
-        console.log(" storage exists")
+       //console.log(" storage exists")
         if (window.shipping_qwqer.currentPrice == 0){
-          console.log("currentprice is 0");
+         //console.log("currentprice is 0");
           removeSessionValue(window.shipping_qwqer.getSource());
           removeStorage();
           forceReboot();
         }
       }
     }
-    console.log("Finish hecking and restore form from storage")
+   //console.log("Finish hecking and restore form from storage")
   },[])
 
   //clear express price if not express storage is empty
@@ -179,7 +179,7 @@ function App() {
       && typeof(window.shipping_qwqer.prices.expressdelivery) !== 'undefined'
       && window.shipping_qwqer.prices.expressdelivery != 0
       && !getStorage('qwqer.expressdelivery')){
-        console.log("price for express delivery have been set but storage object doesnt exist, so we need to clear session data");
+       //console.log("price for express delivery have been set but storage object doesnt exist, so we need to clear session data");
         removeSessionValue('qwqer.expressdelivery');
         removeStorage();
         forceReboot();
@@ -213,10 +213,10 @@ function App() {
 
   //lift up data to html
   React.useEffect(() => {
-    console.log("form object inside an app have been changed");
-    console.log(form.callbackObject);
+   //console.log("form object inside an app have been changed");
+   //console.log(form.callbackObject);
     if (validate(form)) {
-      console.log("form object inside an app have been validated");
+     //console.log("form object inside an app have been validated");
       window.shipping_qwqer.insertQwqer(
         form.inputName,
         form.phone,
@@ -231,7 +231,7 @@ function App() {
     if (validate(form)) {
     //we get request for reloading from backend
       if (form.callbackObject.forcereload){
-        console.log("adding session storage when form changed");
+       //console.log("adding session storage when form changed");
         window.shipping_qwqer.insertUrlParam('qwqer_show_price','1');
         if (window.shipping_qwqer.moduleType == 0){
           forceReboot();
@@ -257,9 +257,9 @@ function App() {
   React.useEffect(()=>{
     isOpen().then((e)=>{
       if (!e){
-        console.log("we are open")
+       //console.log("we are open")
       }else{
-        console.log("we are closed")
+       //console.log("we are closed")
         let rm = [...document.querySelectorAll("input[name='shipping_method']")].filter(e=>e.value == 'qwqer.expressdelivery');
         if (rm.length >0){
           if (isStandardPlugin()){

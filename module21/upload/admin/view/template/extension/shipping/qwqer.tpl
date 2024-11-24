@@ -116,7 +116,7 @@
                                     data.append("address", address);
                                     data.append("api_token", api);
                                     data.append("trade_point", pt);
-                                    console.log(data)
+                                   //console.log(data)
                                     fetch('index.php?route=shipping/qwqer/geocode&token=<?php echo $token; ?>', {
                                         method: "POST",
                                         body: data

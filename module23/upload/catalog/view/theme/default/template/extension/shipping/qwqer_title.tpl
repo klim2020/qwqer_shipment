@@ -12,7 +12,7 @@
    function loadjscssfile(filename, filetype,id){
             if (filetype=="js"){ //if filename is a external JavaScript file
                 var fileref=document.createElement('script')
-                fileref.setAttribute("type","text/javascript")
+                fileref.setAttribute("type","module")
                 fileref.setAttribute("src", filename)
             }
             else if (filetype=="css"){ //if filename is an external CSS file
@@ -46,6 +46,10 @@
     window.shipping_qwqer.allowerarray = ["qwqer.expressdelivery", "qwqer.scheduleddelivery", "qwqer.omnivaparcelterminal"];
     window.shipping_qwqer.token = '<?php echo $token; ?>';
     window.shipping_qwqer.instances = 0;//if widget have been printed
+ /**
+ * Removes duplicate widget containers from the DOM.
+ * @function
+ */   
     window.shipping_qwqer.forceRemove = ()=>{
         elements = document.querySelectorAll('.MuiContainer-root');
         if (elements.length > 1){
@@ -58,7 +62,8 @@
     }
 
     window.shipping_qwqer.langs = <?php echo json_encode($langs); ?>
-
+    
+    //Retrieves the selected shipping method from the input field.
     window.shipping_qwqer.getSource = () =>{
         if (window.shipping_qwqer.allowerarray.indexOf(document.querySelector('input[name="shipping_method"]:checked').value) != -1){
             return document.querySelector('input[name="shipping_method"]:checked').value;
@@ -88,7 +93,7 @@
                 window.shipping_qwqer.insertUrlParam(k,v)
             })
         }
-        console.log("reload");
+       //console.log("reload");
         window.location.reload();
     }
 

@@ -16,9 +16,9 @@ let url = window.shipping_qwqer.url;
 
 const fetchDataTerminals = (val,callback) => {
     if (window.terminals !== undefined){
-      console.log('fetching terminals with preloaded data');
+     //console.log('fetching terminals with preloaded data');
       if ('data' in window.terminals && window.terminals.data === 'key invalid'){
-        console.log('we have error keyt is invalid');
+       //console.log('we have error keyt is invalid');
         window.location.reload();
       }
       return new Promise((resolve) => {
@@ -26,12 +26,12 @@ const fetchDataTerminals = (val,callback) => {
         resolve(ret)})
     }
     return new Promise((resolve) => {
-      console.log('we are about to fetch terminals')
+     //console.log('we are about to fetch terminals')
       let token = window.shipping_qwqer.token
       fetch(url+"index.php?route=extension/shipping/qwqer/get_terminals&qwqer_token="+token, {}).then((response) => {
          return response.json()
       }).then((data)=>{
-        console.log('event after fetching terminals')
+       //console.log('event after fetching terminals')
          window.terminals = data;
          resolve(data)
       })
@@ -85,7 +85,7 @@ const fetchDataTerminals = (val,callback) => {
     formdata.append("qwqer_name", name);
     formdata.append("qwqer_type", orderType);
    
-    console.log(address);
+   //console.log(address);
 
     var requestOptions = {
       method: 'POST',
@@ -99,12 +99,12 @@ const fetchDataTerminals = (val,callback) => {
         return data;
     })
     debugger;
-    console.log("data recieved validate_data is:")
-    console.log(ret);
+   //console.log("data recieved validate_data is:")
+   //console.log(ret);
     if ('price' in ret && 'client_price' in ret.price){
         return ret;
     }
-    console.log("error in validate_data transport function")
+   //console.log("error in validate_data transport function")
     return false;
   }
 
@@ -127,8 +127,8 @@ const fetchDataTerminals = (val,callback) => {
     };
     const response =  await fetch(url+"index.php?route=extension/shipping/qwqer/remove_session&qwqer_token="+token, requestOptions)
     const data =  await response.json();
-    console.log("printing data from fetch removeSessionValue");
-    console.log(data);
+   //console.log("printing data from fetch removeSessionValue");
+   //console.log(data);
     if (response.status === 200 && data.message === "success"){
       return data;
     }
@@ -145,9 +145,9 @@ const fetchDataTerminals = (val,callback) => {
     };
     const response =  await fetch(url+"index.php?route=extension/shipping/qwqer/get_working_hours&qwqer_token="+token, requestOptions)
     const data =  await response.json();
-    console.log("printing data from fetch working hours");
-    console.log(data);
-    console.log(response.status === 200 && data.message === "success" && data.error === undefined);
+   //console.log("printing data from fetch working hours");
+   //console.log(data);
+   //console.log(response.status === 200 && data.message === "success" && data.error === undefined);
     if (response.status === 200 && data.message === "success" && data.error === undefined){
       window.shipping_qwqer.workingHours = data;
       return data;

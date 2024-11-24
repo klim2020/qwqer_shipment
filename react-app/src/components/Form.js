@@ -64,7 +64,7 @@ export default function Form({ OnSetForm }) {
       let type = window.shipping_qwqer.getSource();
       
       fetchValidate(inputAddress, phone, inputName, type).then((ok)=>{
-        console.log(ok);
+       //console.log(ok);
         if (ok){
           //shows submit message
           //setSubmit(true);

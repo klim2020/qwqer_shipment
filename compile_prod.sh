@@ -1,5 +1,5 @@
 #!bin/bash
-cd react-app
+cd react-vite
 npm run build
 echo copying.....
 #find ./build/static/js -name main.*.js -exec cp {} ./../module23/upload/catalog/view/javascript/qwqer/shipping_qwqer.js \;

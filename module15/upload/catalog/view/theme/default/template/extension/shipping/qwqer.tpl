@@ -54,7 +54,7 @@
 
             document.querySelectorAll("input[type=\"radio\"]").forEach((e)=>{
                 e.addEventListener('change',(e)=>{
-                    console.log('onChange');
+                   //console.log('onChange');
                     let autocomplete2 = document.querySelector("#autoComplete")
                     if (autocomplete2){
                         if (terminalRadioButton.checked){
@@ -168,7 +168,7 @@
                     //'Content-Type': 'text/plain;charset=utf-8',
                     //"Content-Type": "application/json",
                 },
-            }).then((res)=>{return res.json()}).then((r)=>{console.log(r)})
+            }).then((res)=>{return res.json()}).then((r)=>//console.log(r)})
         }
     }
 

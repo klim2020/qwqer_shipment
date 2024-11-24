@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      window.shipping_qwqer = {}
+      window.shipping_qwqer = document.createElement('shipping_qwqer');
+      window.shipping_qwqer.allowerarray = ["qwqer.expressdelivery", "qwqer.scheduleddelivery", "qwqer.omnivaparcelterminal"];
+      window.shipping_qwqer.url='http://localhost:8071/ocs23/',
+      window.shipping_qwqer.getSource = ()=>{return 'qwqer.omnivaparcelterminal';},
+      window.shipping_qwqer.prices={
+            "expressdelivery": 0,
+            "scheduleddelivery": 3,
+            "omnivaparcelterminal": 3
+        }
+
+       
+        //console.log('hello',window)
+     
+    
+
+    </script>
+    <title>Vite + React</title>
+  </head>
+  <body>
+    <div id="shipping_qwqer_mount"></div>
+    <script type="module" src="/src/main.jsx"></script>
+
+  </body>
+</html>

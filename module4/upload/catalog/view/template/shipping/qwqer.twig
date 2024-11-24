@@ -73,7 +73,7 @@
 
             document.querySelectorAll("input[type=\"radio\"]").forEach((e)=>{
                 e.addEventListener('change',(e)=>{
-                    console.log('onChange');
+                   //console.log('onChange');
                     let autocomplete2 = document.querySelector("#autoComplete")
                     if (autocomplete2){
                         if (terminalRadioButton.checked){
@@ -166,7 +166,7 @@
                 document.querySelector("#autoCompleteHidden").value = JSON.stringify(event.detail.selection.value);
 
                 //sendSaveRequest('{{ order_id }}','{{ session_id }}')
-                console.log('order_id-{{ order_id }}  session_id - {{ session_id }}')
+               //console.log('order_id-{{ order_id }}  session_id - {{ session_id }}')
 
 
             });
@@ -183,7 +183,7 @@
                         //'Content-Type': 'text/plain;charset=utf-8',
                         //"Content-Type": "application/json",
                     },
-                }).then((res)=>{return res.json()}).then((r)=>{console.log(r)})
+                }).then((res)=>{return res.json()}).then((r)=>//console.log(r)})
             }
         }
 
