@@ -9,7 +9,9 @@ const DelayedCallback = {
 }
 
 function QwqerProvider({ children }) {
-
+  if (typeof window.shipping_qwqer === 'undefined'){
+    console.error("QwqerProvider - shipping_qwer is undefined");
+  }
 
   const value = {
     qwqer:window.shipping_qwqer

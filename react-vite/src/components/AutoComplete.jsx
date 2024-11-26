@@ -10,6 +10,7 @@ import { useLanguage } from '../providers/LanguageProvider';
 import { fetchDataAddress, fetchDataTerminals } from '../transport/transport';
 
 import { debounce } from '@mui/material/utils';
+import { useQwqer } from "../providers/QwqerProvider";
 
 
 //filters terminals
@@ -23,6 +24,7 @@ AutoComplete.prototypes={
 }
 
 export default function AutoComplete({onValueChange}) {
+  const { qwqer } = useQwqer(); 
 //state dla otkrytija  blocka
   const [open, setOpen] = React.useState(false);
 //array with substitution elements  
@@ -57,14 +59,14 @@ export default function AutoComplete({onValueChange}) {
   const showData = (v)=>{
 
     if (v){
-     //console.log("showData - showing data")
-     //console.log(v)
+     console.log("showData - showing data")
+     console.log(v)
       setLoading(false);
       setOpen(true);
       setOptions(v);
     }else{
-     //console.log("showData - showing nodata data")
-     //console.log(v)
+     console.log("showData - showing nodata data")
+     console.log(v)
       showNoData();
     }
     
@@ -82,15 +84,15 @@ export default function AutoComplete({onValueChange}) {
 
   //bind with html events
   const bindHtmlEvent = (e)=>{
-    
-    if (e.detail !== false){
-      if (e.detail === "qwqer.omnivaparcelterminal"){
+    console.log('qwqer bindHtmlEvent called',e)
+    if (e !== false){
+      if (e === "qwqer.omnivaparcelterminal"){
         setSource("terminals")
       }
-      if (e.detail === "qwqer.expressdelivery"){
+      if (e === "qwqer.expressdelivery"){
         setSource("address")
       }
-      if (e.detail === "qwqer.scheduleddelivery"){
+      if (e === "qwqer.scheduleddelivery"){
         setSource("address")
       }
     }else{
@@ -99,11 +101,11 @@ export default function AutoComplete({onValueChange}) {
   }
 
   React.useEffect(() => {
-    //console.log(window.shipping_qwqer.value)
+    console.log(window.shipping_qwqer.value)
     bindHtmlEvent({detail:window.shipping_qwqer.value})
-    window.shipping_qwqer.addEventListener('select', bindHtmlEvent)
+    qwqer.addEventListener(qwqer.EVENT_QWQER_SELECTED, bindHtmlEvent);
     return () => {
-      window.shipping_qwqer.removeEventListener('select', bindHtmlEvent)
+     qwqer.removeEventListener(qwqer.EVENT_QWQER_SELECTED, bindHtmlEvent)
     }
   },[])
 
@@ -133,8 +135,8 @@ export default function AutoComplete({onValueChange}) {
   //los
   React.useEffect(()=>{
     if (source === "terminals"){
-     //console.log("fetching terminals data")
-      fetch('')
+     console.log("fetching terminals data")
+      fetchMemo('')
     }
   },[source]);
 
@@ -143,23 +145,23 @@ export default function AutoComplete({onValueChange}) {
 //element selected 
   const onSelect = (e,v) => {
     //emit value change
-   //console.log("emit value change")
+   console.log("emit value change")
     onValueChange(v);
     hideDropdown();
   }
 
   //wrapping debounce effect + fetching data into memo
-  const fetch = React.useMemo(
+  const fetchMemo = React.useMemo(
     () =>{
       if(source === "address"){
         return debounce((val) => {
-         //console.log('we are inside debounce')
+         console.log('we are inside debounce')
           if(source === "address"){
             showSpinner();
-           //console.log('we are inside debounce->address')
+           console.log('we are inside debounce->address')
             fetchDataAddress(val).then((v)=>{
-             //console.log('inside debounce address we fetched');
-             //console.log(v);
+             console.log('inside debounce address we fetched');
+             console.log(v);
               showData(v);
             })
           }
@@ -168,11 +170,11 @@ export default function AutoComplete({onValueChange}) {
       
 
       if(source === "terminals"){
-         //console.log('we are inside fetchDataTerminals->terminals')
+         console.log('we are inside fetchDataTerminals->terminals')
 
         return (val)=> fetchDataTerminals(val).then((v)=>{
-           //console.log('inside debounce fetchDataTerminals we fetched');
-           //console.log(v);
+           console.log('inside debounce fetchDataTerminals we fetched');
+           console.log(v);
             setOptions(v)
           })
         }
@@ -182,19 +184,20 @@ export default function AutoComplete({onValueChange}) {
 
 //reload on text input
   const onChangeText = (e,val)=>{
-   //console.log("onChangeText type")
+   console.log("onChangeText type")
     if (e && e.type != undefined){
-     //console.log(e && e.type)
+     console.log(e && e.type)
     }
     if (val.length >= 1
        && e && e.type !== 'click' 
        && source !== "terminals"){
         //prevent onSelect propagation
-     //console.log('before  fetching')
+     console.log('before  fetching')
       setOptions([]);
       setLoading(true);
       setOpen(true);
-      fetch(val);
+      console.log('qwqer be4 fetching fetchMemo',val,fetchMemo )
+      fetchMemo(val);
     }
   }
   
@@ -215,7 +218,7 @@ export default function AutoComplete({onValueChange}) {
       required={true}
 /* hide dropdown on lost focus */
       onBlur =  {(event) => {
-       //console.log("lost focus autocomplete");
+       console.log("lost focus autocomplete");
               if (open){
                 setOpen(false);
               }

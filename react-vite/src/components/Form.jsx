@@ -42,7 +42,9 @@ export default function Form({ OnSetForm }) {
   const [loading, setLoading] = React.useState(false);
   //state that checks if user data is valid
   //const [isSubmit,setSubmit] = React.useState(false);
-  const [info, setInfo] = React.useState(false)
+  const [info, setInfo] = React.useState(false);
+
+
 
   const { t } = useLanguage();
 
@@ -64,7 +66,7 @@ export default function Form({ OnSetForm }) {
       let type = window.shipping_qwqer.getSource();
       
       fetchValidate(inputAddress, phone, inputName, type).then((ok)=>{
-       //console.log(ok);
+       console.log(ok);
         if (ok){
           //shows submit message
           //setSubmit(true);
@@ -81,7 +83,7 @@ export default function Form({ OnSetForm }) {
           
           //emits state with OnSetForm prop
           OnSetForm({inputName:inputName,inputAddress:inputAddress,phone:phone,callbackObject:ok});
-          //console.log({inputName:inputName,inputAddress:inputAddress,phone:phone});
+          console.log({inputName:inputName,inputAddress:inputAddress,phone:phone});
         }else{
           setLoading(false);
           setInfo(true);
@@ -98,7 +100,7 @@ export default function Form({ OnSetForm }) {
 
 //clears form on changing radio button  
   const bindHtmlEvent = (e)=>{
-    if (e.detail !== false){
+    if (typeof e !=="undefined" && e !== false){
       setInput('not provided');    
       setPhone('');
       setInputAddress({});

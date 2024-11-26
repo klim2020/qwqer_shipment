@@ -1,9 +1,10 @@
+const qwqer = window.shipping_qwqer;
 const filter ={
             rigaOnly : /r[i|ī]g[a|o]|[Р|р]ига/gmi //regex for Riga
         };
 
 const isStandardPlugin = ()=>{
-            if (window.shipping_qwqer.moduleType && window.shipping_qwqer.moduleType == 0){
+            if (qwqer.moduleType && qwqer.moduleType == 0){
                 return true;
             }
             return false;
@@ -12,8 +13,8 @@ const isStandardPlugin = ()=>{
         //params {foo: "bar".....}
 const forceReboot = (params)=>{
     //reboot logic
-   //console.log("force Reboot");
-    window.shipping_qwqer.reload(params);
+   console.log("[qwqer]force Reboot");
+   qwqer.reload(params);
 }
 
 export  {filter, isStandardPlugin, forceReboot};

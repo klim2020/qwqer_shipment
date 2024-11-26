@@ -26,7 +26,7 @@ export default function Complete({form, onClose}) {
   const { t } = useLanguage();
   
   React.useEffect(() => {
-    //console.log(form);
+    console.log(form);
   },[])
 
     return (

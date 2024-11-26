@@ -6,13 +6,23 @@
 
 import {filter} from './../config/config';
 
+const getUrl = ()=>{
+  if (typeof window.shipping_qwqer !== "undefined"){
+    return window.shipping_qwqer.url;
+  }else{
+    return '';
+  }
+}
+
+
 //todo remove oc23 in prod
 
 function filterValue(opts,value){
   return opts.filter(opt=>`${opt.id} ${opt.name})`.match(value)!== null)
 }
 
-let url = window.shipping_qwqer.url;
+
+
 
 const fetchDataTerminals = (val,callback) => {
     if (window.terminals !== undefined){
@@ -28,7 +38,7 @@ const fetchDataTerminals = (val,callback) => {
     return new Promise((resolve) => {
      //console.log('we are about to fetch terminals')
       let token = window.shipping_qwqer.token
-      fetch(url+"index.php?route=extension/shipping/qwqer/get_terminals&qwqer_token="+token, {}).then((response) => {
+      fetch(getUrl()+"index.php?route=extension/shipping/qwqer/get_terminals&qwqer_token="+token, {}).then((response) => {
          return response.json()
       }).then((data)=>{
        //console.log('event after fetching terminals')
@@ -49,7 +59,7 @@ const fetchDataTerminals = (val,callback) => {
       body: formdata,
       redirect: 'follow'
     };
-    let ret =  await fetch(url+"index.php?route=extension/shipping/qwqer/get_adress&qwqer_token="+token, requestOptions).then((response) => {
+    let ret =  await fetch(getUrl()+"index.php?route=extension/shipping/qwqer/get_adress&qwqer_token="+token, requestOptions).then((response) => {
       return response.json()
    }).then((data)=>{
       return data;
@@ -85,7 +95,7 @@ const fetchDataTerminals = (val,callback) => {
     formdata.append("qwqer_name", name);
     formdata.append("qwqer_type", orderType);
    
-   //console.log(address);
+   console.log(address);
 
     var requestOptions = {
       method: 'POST',
@@ -93,17 +103,17 @@ const fetchDataTerminals = (val,callback) => {
       redirect: 'follow'
     };
 
-    let ret =  await fetch(url+"index.php?route=extension/shipping/qwqer/validate_data&qwqer_token="+token, requestOptions).then((response) => {
+    let ret =  await fetch(getUrl()+"index.php?route=extension/shipping/qwqer/validate_data&qwqer_token="+token, requestOptions).then((response) => {
       return response.json()
     }).then((data)=>{
         return data;
     })
-   //console.log("data recieved validate_data is:")
-   //console.log(ret);
+   console.log("qwqer data recieved validate_data is:",ret)
+   console.log(ret);
     if ('price' in ret && 'client_price' in ret.price){
         return ret;
     }
-   //console.log("error in validate_data transport function")
+   console.log("qwqer error in validate_data transport function")
     return false;
   }
 
@@ -124,7 +134,7 @@ const fetchDataTerminals = (val,callback) => {
       body: formdata,
       redirect: 'follow'
     };
-    const response =  await fetch(url+"index.php?route=extension/shipping/qwqer/remove_session&qwqer_token="+token, requestOptions)
+    const response =  await fetch(getUrl()+"index.php?route=extension/shipping/qwqer/remove_session&qwqer_token="+token, requestOptions)
     const data =  await response.json();
    //console.log("printing data from fetch removeSessionValue");
    //console.log(data);
@@ -142,7 +152,7 @@ const fetchDataTerminals = (val,callback) => {
     var requestOptions = {
       method: 'POST',
     };
-    const response =  await fetch(url+"index.php?route=extension/shipping/qwqer/get_working_hours&qwqer_token="+token, requestOptions)
+    const response =  await fetch(getUrl()+"index.php?route=extension/shipping/qwqer/get_working_hours&qwqer_token="+token, requestOptions)
     const data =  await response.json();
    //console.log("printing data from fetch working hours");
    //console.log(data);

@@ -4,10 +4,10 @@ import moment from 'moment';
 console.log(moment.locale());
 
 const isOpen = async () => {
-   //console.log("fetching open hours");
+   console.log("qwqer fetching open hours");
     const data = await fetchWorkingHours();
-   //console.log('recieved data is');
-   //console.log(data);
+   console.log('qer qrecieved data is');
+   console.log(data);
     if (data){
        //console.log("we get openhours data");
        //console.log(data);
@@ -21,10 +21,11 @@ const isOpen = async () => {
             window.beforeTime = moment(record[0].time_from, format);
             window.afterTime = moment(record[0].time_to, format);
             const isOpen = window.beforeTime <  window.time &&  window.time <  window.afterTime;
-           //console.log(isOpen);
+           console.log('qwqer res is isOpen',isOpen);
             return isOpen;
         }
     }
+    console.log('qwqer isOpen return false')
     return false;
 }
 

@@ -28,9 +28,9 @@ const theme = createTheme({
   padding: 0,
   });
 
-  //console.log = function() {}
+  console.log('qwqer main.jsx ')
   
-
+window.ReactDOM = ReactDOM
 
 const root = ReactDOM.createRoot(document.getElementById('shipping_qwqer_mount'));
 root.render(
@@ -42,6 +42,6 @@ root.render(
 );
 
 // If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals//console.log))
+// to log results (for example: reportWebVitalsconsole.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 
